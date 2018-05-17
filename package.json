@@ -1,0 +1,25 @@
+{
+  "name": "fluid-adaptive-content-service",
+  "version": "1.0.0",
+  "description": "A service to make it easier for other applications to make use other third-party services like, dictionary look-up, translation, etc. The application is in the form of a REST-like API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fluid-lab/fluid-adaptive-content-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fluid-lab/fluid-adaptive-content-service/issues"
+  },
+  "homepage": "https://github.com/fluid-lab/fluid-adaptive-content-service#readme",
+  "dependencies": {
+    "infusion": "3.0.0-dev.20171117T095227Z.67ff934",
+    "kettle": "1.7.1",
+    "word-definition": "^2.1.6"
+  },
+  "devDependencies": {}
+}
