@@ -15,6 +15,9 @@
   "bugs": {
     "url": "https://github.com/fluid-lab/fluid-adaptive-content-service/issues"
   },
+  "scripts": {
+    "start": "node ./v1/server.js"
+  },
   "homepage": "https://github.com/fluid-lab/fluid-adaptive-content-service#readme",
   "dependencies": {
     "infusion": "3.0.0-dev.20171117T095227Z.67ff934",

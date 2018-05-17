@@ -48,6 +48,7 @@ async function definition(service, lang, word) {
  *  Wiktionary -> 'wiki'
  */
 function checkDictionaryErr(service, serviceResponse) {
+  //Wiktionary Service
   if(service == 'wiki') {
 
     //Check if there is an error
@@ -81,14 +82,14 @@ function checkDictionaryErr(service, serviceResponse) {
 }
 
 //Main request handler - Gives only the definition of the word
-fluid.defaults('AdaptiveContentServices.serverConfig.mainHandler', {
+fluid.defaults('AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryHandler', {
   gradeNames: 'kettle.request.http',
   invokers: {
-    handleRequest: 'AdaptiveContentServices.serverConfig.mainRequestHandler'
+    handleRequest: 'AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler'
   }
 });
 
-AdaptiveContentServices.serverConfig.mainRequestHandler = async function(request) {
+AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = async function(request) {
   try {
     var version = request.req.params.version;
     var word = request.req.params.word;
