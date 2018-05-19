@@ -1,0 +1,29 @@
+{
+  "type":"AdaptiveContentServices.Dictionary.serverConfig",
+  "options":{
+      "gradesNames":"fluid.component",
+      "components":{
+          "server":{
+              "type":"kettle.server",
+              "options":{
+                  "port":8081,
+                  "components":{
+                      "dictionary":{
+                          "type":"kettle.app",
+                          "options":{
+                              "requestHandlers":{
+                                  "mainDictionaryHandler":{
+                                      "type":"AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryHandler",
+                                      "route":"/:version/dictionary/:language/definition/:word",
+                                      "method":"get"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  },
+  "require":"../handlers.js"
+}

@@ -16,3 +16,9 @@ npm start
 When the server starts, it is ready to accept requests at the available endpoints
 
 Currently, there is only 1 available endpoint. It can be tested by sending a `GET` request at `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}` which gives the definition of the word and its category.
+
+To run tests for this endpoint, do
+```
+npm test
+```
+at the root of the repository.

@@ -11,34 +11,20 @@ require('kettle');
  * from all the different third-party dictionary services being used
  * Simply gives the complete response from the third party service 
  * Does not manipulate it in any way
+ * The function returns a promise whose result contains the response
+ * from the third-party service
  * Service codes -
  *  Wiktionary -> 'wiki'
  */
-async function definition(service, lang, word) {
+function definition(service, lang, word) {
 
   //Wiktionary Service
   if(service == 'wiki') {
-    var def;
-    await new Promise(function(resolve, reject) {
-      wd.getDef(word, lang, null, function(definition) {
-        resolve(definition);
-      })
-    })
-    .then(
-      (result) => def = result
-    );
-    return def;
-
-    // var promise = fluid.promise();
-    // await promise;
-    // promise.then(
-    //   (result) => def = result,
-    //   (error) => console.log(error)
-    // );
-    // wd.getDef(word, lang, null, function(definition) {
-    //   promise.resolve(definition);
-    // });
-    // return def;
+    var promise = fluid.promise();
+    wd.getDef(word, lang, null, function(data) {
+      promise.resolve(data);
+    });
+    return promise;
   }
 }
 
@@ -72,7 +58,8 @@ function checkDictionaryErr(service, serviceResponse) {
 
       //Default return object when error hasn't been handled yet
       else return {
-
+        statusCode: 500,
+        errorMessage: 'Dictionary Service: The error hasn\'t been handled yet (Wiktionary)'
       };
     }
 
@@ -89,42 +76,49 @@ fluid.defaults('AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryHa
   }
 });
 
-AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = async function(request) {
+AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = function(request) {
   try {
     var version = request.req.params.version;
     var word = request.req.params.word;
     var lang = request.req.params.language;
 
-    var serviceResponse = await definition('wiki', lang, word);
+    var serviceResponse, errorContent;
 
-    var errorContent = checkDictionaryErr('wiki', serviceResponse);
+    definition('wiki', lang, word)
+    .then(
+      function(result) {
+        serviceResponse = result;
 
-    request.res.set({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-    });
+        errorContent = checkDictionaryErr('wiki', serviceResponse);
 
-    //Error Responses
-    if(errorContent) {
-      request.res.status(errorContent.statusCode)
-      .send({
-        version: 'v1',
-        statusCode: errorContent.statusCode,
-        responseMessage: errorContent.errorMessage,
-        jsonResponse: {}
-      })
-    }
-    //No error : Word found
-    else {
-      request.res.status(200)
-      .send({
-        version: 'v1',
-        statusCode: 200,
-        responseMessage: 'Dictionary Service: Word Found (Wiktionary)',
-        jsonResponse: serviceResponse
-      });
-    }
+        request.res.set({
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+        });
+    
+        //Error Responses
+        if(errorContent) {
+          request.res.status(errorContent.statusCode)
+          .send({
+            version: 'v1',
+            statusCode: errorContent.statusCode,
+            responseMessage: errorContent.errorMessage,
+            jsonResponse: {}
+          })
+        }
+        //No error : Word found
+        else {
+          request.res.status(200)
+          .send({
+            version: 'v1',
+            statusCode: 200,
+            responseMessage: 'Dictionary Service: Word Found (Wiktionary)',
+            jsonResponse: serviceResponse
+          });
+        }
+      }
+    )
   }
   //Error with the API code
   catch(error) {
@@ -132,7 +126,7 @@ AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = a
     .send({
       version: 'v1',
       statusCode: 500,
-      responseMessage: `Dictionary Service: Internal Server Error (Wiktionary): ${error}`,
+      responseMessage: 'Dictionary Service: Internal Server Error (Wiktionary): '+error,
       jsonResponse: {}
     });
   }
