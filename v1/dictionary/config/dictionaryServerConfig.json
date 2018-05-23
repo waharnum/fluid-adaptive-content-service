@@ -13,7 +13,7 @@
                           "options":{
                               "requestHandlers":{
                                   "mainDictionaryHandler":{
-                                      "type":"AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryHandler",
+                                      "type":"AdaptiveContentServices.handlers.dictionary.wiktionary",
                                       "route":"/:version/dictionary/:language/definition/:word",
                                       "method":"get"
                                   }

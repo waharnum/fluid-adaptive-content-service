@@ -6,36 +6,37 @@ var wd = require('word-definition');
 
 require('kettle');
 
-
-/* General function to get definition 
- * from all the different third-party dictionary services being used
- * Simply gives the complete response from the third party service 
- * Does not manipulate it in any way
- * The function returns a promise whose result contains the response
- * from the third-party service
- * Service codes -
- *  Wiktionary -> 'wiki'
- */
-function definition(service, lang, word) {
-
-  //Wiktionary Service
-  if(service == 'wiki') {
-    var promise = fluid.promise();
-    wd.getDef(word, lang, null, function(data) {
-      promise.resolve(data);
-    });
-    return promise;
+/* General grade for dictionary service endpoints
+ * from which all other handler grades will extend
+*/
+fluid.defaults('AdaptiveContentServices.handlers.dictionary', {
+  gradeNames: 'kettle.request.http',
+  invokers: {
+    handleRequest: 'fluid.notImplemented',
+    wikiDefinition: {
+      funcName: 'AdaptiveContentServices.handlers.dictionary.wikiDefinition',
+      args: ['{arguments}.0', '{arguments}.1']
+    },
+    checkWikiErr: {
+      funcName: 'AdaptiveContentServices.handlers.dictionary.checkWikiErr',
+      args: ['{arguments}.0']
+    }
   }
+})
+
+/* Function to get definition from the wiktionary service
+ */
+AdaptiveContentServices.handlers.dictionary.wikiDefinition = function(lang, word) {
+  var promise = fluid.promise();
+  wd.getDef(word, lang, null, function(data) {
+    promise.resolve(data);
+  });
+  return promise;
 }
 
-/* General function to catch the errors
- * From the third-party dictionary services
- * Service codes -
- *  Wiktionary -> 'wiki'
+/* Function to catch the errors for wiktionary service
  */
-function checkDictionaryErr(service, serviceResponse) {
-  //Wiktionary Service
-  if(service == 'wiki') {
+AdaptiveContentServices.handlers.dictionary.checkWikiErr = function(serviceResponse) {
 
     //Check if there is an error
     if(serviceResponse.err) {
@@ -65,18 +66,20 @@ function checkDictionaryErr(service, serviceResponse) {
 
     //Return false if no error found
     else return;
-  }
 }
 
-//Main request handler - Gives only the definition of the word
-fluid.defaults('AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryHandler', {
-  gradeNames: 'kettle.request.http',
+//request handler for wiktionary
+fluid.defaults('AdaptiveContentServices.handlers.dictionary.wiktionary', {
+  gradeNames: 'AdaptiveContentServices.handlers.dictionary',
   invokers: {
-    handleRequest: 'AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler'
+    handleRequest: {
+      funcName: 'AdaptiveContentServices.handlers.dictionary.wiktionary.getDefinition',
+      args: ['{arguments}.0', '{that}']
+    }
   }
 });
 
-AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = function(request) {
+AdaptiveContentServices.handlers.dictionary.wiktionary.getDefinition = function(request, that) {
   try {
     var version = request.req.params.version;
     var word = request.req.params.word;
@@ -84,12 +87,12 @@ AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = f
 
     var serviceResponse, errorContent;
 
-    definition('wiki', lang, word)
+    that.wikiDefinition(lang, word)
     .then(
       function(result) {
         serviceResponse = result;
 
-        errorContent = checkDictionaryErr('wiki', serviceResponse);
+        errorContent = that.checkWikiErr(serviceResponse);
 
         request.res.set({
           'Content-Type': 'application/json',
@@ -99,21 +102,18 @@ AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = f
     
         //Error Responses
         if(errorContent) {
-          request.res.status(errorContent.statusCode)
-          .send({
+          request.events.onError.fire({
             version: 'v1',
             statusCode: errorContent.statusCode,
-            responseMessage: errorContent.errorMessage,
+            message: errorContent.errorMessage,
             jsonResponse: {}
-          })
+          });
         }
         //No error : Word found
         else {
-          request.res.status(200)
-          .send({
+          request.events.onSuccess.fire({
             version: 'v1',
-            statusCode: 200,
-            responseMessage: 'Dictionary Service: Word Found (Wiktionary)',
+            message: 'Dictionary Service: Word Found (Wiktionary)',
             jsonResponse: serviceResponse
           });
         }
@@ -122,11 +122,10 @@ AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryRequestHandler = f
   }
   //Error with the API code
   catch(error) {
-    request.res.status(500)
-    .send({
+    request.events.onError.fire({
       version: 'v1',
       statusCode: 500,
-      responseMessage: 'Dictionary Service: Internal Server Error (Wiktionary): '+error,
+      message: 'Dictionary Service: Internal Server Error (Wiktionary): '+error,
       jsonResponse: {}
     });
   }

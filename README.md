@@ -15,7 +15,11 @@ npm start
 ```
 When the server starts, it is ready to accept requests at the available endpoints
 
-Currently, there is only 1 available endpoint. It can be tested by sending a `GET` request at `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}` which gives the definition of the word and its category.
+Currently, there is only 1 available endpoint. It can be tested by sending a `GET` request at `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}` which gives the definition of the word and its category.\
+Currently, this supports only three languages - English (en), French (fr) and German (de).\
+For example, 
+- `http://localhost:8081/v1/dictionary/en/definition/horse`
+- `http://localhost:8081/v1/dictionary/fr/definition/rien`
 
 To run tests for this endpoint, do
 ```

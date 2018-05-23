@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/fluid-lab/fluid-adaptive-content-service.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Fluid Project",
+  "license": "(BSD-3-Clause OR ECL-2.0)",
   "bugs": {
     "url": "https://github.com/fluid-lab/fluid-adaptive-content-service/issues"
   },

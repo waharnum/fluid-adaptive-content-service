@@ -19,7 +19,7 @@ fluid.defaults('AdaptiveContentServices.Dictionary.serverConfig', {
               requestHandlers: {
                 //Gives only the definition of the word
                 mainDictionaryHandler: {
-                  'type': 'AdaptiveContentServices.Dictionary.serverConfig.mainDictionaryHandler',
+                  'type': 'AdaptiveContentServices.handlers.dictionary.wiktionary',
                   'route': '/:version/dictionary/:language/definition/:word',
                   'method': 'get'
                 }
