@@ -1,5 +1,5 @@
 {
-  "type":"AdaptiveContentServices.Dictionary.serverConfig",
+  "type":"adaptiveContentServices.dictionary.serverConfig",
   "options":{
       "gradesNames":"fluid.component",
       "components":{
@@ -13,7 +13,7 @@
                           "options":{
                               "requestHandlers":{
                                   "mainDictionaryHandler":{
-                                      "type":"AdaptiveContentServices.handlers.dictionary.wiktionary",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary",
                                       "route":"/:version/dictionary/:language/definition/:word",
                                       "method":"get"
                                   }

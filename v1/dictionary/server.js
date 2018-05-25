@@ -1,11 +1,11 @@
 'use strict';
 
 var fluid = require('infusion');
-var AdaptiveContentServices = fluid.registerNamespace('AdaptiveContentServices');
+var adaptiveContentServices = fluid.registerNamespace('adaptiveContentServices');
 
 require('kettle');
 
-fluid.defaults('AdaptiveContentServices.Dictionary.serverConfig', {
+fluid.defaults('adaptiveContentServices.Dictionary.serverConfig', {
   gradeNames: 'fluid.component',
   components: {
     server: {
@@ -19,7 +19,7 @@ fluid.defaults('AdaptiveContentServices.Dictionary.serverConfig', {
               requestHandlers: {
                 //Gives only the definition of the word
                 mainDictionaryHandler: {
-                  'type': 'AdaptiveContentServices.handlers.dictionary.wiktionary',
+                  'type': 'adaptiveContentServices.handlers.dictionary.wiktionary',
                   'route': '/:version/dictionary/:language/definition/:word',
                   'method': 'get'
                 }
@@ -34,4 +34,4 @@ fluid.defaults('AdaptiveContentServices.Dictionary.serverConfig', {
 
 require('./handlers.js');
 
-AdaptiveContentServices.Dictionary.serverConfig();
+adaptiveContentServices.Dictionary.serverConfig();
