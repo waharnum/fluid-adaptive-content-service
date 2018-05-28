@@ -8,7 +8,7 @@ module.exports = function (grunt) {
             all: ["./share/**/*.js", "./share/**/**/*.js", "./v1/**/*.js", "./v1/**/**/*.js", "*.js"]
         },
         jsonlint: {
-            all: ["./v1/**/config/*.json"]
+            all: ["./v1/**/config/*.json", "*.json"]
         }
     });
 
