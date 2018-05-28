@@ -26,3 +26,5 @@ To run tests for this endpoint, do
 npm test
 ```
 at the root of the repository.
+
+Documentation for the service can be found [here](https://app.swaggerhub.com/apis/kunal4/fluid-adaptive-content-service/1.0.0).

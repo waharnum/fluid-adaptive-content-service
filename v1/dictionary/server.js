@@ -1,37 +1,37 @@
-'use strict';
+"use strict";
 
-var fluid = require('infusion');
-var adaptiveContentServices = fluid.registerNamespace('adaptiveContentServices');
+var fluid = require("infusion");
+var adaptiveContentServices = fluid.registerNamespace("adaptiveContentServices");
 
-require('kettle');
+require("kettle");
 
-fluid.defaults('adaptiveContentServices.Dictionary.serverConfig', {
-  gradeNames: 'fluid.component',
-  components: {
-    server: {
-      type: 'kettle.server',
-      options: {
-        port: 8081,
-        components: {
-          app: {
-            type: 'kettle.app',
+fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
+    gradeNames: "fluid.component",
+    components: {
+        server: {
+            type: "kettle.server",
             options: {
-              requestHandlers: {
-                //Gives only the definition of the word
-                mainDictionaryHandler: {
-                  'type': 'adaptiveContentServices.handlers.dictionary.wiktionary',
-                  'route': '/:version/dictionary/:language/definition/:word',
-                  'method': 'get'
+                port: 8081,
+                components: {
+                    app: {
+                        type: "kettle.app",
+                        options: {
+                            requestHandlers: {
+                                //Gives only the definition of the word
+                                mainDictionaryHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary",
+                                    "route": "/:version/dictionary/:language/definition/:word",
+                                    "method": "get"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
     }
-  }
 });
 
-require('./handlers.js');
+require("./handlers.js");
 
 adaptiveContentServices.Dictionary.serverConfig();
