@@ -8,23 +8,36 @@ Run
 ```
 npm install
 ```
-**Step 3 - Start the service server**
+**Step 3 - Start the service server**\
 When at the root of the repository, run
 ```
 npm start
 ```
-When the server starts, it is ready to accept requests at the available endpoints
+When the server starts, it is ready to accept requests at the available endpoints.
 
-Currently, there is only 1 available endpoint. It can be tested by sending a `GET` request at `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}` which gives the definition of the word and its category.\
-Currently, this supports only three languages - English (en), French (fr) and German (de).\
-For example, 
+Currently available endpoints - 
+- `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}`\
+**Method**: `GET`\
+**Language Code**: English (en), French (fr) and German (de)
+
+- `http://localhost:8081/v1/dictionary/wiktionary/{language_code}/definition/{word}` (Wiktionary-specific)\
+**Method**: `GET`\
+**Language Code**: English (en), French (fr) and German (de)
+
+- `http://localhost:8081/v1/dictionary/oxford/{language_code}/definition/{word}` (Oxford-specific)\
+**Method**: `GET`\
+**Language Code**: IANA standards
+
+Example endpoints:
 - `http://localhost:8081/v1/dictionary/en/definition/horse`
-- `http://localhost:8081/v1/dictionary/fr/definition/rien`
+- `http://localhost:8081/v1/dictionary/wiktionary/fr/definition/rien`
+- `http://localhost:8081/v1/dictionary/oxford/en/definition/horse`
 
-To run tests for this endpoint, do
+Tests for these endpoints lie in `share/dictionary/tests`\
+To run them
 ```
-npm test
+node ./share/dictionary/tests/{testFileName}.js
 ```
-at the root of the repository.
+when at the root of the repository.
 
-Documentation for the service can be found [here](https://app.swaggerhub.com/apis/kunal4/fluid-adaptive-content-service/1.0.0).
+Learn more about the service and the endpoints, in its documentation, which can be found [here](https://app.swaggerhub.com/apis/kunal4/fluid-adaptive-content-service/1.0.0).

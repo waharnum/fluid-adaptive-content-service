@@ -13,7 +13,7 @@ kettle.loadTestingSupport();
 
 adaptiveContentService.tests.dictionary = [{
     name: "GET request for the definition-only dictionary endpoint",
-    expect: 3,
+    expect: 4,
     config: {
         configName: "dictionaryServerConfig",
         configPath: "./v1/dictionary/config/"
@@ -39,6 +39,13 @@ adaptiveContentService.tests.dictionary = [{
                 path: "/v1/dictionary/wrong/definition/word",
                 method: "get"
             }
+        },
+        longUriTest: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/dictionary/en/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                method: "get"
+            }
         }
     },
     sequence: [{
@@ -61,6 +68,13 @@ adaptiveContentService.tests.dictionary = [{
     {
         event: "{wrongLangTest}.events.onComplete",
         listener: "adaptiveContentService.tests.dictionary.wrongLangHandler"
+    },
+    {
+        func: "{longUriTest}.send"
+    },
+    {
+        event: "{longUriTest}.events.onComplete",
+        listener: "adaptiveContentService.tests.dictionary.longUriHandler"
     }
     ]
 }];
@@ -77,7 +91,12 @@ adaptiveContentService.tests.dictionary.wrongWordHandler = function (data, that)
 
 //Test for the unsupported language
 adaptiveContentService.tests.dictionary.wrongLangHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Definition Only test for unsupported language successful", 400, that.nativeResponse.statusCode);
+    jqunit.assertEquals("Dictionary Tests : Definition Only test for unsupported language successful", 404, that.nativeResponse.statusCode);
+};
+
+//Test for long uri
+adaptiveContentService.tests.dictionary.longUriHandler = function (data, that) {
+    jqunit.assertEquals("Dictionary Tests : Definition Only test for long uri", 414, that.nativeResponse.statusCode);
 };
 
 kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary);

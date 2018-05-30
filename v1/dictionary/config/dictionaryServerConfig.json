@@ -16,6 +16,16 @@
                                       "type":"adaptiveContentServices.handlers.dictionary.wiktionary",
                                       "route":"/:version/dictionary/:language/definition/:word",
                                       "method":"get"
+                                  },
+                                  "wiktionaryDictionaryHandler":{
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary",
+                                      "route":"/:version/dictionary/wiktionary/:language/definition/:word",
+                                      "method":"get"
+                                  },
+                                  "oxfordDictionaryHandler":{
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford",
+                                      "route":"/:version/dictionary/oxford/:language/definition/:word",
+                                      "method":"get"
                                   }
                               }
                           }

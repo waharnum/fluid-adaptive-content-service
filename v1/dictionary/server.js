@@ -22,6 +22,16 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                     "type": "adaptiveContentServices.handlers.dictionary.wiktionary",
                                     "route": "/:version/dictionary/:language/definition/:word",
                                     "method": "get"
+                                },
+                                oxfordDictionaryHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford",
+                                    "route": "/:version/dictionary/oxford/:language/definition/:word",
+                                    "method": "get"
+                                },
+                                wikiDictionaryHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary",
+                                    "route": "/:version/dictionary/wiktionary/:language/definition/:word",
+                                    "method": "get"
                                 }
                             }
                         }
