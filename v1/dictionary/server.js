@@ -18,24 +18,49 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                         options: {
                             requestHandlers: {
                                 //Gives only the definition of the word
-                                mainDictionaryHandler: {
-                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary",
+                                generalDefinitionHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                     "route": "/:version/dictionary/:language/definition/:word",
                                     "method": "get"
                                 },
-                                oxfordDictionaryHandler: {
-                                    "type": "adaptiveContentServices.handlers.dictionary.oxford",
-                                    "route": "/:version/dictionary/oxford/:language/definition/:word",
+                                generalSynonymsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.synonyms",
+                                    "route":  "/:version/dictionary/:language/synonyms/:word",
                                     "method": "get"
                                 },
-                                wikiDictionaryHandler: {
-                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary",
+                                generalAntonymsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.antonyms",
+                                    "route":  "/:version/dictionary/:language/antonyms/:word",
+                                    "method": "get"
+                                },
+                                wikiDefinitionHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                     "route": "/:version/dictionary/wiktionary/:language/definition/:word",
                                     "method": "get"
                                 },
-                                synonymsOxfordHandler: {
+                                wikiSynonymsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary.synonyms",
+                                    "route":  "/:version/dictionary/wiktionary/:language/synonyms/:word",
+                                    "method": "get"
+                                },
+                                wikiAntonymsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary.antonyms",
+                                    "route":  "/:version/dictionary/wiktionary/:language/antonyms/:word",
+                                    "method": "get"
+                                },
+                                oxfordDefinitionHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.definition",
+                                    "route": "/:version/dictionary/oxford/:language/definition/:word",
+                                    "method": "get"
+                                },
+                                oxfordSynonymsHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.oxford.synonyms",
                                     "route":  "/:version/dictionary/oxford/:language/synonyms/:word",
+                                    "method": "get"
+                                },
+                                oxfordAntonymsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.antonyms",
+                                    "route":  "/:version/dictionary/oxford/:language/antonyms/:word",
                                     "method": "get"
                                 }
                             }

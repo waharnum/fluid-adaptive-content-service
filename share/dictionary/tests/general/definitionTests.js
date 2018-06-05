@@ -12,7 +12,7 @@ fluid.logObjectRenderChars = 10000; // to ask
 kettle.loadTestingSupport();
 
 adaptiveContentService.tests.dictionary = [{
-    name: "GET request for the definition-only dictionary endpoint",
+    name: "GET request for the definition dictionary endpoint",
     expect: 4,
     config: {
         configName: "dictionaryServerConfig",
@@ -22,28 +22,28 @@ adaptiveContentService.tests.dictionary = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/definition/word",
+                path: "/v1/dictionary/en/definition/word",
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/definition/wrongword",
+                path: "/v1/dictionary/en/definition/wrongword",
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/wrong/definition/word",
+                path: "/v1/dictionary/wrong/definition/word",
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/en/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -81,22 +81,22 @@ adaptiveContentService.tests.dictionary = [{
 
 //Test for the correct word
 adaptiveContentService.tests.dictionary.correctWordHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Definition Only test for correct word successful", 200, that.nativeResponse.statusCode);
+    jqunit.assertEquals("Dictionary Tests : Definition test for correct word successful", 200, that.nativeResponse.statusCode);
 };
 
 //Test for the wrong word
 adaptiveContentService.tests.dictionary.wrongWordHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Definition Only test for wrong word successful", 404, that.nativeResponse.statusCode);
+    jqunit.assertEquals("Dictionary Tests : Definition test for wrong word successful", 404, that.nativeResponse.statusCode);
 };
 
 //Test for the unsupported language
 adaptiveContentService.tests.dictionary.wrongLangHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Definition Only test for unsupported language successful", 404, that.nativeResponse.statusCode);
+    jqunit.assertEquals("Dictionary Tests : Definition test for unsupported language successful", 404, that.nativeResponse.statusCode);
 };
 
 //Test for long uri
 adaptiveContentService.tests.dictionary.longUriHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Definition Only test for long uri", 414, that.nativeResponse.statusCode);
+    jqunit.assertEquals("Dictionary Tests : Definition test for long uri", 414, that.nativeResponse.statusCode);
 };
 
 kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary);

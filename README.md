@@ -20,6 +20,14 @@ Currently available endpoints -
 **Method**: `GET`\
 **Language Code**: English (en), French (fr) and German (de)
 
+- `http://localhost:8081/v1/dictionary/{language_code}/synonyms/{word}`\
+**Method**: `GET`\
+**Language Code**: IANA standards
+
+- `http://localhost:8081/v1/dictionary/{language_code}/antonyms/{word}`\
+**Method**: `GET`\
+**Language Code**: IANA standards
+
 - `http://localhost:8081/v1/dictionary/wiktionary/{language_code}/definition/{word}` (Wiktionary-specific)\
 **Method**: `GET`\
 **Language Code**: English (en), French (fr) and German (de)
@@ -27,6 +35,16 @@ Currently available endpoints -
 - `http://localhost:8081/v1/dictionary/oxford/{language_code}/definition/{word}` (Oxford-specific)\
 **Method**: `GET`\
 **Language Code**: IANA standards
+
+- `http://localhost:8081/v1/dictionary/oxford/{language_code}/synonyms/{word}` (Oxford-specific)\
+**Method**: `GET`\
+**Language Code**: IANA standards
+
+- `http://localhost:8081/v1/dictionary/oxford/{language_code}/antonyms/{word}` (Oxford-specific)\
+**Method**: `GET`\
+**Language Code**: IANA standards
+
+(Wiktionary doesn't provide synonyms and antonyms)
 
 Example endpoints:
 - `http://localhost:8081/v1/dictionary/en/definition/horse`
@@ -36,7 +54,7 @@ Example endpoints:
 Tests for these endpoints lie in `share/dictionary/tests`\
 To run them
 ```
-node ./share/dictionary/tests/{testFileName}.js
+node ./share/dictionary/tests/{testFolderName}/{testFileName}.js
 ```
 when at the root of the repository.
 
