@@ -32,6 +32,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                     "type": "adaptiveContentServices.handlers.dictionary.wiktionary",
                                     "route": "/:version/dictionary/wiktionary/:language/definition/:word",
                                     "method": "get"
+                                },
+                                synonymsOxfordHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.synonyms",
+                                    "route":  "/:version/dictionary/oxford/:language/synonyms/:word",
+                                    "method": "get"
                                 }
                             }
                         }

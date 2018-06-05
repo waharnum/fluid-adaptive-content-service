@@ -13,19 +13,24 @@
                           "options":{
                               "requestHandlers":{
                                   "mainDictionaryHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                       "route":"/:version/dictionary/:language/definition/:word",
                                       "method":"get"
                                   },
                                   "wiktionaryDictionaryHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                       "route":"/:version/dictionary/wiktionary/:language/definition/:word",
                                       "method":"get"
                                   },
                                   "oxfordDictionaryHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.oxford",
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford.definition",
                                       "route":"/:version/dictionary/oxford/:language/definition/:word",
                                       "method":"get"
+                                  },
+                                  "oxfordSynonymsHandler":{
+                                    "type":"adaptiveContentServices.handlers.dictionary.oxford.synonyms",
+                                    "route":"/:version/dictionary/oxford/:language/synonyms/:word",
+                                    "method":"get"
                                   }
                               }
                           }
