@@ -21,7 +21,12 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary", {
             args: ["{arguments}.0", "{that}.dictionaryHandlerImpl", "{that}"]
         },
         commonDictionaryDispatcher: "adaptiveContentServices.handlers.dictionary.commonDictionaryDispatcher",
-        uriErrHandler: "adaptiveContentServices.handlers.dictionary.uriErrHandler",
+        uriErrHandler: {
+            funcName: "adaptiveContentServices.handlers.dictionary.uriErrHandler",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
+        },
+        sendSuccessResponse: "adaptiveContentServices.handlers.dictionary.sendSuccessResponse",
+        sendErrorResponse: "adaptiveContentServices.handlers.dictionary.sendErrorResponse",
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented",
         checkDictionaryErrorImpl: "fluid.notImplemented"
@@ -34,28 +39,56 @@ adaptiveContentServices.handlers.dictionary.commonDictionaryDispatcher = functio
     var word = request.req.params.word;
     var lang = request.req.params.language;
 
+    //setting the required headers for the response
+    request.res.set({
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+    });
+
     serviceSpecificImp(request, version, word, lang, that);
 };
 
 /* Common function for all the dictionary endpoints
  * to check for long uri
  */
-adaptiveContentServices.handlers.dictionary.uriErrHandler = function (request, word, serviceName) {
+adaptiveContentServices.handlers.dictionary.uriErrHandler = function (request, version, word, serviceName, that) {
     if (word.length > 128) {
-        request.events.onError.fire({
-            version: "v1",
-            service: {
-                name: "Dictionary",
-                source: serviceName
-            },
-            statusCode: 414,
-            message: "Request URI too long: \"word\" can have maximum 128 characters",
-            jsonResponse: {}
-        });
+        var message = "Request URI too long: \"word\" can have maximum 128 characters";
+
+        that.sendErrorResponse(request, version, serviceName, 414, message);
+        return true;
     }
     else {
         return false;
     }
+};
+
+// Common function for all dictionary endpoints to send success response
+adaptiveContentServices.handlers.dictionary.sendSuccessResponse = function (request, version, serviceName, statusCode, message, jsonResponse) {
+    request.events.onSuccess.fire({
+        version: version,
+        service: {
+            name: "Dictionary",
+            source: serviceName
+        },
+        statusCode: statusCode,
+        message: message,
+        jsonResponse: jsonResponse
+    });
+};
+
+adaptiveContentServices.handlers.dictionary.sendErrorResponse = function (request, version, serviceName, statusCode, message) {
+    request.events.onError.fire({
+        version: version,
+        service: {
+            name: "Dictionary",
+            source: serviceName
+        },
+        statusCode: statusCode,
+        message: message,
+        jsonResponse: {}
+    });
 };
 
 //Specific grade for Wiktionary
@@ -121,7 +154,7 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.definitio
 adaptiveContentServices.handlers.dictionary.wiktionary.definition.getDefinition = function (request, version, word, lang, that) {
     try {
         //Check for long URI
-        if (!that.uriErrHandler(request, word, "Wiktionary")) {
+        if (!that.uriErrHandler(request, version, word, "Wiktionary")) {
             var serviceResponse, errorContent;
 
             that.requiredDataImpl(lang, word)
@@ -131,45 +164,29 @@ adaptiveContentServices.handlers.dictionary.wiktionary.definition.getDefinition 
 
                     errorContent = that.checkDictionaryErrorImpl(serviceResponse);
 
-                    request.res.set({
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-                    });
+                    var message;
 
                     //Error Responses
                     if (errorContent) {
-                        request.events.onError.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Wiktionary"
-                            },
-                            statusCode: errorContent.statusCode,
-                            message: errorContent.errorMessage,
-                            jsonResponse: {}
-                        });
+                        message = errorContent.errorMessage;
+                        var statusCode = errorContent.statusCode;
+
+                        that.sendErrorResponse(request, version, "Wiktionary", statusCode, message);
                     }
                     //No error : Word found
                     else {
-                        request.events.onSuccess.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Wiktionary"
-                            },
-                            statusCode: 200,
-                            message: "Word Found",
-                            jsonResponse: {
-                                word: serviceResponse.word,
-                                entries: [
-                                    {
-                                        category: serviceResponse.category,
-                                        definitions: [serviceResponse.definition]
-                                    }
-                                ]
-                            }
-                        });
+                        message = "Word Found";
+                        var jsonResponse = {
+                            word: serviceResponse.word,
+                            entries: [
+                                {
+                                    category: serviceResponse.category,
+                                    definitions: [serviceResponse.definition]
+                                }
+                            ]
+                        };
+
+                        that.sendSuccessResponse(request, version, "Wiktionary", 200, "Word Found", jsonResponse);
                     }
                 }
             );
@@ -177,16 +194,9 @@ adaptiveContentServices.handlers.dictionary.wiktionary.definition.getDefinition 
     }
     //Error with the API code
     catch (error) {
-        request.events.onError.fire({
-            version: "v1",
-            statusCode: 500,
-            message: "Internal Server Error: " + error,
-            service: {
-                name: "Dictionary",
-                source: "Wiktionary"
-            },
-            jsonResponse: {}
-        });
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Wiktionary", 500, message);
     }
 };
 
@@ -205,24 +215,17 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.synonyms"
     invokers: {
         dictionaryHandlerImpl: {
             funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.getSynonyms",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
         requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.requiredData"
     }
 });
 
 //Wiktionary synonyms handler
-adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.getSynonyms = function (request, version, word, lang, that) {
-    request.events.onError.fire({
-        version: "v1",
-        service: {
-            name: "Dictionary",
-            source: "Wiktionary"
-        },
-        statusCode: 400,
-        message: "This Service doesn't provide synonyms",
-        jsonResponse: {}
-    });
+adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.getSynonyms = function (request, version, that) {
+    var message = "This Service doesn't provide synonyms";
+
+    that.sendErrorResponse(request, version, "Wiktionary", 400, message);
 };
 
 adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.requiredData = function () {
@@ -238,24 +241,17 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.antonyms"
     invokers: {
         dictionaryHandlerImpl: {
             funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.getAntonyms",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
         requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.requiredData"
     }
 });
 
 //Wiktionary antonyms handler
-adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.getAntonyms = function (request, version, word, lang, that) {
-    request.events.onError.fire({
-        version: "v1",
-        service: {
-            name: "Dictionary",
-            source: "Wiktionary"
-        },
-        statusCode: 400,
-        message: "This Service doesn't provide antonyms",
-        jsonResponse: {}
-    });
+adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.getAntonyms = function (request, version, that) {
+    var message = "This Service doesn't provide antonyms";
+
+    that.sendErrorResponse(request, version, "Wiktionary", 400, message);
 };
 
 adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.requiredData = function () {
@@ -331,7 +327,7 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
     try {
 
         //Check for long URI
-        if (!that.uriErrHandler(request, word, "Oxford")) {
+        if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse, errorContent;
 
             that.requiredDataImpl(lang, word)
@@ -341,27 +337,19 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
 
                     errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
 
-                    request.res.set({
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-                    });
+                    var message;
 
                     //Error Responses
                     if (errorContent) {
-                        request.events.onError.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Oxford"
-                            },
-                            statusCode: errorContent.statusCode,
-                            message: errorContent.errorMessage,
-                            jsonResponse: {}
-                        });
+                        message = errorContent.errorMessage;
+                        var statusCode = errorContent.statusCode;
+
+                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
                     }
                     //No error : Word found
                     else {
+                        message = "Word Found";
+
                         var jsonServiceResponse = JSON.parse(serviceResponse.body);
                         var response = {
                             word: word,
@@ -376,16 +364,7 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
                             };
                         }
 
-                        request.events.onSuccess.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Oxford"
-                            },
-                            statusCode: 200,
-                            message: "Word Found",
-                            jsonResponse: response
-                        });
+                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                     }
                 }
             );
@@ -393,16 +372,9 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
     }
     //Error with the API code
     catch (error) {
-        request.events.onError.fire({
-            version: "v1",
-            service: {
-                name: "Dictionary",
-                source: "Oxford"
-            },
-            statusCode: 500,
-            message: "Internal Server Error: " + error,
-            jsonResponse: {}
-        });
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
 };
 
@@ -454,7 +426,7 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms = functi
     try {
 
         //Check for long URI
-        if (!that.uriErrHandler(request, word, "Oxford")) {
+        if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse, errorContent;
 
             that.requiredDataImpl(lang, word)
@@ -464,40 +436,23 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms = functi
 
                     errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
 
-                    request.res.set({
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-                    });
+                    var message;
 
                     //Error Responses
                     if (errorContent) {
-                        request.events.onError.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Oxford"
-                            },
-                            statusCode: errorContent.statusCode,
-                            message: errorContent.errorMessage,
-                            jsonResponse: {}
-                        });
+                        message = errorContent.errorMessage;
+                        var statusCode = errorContent.statusCode;
+
+                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
                     }
                     //No error : Word found
                     else {
+                        message = "Word Found";
+
                         var jsonServiceResponse = JSON.parse(serviceResponse.body);
                         var response = that.constructResponse(word, jsonServiceResponse);
 
-                        request.events.onSuccess.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Oxford"
-                            },
-                            statusCode: 200,
-                            message: "Word Found",
-                            jsonResponse: response
-                        });
+                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                     }
                 }
             );
@@ -505,16 +460,9 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms = functi
     }
     //Error with the API code
     catch (error) {
-        request.events.onError.fire({
-            version: "v1",
-            service: {
-                name: "Dictionary",
-                source: "Oxford"
-            },
-            statusCode: 500,
-            message: "Internal Server Error: " + error,
-            jsonResponse: {}
-        });
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
 };
 
@@ -622,7 +570,7 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms = functi
     try {
 
         //Check for long URI
-        if (!that.uriErrHandler(request, word, "Oxford")) {
+        if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse, errorContent;
 
             that.requiredDataImpl(lang, word)
@@ -632,40 +580,23 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms = functi
 
                     errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
 
-                    request.res.set({
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-                    });
+                    var message;
 
                     //Error Responses
                     if (errorContent) {
-                        request.events.onError.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Oxford"
-                            },
-                            statusCode: errorContent.statusCode,
-                            message: errorContent.errorMessage,
-                            jsonResponse: {}
-                        });
+                        message = errorContent.errorMessage;
+                        var statusCode = errorContent.statusCode;
+
+                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
                     }
                     //No error : Word found
                     else {
+                        message = "Word Found";
+
                         var jsonServiceResponse = JSON.parse(serviceResponse.body);
                         var response = that.constructResponse(word, jsonServiceResponse);
 
-                        request.events.onSuccess.fire({
-                            version: "v1",
-                            service: {
-                                name: "Dictionary",
-                                source: "Oxford"
-                            },
-                            statusCode: 200,
-                            message: "Word Found",
-                            jsonResponse: response
-                        });
+                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                     }
                 }
             );
@@ -673,16 +604,9 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms = functi
     }
     //Error with the API code
     catch (error) {
-        request.events.onError.fire({
-            version: "v1",
-            service: {
-                name: "Dictionary",
-                source: "Oxford"
-            },
-            statusCode: 500,
-            message: "Internal Server Error: " + error,
-            jsonResponse: {}
-        });
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
 };
 
