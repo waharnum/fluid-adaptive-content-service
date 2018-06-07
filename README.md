@@ -8,7 +8,14 @@ Run
 ```
 npm install
 ```
-**Step 3 - Start the service server**\
+**Step 3 - Setting API keys for services that require it**\
+Currently, only *Oxford* is the service being used that requires API keys. You can create an account on [their site](https://developer.oxforddictionaries.com/) and acquire your free *API ID* and *API KEY* from there.
+After acquiring the Id and Key, create a `.env` file looking like this
+```
+OXFORD_APP_ID=your_api_id_goes_here
+OXFORD_APP_KEY=your_api_key_goes_here
+```
+**Step 4 - Start the service server**\
 When at the root of the repository, run
 ```
 npm start
