@@ -321,9 +321,10 @@ adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError = functi
 //function to scrape the error message from the html response given by oxford
 adaptiveContentServices.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
     var $ = cheerio.load(htmlResponse);
-    var message = $("h1").text() + ": " + $("p").text();
+    var isHTML = $("h1").text() //is the response in html
 
-    if (message) {
+    if (isHTML) {
+        var message = $("h1").text() + ": " + $("p").text();
         return message;
     }
     else {
