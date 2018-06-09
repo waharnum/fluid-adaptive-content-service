@@ -7,7 +7,7 @@ var jqunit = require("node-jqunit");
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary");
 
-fluid.logObjectRenderChars = 10000; // to ask
+fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 

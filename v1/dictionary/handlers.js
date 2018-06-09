@@ -264,13 +264,34 @@ adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.requiredData = f
 //Specific grade for Oxford
 fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford", {
     gradeNames: "adaptiveContentServices.handlers.dictionary",
+    authenticationOptions: {
+        "app_id": "@expand:kettle.resolvers.env(OXFORD_APP_ID)",
+        "app_key": "@expand:kettle.resolvers.env(OXFORD_APP_KEY)"
+    },
     invokers: {
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented",
+        serviceKeysImpl: {
+          funcName: "adaptiveContentServices.handlers.dictionary.oxford.serviceKeys",
+          args: ["{that}"]
+        },
         checkDictionaryErrorImpl: "adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError",
         errorMsgScrape: "adaptiveContentServices.handlers.dictionary.oxford.errorMsgScrape"
     }
 });
+
+//function to return object giving oxford key and id (acquired from environment variables)
+adaptiveContentServices.handlers.dictionary.oxford.serviceKeys = function (that) {
+    var appId = that.options.authenticationOptions["app_id"];
+    var appKey = that.options.authenticationOptions["app_key"];
+
+    var authHeaders = {
+        "app_id": appId,
+        "app_key": appKey
+    }
+
+    return authHeaders;
+}
 
 //function  to catch the errors for oxford service
 adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError = function (serviceResponse, that) {
@@ -318,7 +339,10 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.definition", 
             funcName: "adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData"
+        requiredDataImpl: {
+            funcName: "adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData",
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
+        }
     }
 });
 
@@ -379,16 +403,14 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
 };
 
 //function to get definition from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData = function (lang, word) {
+adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
-
+    
+    var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
             url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word,
-            headers: {
-                "app_id": process.env.OXFORD_APP_ID,
-                "app_key": process.env.OXFORD_APP_KEY
-            }
+            headers: requestHeaders
         },
         function (error, response, body) {
             if (error) {
@@ -416,7 +438,10 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.synonyms", {
             funcName: "adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData",
+        requiredDataImpl: {
+            funcName: "adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData",
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
+        },
         constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.synonyms.constructResponse"
     }
 });
@@ -467,16 +492,14 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms = functi
 };
 
 //function to get the synonyms from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData = function (lang, word) {
+adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
 
+    var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
             url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word + "/synonyms",
-            headers: {
-                "app_id": process.env.OXFORD_APP_ID,
-                "app_key": process.env.OXFORD_APP_KEY
-            }
+            headers: requestHeaders
         },
         function (error, response, body) {
             if (error) {
@@ -560,7 +583,10 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.antonyms", {
             funcName: "adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData",
+        requiredDataImpl: {
+            funcName: "adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData",
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
+        },
         constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.antonyms.constructResponse"
     }
 });
@@ -611,16 +637,14 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms = functi
 };
 
 //function to get the antonyms from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData = function (lang, word) {
+adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
 
+    var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
             url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word + "/antonyms",
-            headers: {
-                "app_id": process.env.OXFORD_APP_ID,
-                "app_key": process.env.OXFORD_APP_KEY
-            }
+            headers: requestHeaders
         },
         function (error, response, body) {
             if (error) {
