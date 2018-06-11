@@ -33,6 +33,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                     "route":  "/:version/dictionary/:language/antonyms/:word",
                                     "method": "get"
                                 },
+                                generalPronunciationsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.pronunciations",
+                                    "route": "/:version/dictionary/:language/pronunciations/:word",
+                                    "method": "get"
+                                },
                                 wikiDefinitionHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                     "route": "/:version/dictionary/wiktionary/:language/definition/:word",
@@ -48,6 +53,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                     "route":  "/:version/dictionary/wiktionary/:language/antonyms/:word",
                                     "method": "get"
                                 },
+                                wikiPronunciationsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations",
+                                    "route":  "/:version/dictionary/wiktionary/:language/pronunciations/:word",
+                                    "method": "get"
+                                },
                                 oxfordDefinitionHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.oxford.definition",
                                     "route": "/:version/dictionary/oxford/:language/definition/:word",
@@ -61,6 +71,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                 oxfordAntonymsHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.oxford.antonyms",
                                     "route":  "/:version/dictionary/oxford/:language/antonyms/:word",
+                                    "method": "get"
+                                },
+                                oxfordPronunciationsHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.pronunciations",
+                                    "route": "/:version/dictionary/oxford/:language/pronunciations/:word",
                                     "method": "get"
                                 }
                             }
