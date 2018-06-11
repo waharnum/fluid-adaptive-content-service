@@ -263,21 +263,21 @@ adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.requiredData = f
 
 //Wiktionary pronunciations grade
 fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations", {
-  gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
-  invokers: {
-      dictionaryHandlerImpl: {
-          funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.getPronunciations",
-          args: ["{arguments}.0", "{arguments}.1", "{that}"]
-      },
-      requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.requiredData"
-  }
+    gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
+    invokers: {
+        dictionaryHandlerImpl: {
+            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.getPronunciations",
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
+        },
+        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.requiredData"
+    }
 });
 
 //Wiktionary antonyms handler
 adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.getPronunciations = function (request, version, that) {
-  var message = "This Service doesn't provide pronunciations";
+    var message = "This Service doesn't provide pronunciations";
 
-  that.sendErrorResponse(request, version, "Wiktionary", 400, message);
+    that.sendErrorResponse(request, version, "Wiktionary", 400, message);
 };
 
 adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.requiredData = function () {
@@ -298,8 +298,8 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford", {
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented",
         serviceKeysImpl: {
-          funcName: "adaptiveContentServices.handlers.dictionary.oxford.serviceKeys",
-          args: ["{that}"]
+            funcName: "adaptiveContentServices.handlers.dictionary.oxford.serviceKeys",
+            args: ["{that}"]
         },
         checkDictionaryErrorImpl: "adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError",
         errorMsgScrape: "adaptiveContentServices.handlers.dictionary.oxford.errorMsgScrape"
@@ -308,16 +308,16 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford", {
 
 //function to return object giving oxford key and id (acquired from environment variables)
 adaptiveContentServices.handlers.dictionary.oxford.serviceKeys = function (that) {
-    var appId = that.options.authenticationOptions["app_id"];
-    var appKey = that.options.authenticationOptions["app_key"];
+    var appId = that.options.authenticationOptions.app_id;
+    var appKey = that.options.authenticationOptions.app_key;
 
     var authHeaders = {
         "app_id": appId,
         "app_key": appKey
-    }
+    };
 
     return authHeaders;
-}
+};
 
 //function  to catch the errors for oxford service
 adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError = function (serviceResponse, that) {
@@ -347,7 +347,7 @@ adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError = functi
 //function to scrape the error message from the html response given by oxford
 adaptiveContentServices.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
     var $ = cheerio.load(htmlResponse);
-    var isHTML = $("h1").text() //is the response in html
+    var isHTML = $("h1").text(); //is the response in html
 
     if (isHTML) {
         var message = $("h1").text() + ": " + $("p").text();
@@ -432,7 +432,7 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
 //function to get definition from the oxford service
 adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
-    
+
     var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
@@ -789,12 +789,18 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.getPronunciati
                     }
                     //No error : Word found
                     else {
-                        message = "Word Found";
-
                         var jsonServiceResponse = JSON.parse(serviceResponse.body);
                         var response = that.constructResponse(jsonServiceResponse);
 
-                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        if (response.entries.length === 0) {
+                            message = "No pronunciations found for the word \'" + word + "\'";
+                            that.sendErrorResponse(request, version, "Oxford", 404, message);
+                        }
+
+                        else {
+                            message = "Word Found";
+                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        }
                     }
                 }
             );
@@ -805,35 +811,35 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.getPronunciati
         var message = "Internal Server Error: " + error;
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
-    }    
-}
+    }
+};
 
 //function to get the pronunciations link from the oxford service
 adaptiveContentServices.handlers.dictionary.oxford.pronunciations.requiredData = function (lang, word, that) {
-  var promise = fluid.promise();
+    var promise = fluid.promise();
 
-  var requestHeaders = that.serviceKeysImpl();
-  makeRequest(
-      {
-          url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word,
-          headers: requestHeaders
-      },
-      function (error, response, body) {
-          if (error) {
-              promise.resolve({
-                  statusCode: 501
-              });
-          }
-          else {
-              promise.resolve({
-                  statusCode: response.statusCode,
-                  body: body
-              });
-          }
-      }
-  );
+    var requestHeaders = that.serviceKeysImpl();
+    makeRequest(
+        {
+            url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word,
+            headers: requestHeaders
+        },
+        function (error, response, body) {
+            if (error) {
+                promise.resolve({
+                    statusCode: 501
+                });
+            }
+            else {
+                promise.resolve({
+                    statusCode: response.statusCode,
+                    body: body
+                });
+            }
+        }
+    );
 
-  return promise;
+    return promise;
 };
 
 adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructResponse = function (jsonServiceResponse) {
@@ -863,7 +869,7 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructRespo
             category: lexicalEntries[i].lexicalCategory,
             pronunciations: []
         };
-        
+
         var pronunciationCount = 0;
         var pronunciations = lexicalEntries[i].pronunciations;
         if (pronunciations) {
@@ -894,9 +900,9 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructRespo
                 }
             }
         }
-        
+
         entryCount++;
     }
 
     return response;
-}
+};
