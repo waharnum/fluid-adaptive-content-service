@@ -4,6 +4,10 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 var jqunit = require("node-jqunit");
 
+require("dotenv").config();
+
+var index = require('../../../../index.js');
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary");
 
@@ -16,7 +20,7 @@ adaptiveContentService.tests.dictionary = [{
     expect: 1,
     config: {
         configName: "dictionaryServerConfig",
-        configPath: "./v1/dictionary/config/"
+        configPath: "%fluid-adaptive-content-service/v1/dictionary/config/"
     },
     components: {
         serviceNotProvidedTest: {
