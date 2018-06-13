@@ -15,7 +15,7 @@ fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-// Update all the other name spaces into this style so they don't collide
+// NOTE: Update all the other name spaces into this style so they don't collide
 // with each other when multiple test files are loaded at once
 adaptiveContentService.tests.dictionary.wiktionary.antonyms = [{
     name: "GET request for the Antonyms dictionary endpoint of the Wiktionary Service",

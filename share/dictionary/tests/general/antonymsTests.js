@@ -15,7 +15,7 @@ fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-// Update all the other name spaces into this style so they don't collide
+// NOTE: Update all the other name spaces into this style so they don't collide
 // with each other when multiple test files are loaded at once
 adaptiveContentService.tests.dictionary.general.antonyms = [{
     name: "GET request for the Antonyms dictionary endpoint",
@@ -57,9 +57,12 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
     sequence: [{
         func: "{correctWordTest}.send"
     },
+    // NOTE: we can use the argument-shifting capability of listeners
+    // to parameterize these tests (see function below)
     {
         event: "{correctWordTest}.events.onComplete",
-        listener: "adaptiveContentService.tests.dictionary.general.antonyms.correctWordHandler"
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Antonyms test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"
@@ -85,10 +88,20 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
     ]
 }];
 
-//Test for the correct word
-adaptiveContentService.tests.dictionary.general.antonyms.correctWordHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Antonyms test for correct word successful", 200, that.nativeResponse.statusCode);
+// NOTE: Refactor your tests where possible to use a generalized function for testing
+// like this one
+adaptiveContentService.tests.utils = {};
+adaptiveContentService.tests.utils.assertStatusCode = function (message, expectedStatusCode, responseStatusCode) {
+    jqunit.assertEquals(message, expectedStatusCode, responseStatusCode);
 };
+
+// NOTE: This hard-coded test is no longer necessary, since we've replaced its
+// functionality with the parameterized one
+
+//Test for the correct word
+// adaptiveContentService.tests.dictionary.general.antonyms.correctWordHandler = function (data, that) {
+//     jqunit.assertEquals("Dictionary Tests : Antonyms test for correct word successful", 200, that.nativeResponse.statusCode);
+// };
 
 //Test for the wrong word
 adaptiveContentService.tests.dictionary.general.antonyms.wrongWordHandler = function (data, that) {
@@ -106,3 +119,7 @@ adaptiveContentService.tests.dictionary.general.antonyms.longUriHandler = functi
 };
 
 kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.antonyms);
+
+// adaptiveContentService.tests.utils.assertStatusCode = function (message, expectedStatusCode, responseStatusCode) {
+//     jqunit.assertEquals(message, expectedStatusCode, responseStatusCode);
+// }
