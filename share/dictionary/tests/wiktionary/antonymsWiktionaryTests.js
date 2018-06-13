@@ -9,13 +9,15 @@ require("dotenv").config();
 require("../../../../index.js");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.antonyms");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary = [{
+// Update all the other name spaces into this style so they don't collide
+// with each other when multiple test files are loaded at once
+adaptiveContentService.tests.dictionary.wiktionary.antonyms = [{
     name: "GET request for the Antonyms dictionary endpoint of the Wiktionary Service",
     expect: 1,
     config: {
@@ -36,14 +38,14 @@ adaptiveContentService.tests.dictionary = [{
     },
     {
         event: "{serviceNotProvidedTest}.events.onComplete",
-        listener: "adaptiveContentService.tests.dictionary.serviceNotProvidedTest"
+        listener: "adaptiveContentService.tests.dictionary.wiktionary.antonyms.serviceNotProvidedTest"
     }
     ]
 }];
 
 //Wiktionary service doesn't provide antonyms
-adaptiveContentService.tests.dictionary.serviceNotProvidedTest = function (data, that) {
+adaptiveContentService.tests.dictionary.wiktionary.antonyms.serviceNotProvidedTest = function (data, that) {
     jqunit.assertEquals("Dictionary Tests : Antonyms test for Wiktionary Service successful", 400, that.nativeResponse.statusCode);
 };
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.antonyms);
