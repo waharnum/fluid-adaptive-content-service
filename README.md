@@ -39,6 +39,10 @@ Currently available endpoints -
 **Method**: `GET`\
 **Language Code**: IANA standards
 
+- `http://localhost:8081/v1/dictionary/{language_code}/frequency/{word}`\
+**Method**: `GET`\
+**Language Code**: IANA standards
+
 - `http://localhost:8081/v1/dictionary/wiktionary/{language_code}/definition/{word}` (Wiktionary-specific)\
 **Method**: `GET`\
 **Language Code**: English (en), French (fr) and German (de)
@@ -59,7 +63,11 @@ Currently available endpoints -
 **Method**: `GET`\
 **Language Code**: IANA standards
 
-(Wiktionary doesn't provide synonyms, antonyms and pronunciations)
+- `http://localhost:8081/v1/dictionary/oxford/{language_code}/frequency/{word}` (Oxford-specific)\
+**Method**: `GET`\
+**Language Code**: IANA standards
+
+(Wiktionary only gives definition)
 
 Example endpoints:
 - `http://localhost:8081/v1/dictionary/en/definition/horse`

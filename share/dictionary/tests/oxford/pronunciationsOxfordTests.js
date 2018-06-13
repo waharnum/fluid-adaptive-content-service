@@ -6,7 +6,7 @@ var jqunit = require("node-jqunit");
 
 require("dotenv").config();
 
-var index = require('../../../../index.js');
+require("../../../../index.js");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary");

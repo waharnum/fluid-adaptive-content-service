@@ -38,6 +38,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                     "route": "/:version/dictionary/:language/pronunciations/:word",
                                     "method": "get"
                                 },
+                                generalFrequencyHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.frequency",
+                                    "route": "/:version/dictionary/:language/frequency/:word",
+                                    "method": "get"
+                                },
                                 wikiDefinitionHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                     "route": "/:version/dictionary/wiktionary/:language/definition/:word",
@@ -58,6 +63,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                     "route":  "/:version/dictionary/wiktionary/:language/pronunciations/:word",
                                     "method": "get"
                                 },
+                                wikiFrequencyHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary.frequency",
+                                    "route":  "/:version/dictionary/wiktionary/:language/frequency/:word",
+                                    "method": "get"
+                                },
                                 oxfordDefinitionHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.oxford.definition",
                                     "route": "/:version/dictionary/oxford/:language/definition/:word",
@@ -76,6 +86,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                 oxfordPronunciationsHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.oxford.pronunciations",
                                     "route": "/:version/dictionary/oxford/:language/pronunciations/:word",
+                                    "method": "get"
+                                },
+                                oxfordFrequencyHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.frequency",
+                                    "route": "/:version/dictionary/oxford/:language/frequency/:word",
                                     "method": "get"
                                 }
                             }

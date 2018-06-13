@@ -273,7 +273,7 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.pronuncia
     }
 });
 
-//Wiktionary antonyms handler
+//Wiktionary pronunciations handler
 adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.getPronunciations = function (request, version, that) {
     var message = "This Service doesn't provide pronunciations";
 
@@ -283,6 +283,33 @@ adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.getPronunc
 adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.requiredData = function () {
   /*
    * Service doesn't provide pronunciations
+   * So no data required
+   */
+};
+
+
+//Wiktionary frequency grade
+fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.frequency", {
+    gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
+    invokers: {
+        dictionaryHandlerImpl: {
+            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.frequency.getFrequency",
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
+        },
+        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.frequency.requiredData"
+    }
+});
+
+//Wiktionary frequency handler
+adaptiveContentServices.handlers.dictionary.wiktionary.frequency.getFrequency = function (request, version, that) {
+    var message = "This Service doesn't provide frequency";
+
+    that.sendErrorResponse(request, version, "Wiktionary", 400, message);
+};
+
+adaptiveContentServices.handlers.dictionary.wiktionary.frequency.requiredData = function () {
+  /*
+   * Service doesn't provide frequency
    * So no data required
    */
 };
@@ -546,7 +573,7 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData = funct
     return promise;
 };
 
-//function to construct a useful response from the data provided by the Oxford Service
+//function to construct a useful response from the synonyms data provided by the Oxford Service
 adaptiveContentServices.handlers.dictionary.oxford.synonyms.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.results[0].id,
@@ -691,7 +718,7 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData = funct
     return promise;
 };
 
-//function to construct a useful response from the data provided by the Oxford Service
+//function to construct a useful response from the antonyms data provided by the Oxford Service
 adaptiveContentServices.handlers.dictionary.oxford.antonyms.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.results[0].id,
@@ -842,6 +869,7 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.requiredData =
     return promise;
 };
 
+//function to construct a useful response from the pronunciation data provided by the Oxford Service
 adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.results[0].id,
@@ -903,6 +931,105 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructRespo
 
         entryCount++;
     }
+
+    return response;
+};
+
+//Oxford frequency grade
+fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.frequency", {
+    gradeNames: "adaptiveContentServices.handlers.dictionary.oxford",
+    invokers: {
+        dictionaryHandlerImpl: {
+            funcName: "adaptiveContentServices.handlers.dictionary.oxford.frequency.getFrequency",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
+        },
+        requiredDataImpl: {
+            funcName: "adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData",
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
+        },
+        constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.frequency.constructResponse"
+    }
+});
+
+//Oxford frquency handler
+adaptiveContentServices.handlers.dictionary.oxford.frequency.getFrequency = function (request, version, word, lang, that) {
+    try {
+
+        //Check for long URI
+        if (!that.uriErrHandler(request, version, word, "Oxford")) {
+            var serviceResponse, errorContent;
+
+            that.requiredDataImpl(lang, word)
+            .then(
+                function (result) {
+                    serviceResponse = result;
+
+                    errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
+
+                    var message;
+
+                    //Error Responses
+                    if (errorContent) {
+                        message = errorContent.errorMessage;
+                        var statusCode = errorContent.statusCode;
+
+                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                    }
+                    //No error : Word found
+                    else {
+                        message = "Word Found";
+
+                        var jsonServiceResponse = JSON.parse(serviceResponse.body);
+                        var response = that.constructResponse(jsonServiceResponse);
+
+                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                    }
+                }
+            );
+        }
+    }
+    //Error with the API code
+    catch (error) {
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Oxford", 500, message);
+    }
+};
+
+//function to get the frequency data from the oxford service
+adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, that) {
+    var promise = fluid.promise();
+
+    var requestHeaders = that.serviceKeysImpl();
+    makeRequest(
+        {
+            url: "https://od-api.oxforddictionaries.com/api/v1/stats/frequency/word/" + lang + "/?lemma=" + word,
+            headers: requestHeaders
+        },
+        function (error, response, body) {
+            if (error) {
+                promise.resolve({
+                    statusCode: 501
+                });
+            }
+            else {
+                promise.resolve({
+                    statusCode: response.statusCode,
+                    body: body
+                });
+            }
+        }
+    );
+
+    return promise;
+};
+
+//function to construct a useful response from the frequency data provided by the Oxford Service
+adaptiveContentServices.handlers.dictionary.oxford.frequency.constructResponse = function (jsonServiceResponse) {
+    var response = {
+        word: jsonServiceResponse.result.lemma,
+        frequency: jsonServiceResponse.result.frequency
+    };
 
     return response;
 };
