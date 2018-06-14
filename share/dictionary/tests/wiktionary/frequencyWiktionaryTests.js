@@ -2,20 +2,19 @@
 
 var fluid = require("infusion");
 var kettle = require("kettle");
-var jqunit = require("node-jqunit");
-
 require("dotenv").config();
 
 require("../../../../index.js");
+require("../testUtils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.frequency");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary = [{
+adaptiveContentService.tests.dictionary.wiktionary.frequency = [{
     name: "GET request for the Frequency dictionary endpoint of the Wiktionary Service",
     expect: 1,
     config: {
@@ -36,14 +35,10 @@ adaptiveContentService.tests.dictionary = [{
     },
     {
         event: "{serviceNotProvidedTest}.events.onComplete",
-        listener: "adaptiveContentService.tests.dictionary.serviceNotProvidedTest"
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Frequency test for Wiktionary Service successful", 400, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-//Wiktionary service doesn't provide frequency
-adaptiveContentService.tests.dictionary.serviceNotProvidedTest = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Frequency test for Wiktionary Service successful", 400, that.nativeResponse.statusCode);
-};
-
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.frequency);

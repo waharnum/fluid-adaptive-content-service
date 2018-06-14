@@ -2,20 +2,19 @@
 
 var fluid = require("infusion");
 var kettle = require("kettle");
-var jqunit = require("node-jqunit");
-
 require("dotenv").config();
 
 require("../../../../index.js");
+require("../testUtils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.synonyms");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary = [{
+adaptiveContentService.tests.dictionary.general.synonyms = [{
     name: "GET request for the Synonyms dictionary endpoint",
     expect: 4,
     config: {
@@ -57,50 +56,34 @@ adaptiveContentService.tests.dictionary = [{
     },
     {
         event: "{correctWordTest}.events.onComplete",
-        listener: "adaptiveContentService.tests.dictionary.correctWordHandler"
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Synonyms test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"
     },
     {
         event: "{wrongWordTest}.events.onComplete",
-        listener: "adaptiveContentService.tests.dictionary.wrongWordHandler"
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Synonyms test for wrong word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongLangTest}.send"
     },
     {
         event: "{wrongLangTest}.events.onComplete",
-        listener: "adaptiveContentService.tests.dictionary.wrongLangHandler"
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Synonyms test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{longUriTest}.send"
     },
     {
         event: "{longUriTest}.events.onComplete",
-        listener: "adaptiveContentService.tests.dictionary.longUriHandler"
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Synonyms test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-//Test for the correct word
-adaptiveContentService.tests.dictionary.correctWordHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Synonyms test for correct word successful", 200, that.nativeResponse.statusCode);
-};
-
-//Test for the wrong word
-adaptiveContentService.tests.dictionary.wrongWordHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Synonyms test for wrong word successful", 404, that.nativeResponse.statusCode);
-};
-
-//Test for the unsupported language
-adaptiveContentService.tests.dictionary.wrongLangHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Synonyms test for unsupported language successful", 404, that.nativeResponse.statusCode);
-};
-
-//Test for long uri
-adaptiveContentService.tests.dictionary.longUriHandler = function (data, that) {
-    jqunit.assertEquals("Dictionary Tests : Synonyms test for long uri", 414, that.nativeResponse.statusCode);
-};
-
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.synonyms);
