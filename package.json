@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./v1/dictionary/server.js",
-    "test": "node ./share/dictionary/tests/definitionOnlyTests.js"
+    "test": "node ./share/dictionary/tests/all-tests.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/fluid-lab/fluid-adaptive-content-service#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "compromise": "^11.9.1",
     "dotenv": "^5.0.1",
     "infusion": "3.0.0-dev.20171117T095227Z.67ff934",
     "kettle": "1.7.1",

@@ -42,6 +42,9 @@ Currently available endpoints -
 - `http://localhost:8081/v1/dictionary/{language_code}/frequency/{word}`\
 **Method**: `GET`\
 **Language Code**: IANA standards
+- `http://localhost:8081/v1/dictionary/{language_code}/frequency/{word}/{lexicalCategory}`\
+**Method**: `GET`\
+**Language Code**: IANA standards
 
 - `http://localhost:8081/v1/dictionary/wiktionary/{language_code}/definition/{word}` (Wiktionary-specific)\
 **Method**: `GET`\
@@ -66,6 +69,9 @@ Currently available endpoints -
 - `http://localhost:8081/v1/dictionary/oxford/{language_code}/frequency/{word}` (Oxford-specific)\
 **Method**: `GET`\
 **Language Code**: IANA standards
+- `http://localhost:8081/v1/dictionary/oxford/{language_code}/frequency/{word}/{lexicalCategory}` (Oxford-specific)\
+**Method**: `GET`\
+**Language Code**: IANA standards
 
 (Wiktionary only gives definition)
 
@@ -75,7 +81,13 @@ Example endpoints:
 - `http://localhost:8081/v1/dictionary/oxford/en/definition/horse`
 
 Tests for these endpoints lie in `share/dictionary/tests`\
-To run them
+To run all the tests in one go
+```
+npm test
+```
+when at the root of the repository.\
+OR\
+To run a particular test
 ```
 node ./share/dictionary/tests/{testFolderName}/{testFileName}.js
 ```

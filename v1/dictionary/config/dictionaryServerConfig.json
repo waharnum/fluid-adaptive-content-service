@@ -37,6 +37,11 @@
                                       "route":"/:version/dictionary/:language/frequency/:word",
                                       "method":"get"
                                   },
+                                  "generalExtendedFrequencyHandler":{
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford.frequency",
+                                      "route":"/:version/dictionary/:language/frequency/:word/:lexicalCategory",
+                                      "method":"get"
+                                  },
                                   "wikiDefinitionHandler":{
                                       "type":"adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                       "route":"/:version/dictionary/wiktionary/:language/definition/:word",
@@ -62,30 +67,40 @@
                                       "route":"/:version/dictionary/wiktionary/:language/frequency/:word",
                                       "method":"get"
                                   },
+                                  "wikiExtendedFrequencyHandler":{
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.frequency",
+                                      "route":"/:version/dictionary/wiktionary/:language/frequency/:word/:lexicalCategory",
+                                      "method":"get"
+                                  },
                                   "oxfordDictionaryHandler":{
                                       "type":"adaptiveContentServices.handlers.dictionary.oxford.definition",
                                       "route":"/:version/dictionary/oxford/:language/definition/:word",
                                       "method":"get"
                                   },
                                   "oxfordSynonymsHandler":{
-                                    "type":"adaptiveContentServices.handlers.dictionary.oxford.synonyms",
-                                    "route":"/:version/dictionary/oxford/:language/synonyms/:word",
-                                    "method":"get"
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford.synonyms",
+                                      "route":"/:version/dictionary/oxford/:language/synonyms/:word",
+                                      "method":"get"
                                   },
                                   "oxfordAntonymsHandler":{
-                                    "type":"adaptiveContentServices.handlers.dictionary.oxford.antonyms",
-                                    "route":"/:version/dictionary/oxford/:language/antonyms/:word",
-                                    "method":"get"
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford.antonyms",
+                                      "route":"/:version/dictionary/oxford/:language/antonyms/:word",
+                                      "method":"get"
                                   },
                                   "oxfordPronunciationsHandler":{
-                                    "type":"adaptiveContentServices.handlers.dictionary.oxford.pronunciations",
-                                    "route":"/:version/dictionary/oxford/:language/pronunciations/:word",
-                                    "method":"get"
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford.pronunciations",
+                                      "route":"/:version/dictionary/oxford/:language/pronunciations/:word",
+                                      "method":"get"
                                   },
                                   "oxfordFrequencyHandler":{
-                                    "type":"adaptiveContentServices.handlers.dictionary.oxford.frequency",
-                                    "route":"/:version/dictionary/oxford/:language/frequency/:word",
-                                    "method":"get"
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford.frequency",
+                                      "route":"/:version/dictionary/oxford/:language/frequency/:word",
+                                      "method":"get"
+                                  },
+                                  "oxfordExtendedFrequencyHandler":{
+                                      "type":"adaptiveContentServices.handlers.dictionary.oxford.frequency",
+                                      "route":"/:version/dictionary/oxford/:language/frequency/:word/:lexicalCategory",
+                                      "method":"get"
                                   }
                               }
                           }

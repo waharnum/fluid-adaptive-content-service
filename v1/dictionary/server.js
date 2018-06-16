@@ -43,6 +43,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                     "route": "/:version/dictionary/:language/frequency/:word",
                                     "method": "get"
                                 },
+                                generalExtendedFrequencyHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.oxford.frequency",
+                                    "route": "/:version/dictionary/:language/frequency/:word/:lexicalCategory",
+                                    "method": "get"
+                                },
                                 wikiDefinitionHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                     "route": "/:version/dictionary/wiktionary/:language/definition/:word",
@@ -66,6 +71,11 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                                 wikiFrequencyHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.wiktionary.frequency",
                                     "route":  "/:version/dictionary/wiktionary/:language/frequency/:word",
+                                    "method": "get"
+                                },
+                                wikiExtendedFrequencyHandler: {
+                                    "type": "adaptiveContentServices.handlers.dictionary.wiktionary.frequency",
+                                    "route":  "/:version/dictionary/wiktionary/:language/frequency/:word/:lexicalCategory",
                                     "method": "get"
                                 },
                                 oxfordDefinitionHandler: {
