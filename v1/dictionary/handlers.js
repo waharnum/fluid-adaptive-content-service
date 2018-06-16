@@ -945,7 +945,7 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.frequency", {
         },
         requiredDataImpl: {
             funcName: "adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{that}"]
         },
         constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.frequency.constructResponse"
     }
@@ -958,8 +958,9 @@ adaptiveContentServices.handlers.dictionary.oxford.frequency.getFrequency = func
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse, errorContent;
+            var lexicalCategory = request.req.params.lexicalCategory;
 
-            that.requiredDataImpl(lang, word)
+            that.requiredDataImpl(lang, word, lexicalCategory)
             .then(
                 function (result) {
                     serviceResponse = result;
@@ -997,13 +998,22 @@ adaptiveContentServices.handlers.dictionary.oxford.frequency.getFrequency = func
 };
 
 //function to get the frequency data from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, that) {
+adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, lexicalCategory, that) {
     var promise = fluid.promise();
 
     var requestHeaders = that.serviceKeysImpl();
+    var requestURL;
+
+    if (lexicalCategory) {
+        requestURL = "https://od-api.oxforddictionaries.com/api/v1/stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
+    }
+    else {
+        requestURL = "https://od-api.oxforddictionaries.com/api/v1/stats/frequency/word/" + lang + "/?lemma=" + word;
+    }
+
     makeRequest(
         {
-            url: "https://od-api.oxforddictionaries.com/api/v1/stats/frequency/word/" + lang + "/?lemma=" + word,
+            url: requestURL,
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -1030,6 +1040,10 @@ adaptiveContentServices.handlers.dictionary.oxford.frequency.constructResponse =
         word: jsonServiceResponse.result.lemma,
         frequency: jsonServiceResponse.result.frequency
     };
+
+    if (jsonServiceResponse.result.lexicalCategory) {
+        response.lexicalCategory = jsonServiceResponse.result.lexicalCategory;
+    }
 
     return response;
 };
