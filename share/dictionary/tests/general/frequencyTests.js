@@ -7,6 +7,12 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
+require("../nock/mockOxfordFrequency"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "play",
+    correctLang = "en",
+    wrongLang = "wrong";
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.frequency");
 
@@ -25,21 +31,21 @@ adaptiveContentService.tests.dictionary.general.frequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/frequency/play",
+                path: "/v1/dictionary/" + correctLang + "/frequency/" + correctWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wrong/frequency/word",
+                path: "/v1/dictionary/" + wrongLang + "/frequency/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

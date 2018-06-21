@@ -23,6 +23,7 @@
     "dotenv": "^5.0.1",
     "infusion": "3.0.0-dev.20171117T095227Z.67ff934",
     "kettle": "1.7.1",
+    "nock": "^9.3.3",
     "node-jqunit": "^1.1.8",
     "request": "^2.87.0",
     "word-definition": "^2.1.6"

@@ -7,6 +7,13 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
+require("../nock/mockOxfordExtendedFrequency"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "play",
+    correctLang = "en",
+    wrongLang = "wrong",
+    lexicalCategory = "noun";
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.extendedFrequency");
 
@@ -25,21 +32,21 @@ adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/frequency/play/noun",
+                path: "/v1/dictionary/" + correctLang + "/frequency/" + correctWord + "/" + lexicalCategory,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wrong/frequency/word/noun",
+                path: "/v1/dictionary/" + wrongLang + "/frequency/" + correctWord + "/" + lexicalCategory,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/noun",
+                path: "/v1/dictionary/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/" + lexicalCategory,
                 method: "get"
             }
         }

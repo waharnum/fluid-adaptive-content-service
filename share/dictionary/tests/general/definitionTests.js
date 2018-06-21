@@ -7,6 +7,13 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
+require("../nock/mockOxfordDefinitions"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "word",
+    wrongWord = "wrongword",
+    correctLang = "en",
+    wrongLang = "wrong";
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.definition");
 
@@ -25,28 +32,28 @@ adaptiveContentService.tests.dictionary.general.definition = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/definition/word",
+                path: "/v1/dictionary/" + correctLang + "/definition/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/definition/wrongword",
+                path: "/v1/dictionary/" + correctLang + "/definition/" + wrongWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wrong/definition/word",
+                path: "/v1/dictionary" + wrongLang + "/definition/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + correctLang + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

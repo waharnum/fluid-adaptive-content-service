@@ -7,6 +7,13 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
+require("../nock/mockOxfordExtendedFrequency"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "play",
+    correctLang = "en",
+    wrongLang = "wrong",
+    lexicalCategory = "noun";
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.extendedFrequency");
 
@@ -25,21 +32,21 @@ adaptiveContentService.tests.dictionary.oxford.extendedFrequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/frequency/play/noun",
+                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/" + correctWord + "/" + lexicalCategory,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/wrong/frequency/word/noun",
+                path: "/v1/dictionary/oxford/" + wrongLang + "/frequency/" + correctWord + "/" + lexicalCategory,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/noun",
+                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/" + lexicalCategory,
                 method: "get"
             }
         }

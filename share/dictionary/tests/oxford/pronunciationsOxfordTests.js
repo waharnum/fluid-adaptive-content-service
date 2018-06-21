@@ -7,6 +7,13 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
+require("../nock/mockOxfordPronunciations"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "bath",
+    wrongWord = "wrongword",
+    correctLang = "en",
+    wrongLang = "wrong";
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.pronunciations");
 
@@ -25,28 +32,28 @@ adaptiveContentService.tests.dictionary.oxford.pronunciations = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/pronunciations/bath",
+                path: "/v1/dictionary/oxford/" + correctLang + "/pronunciations/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/pronunciations/wrongword",
+                path: "/v1/dictionary/oxford/" + correctLang + "/pronunciations/" + wrongWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/wrong/pronunciations/word",
+                path: "/v1/dictionary/oxford/" + wrongLang + "/pronunciations/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/pronunciations/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + correctLang + "/pronunciations/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

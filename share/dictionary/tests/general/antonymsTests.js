@@ -7,6 +7,13 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
+require("../nock/mockOxfordAntonyms"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "play",
+    wrongWord = "wrongword",
+    correctLang = "en",
+    wrongLang = "wrong";
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.antonyms");
 
@@ -25,28 +32,28 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/antonyms/play",
+                path: "/v1/dictionary/" + correctLang + "/antonyms/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/antonyms/wrongword",
+                path: "/v1/dictionary/" + correctLang + "/antonyms/" + wrongWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wrong/antonyms/word",
+                path: "/v1/dictionary" + wrongLang + "/antonyms/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/en/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + correctLang + "/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

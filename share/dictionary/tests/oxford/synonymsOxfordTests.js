@@ -7,6 +7,13 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
+require("../nock/mockOxfordSynonyms"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "play",
+    wrongWord = "wrongword",
+    correctLang = "en",
+    wrongLang = "wrong";
+
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.synonyms");
 
@@ -25,28 +32,28 @@ adaptiveContentService.tests.dictionary.oxford.synonyms = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/synonyms/play",
+                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/synonyms/wrongword",
+                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/wrongword",
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/wrong/synonyms/word",
+                path: "/v1/dictionary/oxford/" + wrongLang + "/synonyms/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/en/synonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

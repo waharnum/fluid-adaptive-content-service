@@ -321,6 +321,9 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford", {
         "app_id": "@expand:kettle.resolvers.env(OXFORD_APP_ID)",
         "app_key": "@expand:kettle.resolvers.env(OXFORD_APP_KEY)"
     },
+    serviceConfig: {
+      urlBase: "https://od-api.oxforddictionaries.com/api/v1/"
+    },
     invokers: {
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented",
@@ -463,7 +466,7 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData = fun
     var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word,
+            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word,
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -552,7 +555,7 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData = funct
     var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word + "/synonyms",
+            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word + "/synonyms",
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -697,7 +700,7 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData = funct
     var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word + "/antonyms",
+            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word + "/antonyms",
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -848,7 +851,7 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.requiredData =
     var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word,
+            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word,
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -1005,10 +1008,10 @@ adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData = func
     var requestURL;
 
     if (lexicalCategory) {
-        requestURL = "https://od-api.oxforddictionaries.com/api/v1/stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
+        requestURL = that.options.serviceConfig.urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
     }
     else {
-        requestURL = "https://od-api.oxforddictionaries.com/api/v1/stats/frequency/word/" + lang + "/?lemma=" + word;
+        requestURL = that.options.serviceConfig.urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
     }
 
     makeRequest(
