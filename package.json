@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./v1/dictionary/server.js",
-    "test": "node ./share/dictionary/tests/all-tests.js"
+    "test": "node ./share/dictionary/tests/all-tests.js",
+    "dictionary": "node ./v1/dictionary/server.js",
+    "nlp": "node ./v1/nlp/server.js"
   },
   "repository": {
     "type": "git",

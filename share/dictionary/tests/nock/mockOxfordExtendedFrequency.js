@@ -1,3 +1,5 @@
+"use strict";
+
 var nock = require("nock");
 var correctWord = "play",
     correctLang = "en",
@@ -9,17 +11,17 @@ var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 nock(urlBase)
 .get("/stats/frequency/word/" + correctLang + "/?lemma=" + correctWord + "&lexicalCategory=" + lexicalCategory)
 .reply(
-  200,
-  {
-    result: {
-      frequency: 8458134,
-      lemma: "play",
-      lexicalCategory: "noun"
+    200,
+    {
+        result: {
+            frequency: 8458134,
+            lemma: "play",
+            lexicalCategory: "noun"
+        }
     }
-  }
 )
 .get("/stats/frequency/word/" + wrongLang + "/?lemma=" + correctWord + "&lexicalCategory=" + lexicalCategory)
 .reply(
-  404,
-  "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in zu, ro, ta, sw, de, tn, lv, id, ur, en, nso, ms, gu, pt, hi, es</p>"
-)
+    404,
+    "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in zu, ro, ta, sw, de, tn, lv, id, ur, en, nso, ms, gu, pt, hi, es</p>"
+);

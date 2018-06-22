@@ -7,8 +7,6 @@ require("dotenv").config();
 require("../../../../index.js");
 require("../testUtils");
 
-require("../nock/mockOxfordDefinitions"); // providing mock data as an alternative to actual Oxford response
-
 var correctWord = "word",
     wrongWord = "wrongword",
     correctLang = "en",

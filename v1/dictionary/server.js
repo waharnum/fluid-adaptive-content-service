@@ -5,7 +5,7 @@ var adaptiveContentServices = fluid.registerNamespace("adaptiveContentServices")
 
 require("kettle");
 
-fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
+fluid.defaults("adaptiveContentServices.dictionary.serverConfig", {
     gradeNames: "fluid.component",
     components: {
         server: {
@@ -17,7 +17,6 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
                         type: "kettle.app",
                         options: {
                             requestHandlers: {
-                                //Gives only the definition of the word
                                 generalDefinitionHandler: {
                                     "type": "adaptiveContentServices.handlers.dictionary.wiktionary.definition",
                                     "route": "/:version/dictionary/:language/definition/:word",
@@ -119,4 +118,4 @@ fluid.defaults("adaptiveContentServices.Dictionary.serverConfig", {
 
 require("./handlers.js");
 
-adaptiveContentServices.Dictionary.serverConfig();
+adaptiveContentServices.dictionary.serverConfig();

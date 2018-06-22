@@ -39,7 +39,7 @@ adaptiveContentService.tests.dictionary.general.synonyms = [{
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/synonyms/wrongword",
+                path: "/v1/dictionary/" + correctLang + "/synonyms/" + wrongWord,
                 method: "get"
             }
         },

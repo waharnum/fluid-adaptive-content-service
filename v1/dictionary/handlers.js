@@ -322,7 +322,7 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford", {
         "app_key": "@expand:kettle.resolvers.env(OXFORD_APP_KEY)"
     },
     serviceConfig: {
-      urlBase: "https://od-api.oxforddictionaries.com/api/v1/"
+        urlBase: "https://od-api.oxforddictionaries.com/api/v1/"
     },
     invokers: {
         dictionaryHandlerImpl: "fluid.notImplemented",

@@ -2,27 +2,35 @@
 Repo for GSOC Project Described at https://wiki.fluidproject.org/display/fluid/Google+Summer+of+Code+2018+with+the+Fluid+Project#GoogleSummerofCode2018withtheFluidProject-Buildaserviceforadaptivecontentandlearningsupports
 
 ## Instructions to run the service locally
-**Step 1 - Clone the Repository**\
-**Step 2 - Install the required node modules**\
+### Step 1 - Clone the Repository
+### Step 2 - Install the required node modules
 Run
 ```
 npm install
 ```
-**Step 3 - Setting API keys for services that require it**\
+### Step 3 - Setting API keys for services that require it
 Currently, only *Oxford* is the service being used that requires API keys. You can create an account on [their site](https://developer.oxforddictionaries.com/) and acquire your free *API ID* and *API KEY* from there.
 After acquiring the Id and Key, create a `.env` file looking like this
 ```
 OXFORD_APP_ID=your_api_id_goes_here
 OXFORD_APP_KEY=your_api_key_goes_here
 ```
-**Step 4 - Start the service server**\
+### Step 4 - Start the service server
+**Dictionary Service Server**\
 When at the root of the repository, run
 ```
-npm start
+npm run dictionary
 ```
+**NLP Service Server**\
+When at the root of the repository, run
+```
+npm run nlp
+```
+
 When the server starts, it is ready to accept requests at the available endpoints.
 
 Currently available endpoints - 
+### Dictionary Service
 - `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}`\
 **Method**: `GET`\
 **Language Code**: English (en), French (fr) and German (de)
@@ -74,6 +82,11 @@ Currently available endpoints -
 **Language Code**: IANA standards
 
 (Wiktionary only gives definition)
+
+### NLP Service
+- `http://localhost:8082/v1/nlp/compromise/tags`\
+**Method**: `POST`\
+**Request Body Format**: `{ sentence: "{sentence_to_be_tagged}" }`
 
 Example endpoints:
 - `http://localhost:8081/v1/dictionary/en/definition/horse`
