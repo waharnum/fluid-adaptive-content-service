@@ -437,13 +437,13 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
                             entries: []
                         };
 
-                        var i;
-                        for (i = 0; i < jsonServiceResponse.results[0].lexicalEntries.length; i++) {
-                            response.entries[i] = {
-                                category: jsonServiceResponse.results[0].lexicalEntries[i].lexicalCategory,
-                                definitions: jsonServiceResponse.results[0].lexicalEntries[i].entries[0].senses[0].definitions
+                        var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
+                        fluid.each(lexicalEntries, function (element, index) {
+                            response.entries[index] = {
+                                category: element.lexicalCategory,
+                                definitions: element.entries[0].senses[0].definitions
                             };
-                        }
+                        });
 
                         that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                     }
@@ -583,51 +583,59 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.constructResponse = 
         entries: []
     };
 
-    var i, j, k, l, m, n, p;
     var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
-    for (i = 0; i < lexicalEntries.length; i++) {
+    fluid.each(lexicalEntries, function (lexicalEntryElement, lexicalEntryIndex) {
         var sensesIndex = 0;
 
-        response.entries[i] = {};
-        response.entries[i].category = lexicalEntries[i].lexicalCategory;
-        response.entries[i].senses = [];
+        response.entries[lexicalEntryIndex] = {};
 
-        var entries = lexicalEntries[i].entries;
-        for (j = 0; j < entries.length; j++) {
+        var currentResponseEntry = response.entries[lexicalEntryIndex];
 
-            var senses = entries[j].senses;
-            for (k = 0; k < senses.length; k++) {
-                response.entries[i].senses[sensesIndex] = {
+        currentResponseEntry.category = lexicalEntryElement.lexicalCategory;
+        currentResponseEntry.senses = [];
+
+        var entries = lexicalEntryElement.entries;
+
+        fluid.each(entries, function (entryElement) {
+
+            var senses = entryElement.senses;
+
+            fluid.each(senses, function (senseElement) {
+                currentResponseEntry.senses[sensesIndex] = {
                     examples: [],
                     synonyms: []
                 };
 
-                if (senses[k].examples) {
-                    for (l = 0; l < senses[k].examples.length; l++) {
-                        response.entries[i].senses[sensesIndex].examples.push(senses[k].examples[l].text);
-                    }
+                var examples = senseElement.examples;
+                if (examples) {
+                    fluid.each(examples, function (exampleElement) {
+                        currentResponseEntry.senses[sensesIndex].examples.push(exampleElement.text);
+                    });
                 }
 
-                if (senses[k].synonyms) {
-                    for (p = 0; p < senses[k].synonyms.length; p++) {
-                        response.entries[i].senses[sensesIndex].synonyms.push(senses[k].synonyms[p].text);
-                    }
+                var synonyms = senseElement.synonyms;
+                if (synonyms) {
+                    fluid.each(synonyms, function (synonymElement) {
+                        currentResponseEntry.senses[sensesIndex].synonyms.push(synonymElement.text);
+                    });
                 }
 
-                if (senses[k].subsenses) {
-                    for (m = 0; m < senses[k].subsenses.length; m++) {
-                        if (senses[k].subsenses[m].synonyms) {
-                            for (n = 0; n < senses[k].subsenses[m].synonyms.length; n++) {
-                                response.entries[i].senses[sensesIndex].synonyms.push(senses[k].subsenses[m].synonyms[n].text);
-                            }
+                var subsenses = senseElement.subsenses;
+                if (subsenses) {
+                    fluid.each(subsenses, function (subsenseElement) {
+                        var subsenseSynonyms = subsenseElement.synonyms;
+                        if (subsenseSynonyms) {
+                            fluid.each(subsenseSynonyms, function (subsenseSynonymElement) {
+                                currentResponseEntry.senses[sensesIndex].synonyms.push(subsenseSynonymElement.text);
+                            });
                         }
-                    }
+                    });
                 }
 
                 sensesIndex++;
-            }
-        }
-    }
+            });
+        });
+    });
 
     return response;
 };
@@ -728,51 +736,59 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.constructResponse = 
         entries: []
     };
 
-    var i, j, k, l, m, n, p;
     var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
-    for (i = 0; i < lexicalEntries.length; i++) {
+    fluid.each(lexicalEntries, function (lexicalEntryElement, lexicalEntryIndex) {
         var sensesIndex = 0;
 
-        response.entries[i] = {};
-        response.entries[i].category = lexicalEntries[i].lexicalCategory;
-        response.entries[i].senses = [];
+        response.entries[lexicalEntryIndex] = {};
 
-        var entries = lexicalEntries[i].entries;
-        for (j = 0; j < entries.length; j++) {
+        var currentResponseEntry = response.entries[lexicalEntryIndex];
 
-            var senses = entries[j].senses;
-            for (k = 0; k < senses.length; k++) {
-                response.entries[i].senses[sensesIndex] = {
+        currentResponseEntry.category = lexicalEntryElement.lexicalCategory;
+        currentResponseEntry.senses = [];
+
+        var entries = lexicalEntryElement.entries;
+
+        fluid.each(entries, function (entryElement) {
+
+            var senses = entryElement.senses;
+
+            fluid.each(senses, function (senseElement) {
+                currentResponseEntry.senses[sensesIndex] = {
                     examples: [],
                     antonyms: []
                 };
 
-                if (senses[k].examples) {
-                    for (l = 0; l < senses[k].examples.length; l++) {
-                        response.entries[i].senses[sensesIndex].examples.push(senses[k].examples[l].text);
-                    }
+                var examples = senseElement.examples;
+                if (examples) {
+                    fluid.each(examples, function (exampleElement) {
+                        currentResponseEntry.senses[sensesIndex].examples.push(exampleElement.text);
+                    });
                 }
 
-                if (senses[k].antonyms) {
-                    for (p = 0; p < senses[k].antonyms.length; p++) {
-                        response.entries[i].senses[sensesIndex].antonyms.push(senses[k].antonyms[p].text);
-                    }
+                var antonyms = senseElement.antonyms;
+                if (antonyms) {
+                    fluid.each(antonyms, function (synonymElement) {
+                        currentResponseEntry.senses[sensesIndex].antonyms.push(synonymElement.text);
+                    });
                 }
 
-                if (senses[k].subsenses) {
-                    for (m = 0; m < senses[k].subsenses.length; m++) {
-                        if (senses[k].subsenses[m].antonyms) {
-                            for (n = 0; n < senses[k].subsenses[m].antonyms.length; n++) {
-                                response.entries[i].senses[sensesIndex].antonyms.push(senses[k].subsenses[m].antonyms[n].text);
-                            }
+                var subsenses = senseElement.subsenses;
+                if (subsenses) {
+                    fluid.each(subsenses, function (subsenseElement) {
+                        var subsenseAntonyms = subsenseElement.antonyms;
+                        if (subsenseAntonyms) {
+                            fluid.each(subsenseAntonyms, function (subsenseSynonymElement) {
+                                currentResponseEntry.senses[sensesIndex].antonyms.push(subsenseSynonymElement.text);
+                            });
                         }
-                    }
+                    });
                 }
 
                 sensesIndex++;
-            }
-        }
-    }
+            });
+        });
+    });
 
     return response;
 };
@@ -880,60 +896,60 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructRespo
     };
 
     var entryCount = 0;
-    if (jsonServiceResponse.results[0].pronunciations) {
+    var rootPronunciations = jsonServiceResponse.results[0].pronunciations;
+    if (rootPronunciations) {
         response.entries[entryCount] = {
             category: "",
             pronunciations: []
         };
 
         var k;
-        for (k = 0; k < jsonServiceResponse.results[0].pronunciations.length; k++) {
-            response.entries[entryCount].pronunciations[k] = jsonServiceResponse.results[0].pronunciations[k];
-        }
+        fluid.each(rootPronunciations, function (element, index) {
+            response.entries[entryCount].pronunciations[index] = element;
+        });    
         entryCount++;
     }
 
-    var i, l, m, n, p, q;
     var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
-    for (i = 0; i < lexicalEntries.length; i++) {
+    fluid.each(lexicalEntries, function (lexicalEntryElement) {
         response.entries[entryCount] = {
-            category: lexicalEntries[i].lexicalCategory,
+            category: lexicalEntryElement.lexicalCategory,
             pronunciations: []
         };
-
-        var pronunciationCount = 0;
-        var pronunciations = lexicalEntries[i].pronunciations;
+        
+        var pronunciationCount = 0, pronunciations;
+        pronunciations = lexicalEntryElement.pronunciations;
         if (pronunciations) {
-            for (l = 0; l < pronunciations.length; l++) {
-                response.entries[entryCount].pronunciations[pronunciationCount] = pronunciations[l];
+            fluid.each(pronunciations, function (pronunciationElement) {
+                response.entries[entryCount].pronunciations[pronunciationCount] = pronunciationElement;
                 pronunciationCount++;
-            }
+            });
         }
 
-        var entries = lexicalEntries[i].entries;
-        for (m = 0; m < entries.length; m++) {
-            pronunciations = entries[m].pronunciations;
+        var entries = lexicalEntryElement.entries;
+        fluid.each(entries, function (entryElement) {
+            pronunciations = entryElement.pronunciations;
             if (pronunciations) {
-                for (n = 0; n < pronunciations.length; n++) {
-                    response.entries[entryCount].pronunciations[pronunciationCount] = pronunciations[n];
+                fluid.each(pronunciations, function (pronunciationElement) {
+                    response.entries[entryCount].pronunciations[pronunciationCount] = pronunciationElement;
                     pronunciationCount++;
-                }
+                });
             }
 
-            var senses = entries[m].senses;
-            for (p = 0; p < senses.length; p++) {
-                pronunciations = senses[p].pronunciations;
+            var senses = entryElement.senses;
+            fluid.each(senses, function (senseElement) {
+                pronunciations = senseElement.pronunciations;
                 if (pronunciations) {
-                    for (q = 0; q < pronunciations.length; q++) {
-                        response.entries[entryCount].pronunciations[pronunciationCount] = pronunciations[q];
+                    fluid.each(pronunciations, function (pronunciationElement) {
+                        response.entries[entryCount].pronunciations[pronunciationCount] = pronunciationElement;
                         pronunciationCount++;
-                    }
+                    });
                 }
-            }
-        }
+            });
+        });
 
         entryCount++;
-    }
+    });
 
     return response;
 };
