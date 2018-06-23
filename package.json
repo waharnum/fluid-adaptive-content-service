@@ -4,7 +4,7 @@
   "description": "A service to make it easier for other applications to make use other third-party services like, dictionary look-up, translation, etc. The application is in the form of a REST-like API.",
   "main": "index.js",
   "scripts": {
-    "start": "node ./v1/dictionary/server.js",
+    "start": "node ./v1/server.js",
     "test": "node ./share/dictionary/tests/all-tests.js",
     "dictionary": "node ./v1/dictionary/server.js",
     "nlp": "node ./v1/nlp/server.js"

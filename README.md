@@ -16,16 +16,24 @@ OXFORD_APP_ID=your_api_id_goes_here
 OXFORD_APP_KEY=your_api_key_goes_here
 ```
 ### Step 4 - Start the service server
-**Dictionary Service Server**\
+- **All Services together**\
+When at the root of the repository, run
+```
+npm start
+```
+This will run all the endpoints, from all the services, at port 8080
+- **Dictionary Service Server**\
 When at the root of the repository, run
 ```
 npm run dictionary
 ```
-**NLP Service Server**\
+This will run all the dictionary service endpoints, at port 8081
+- **NLP Service Server**\
 When at the root of the repository, run
 ```
 npm run nlp
 ```
+This will run all the nlp service endpoints, at port 8082
 
 When the server starts, it is ready to accept requests at the available endpoints.
 
