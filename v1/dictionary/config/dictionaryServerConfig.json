@@ -48,27 +48,27 @@
                                       "method":"get"
                                   },
                                   "wikiSynonymsHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.synonyms",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided",
                                       "route":"/:version/dictionary/wiktionary/:language/synonyms/:word",
                                       "method":"get"
                                   },
                                   "wikiAntonymsHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.antonyms",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided",
                                       "route":"/:version/dictionary/wiktionary/:language/antonyms/:word",
                                       "method":"get"
                                   },
                                   "wikiPronunciationsHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided",
                                       "route":"/:version/dictionary/wiktionary/:language/pronunciations/:word",
                                       "method":"get"
                                   },
                                   "wikiFrequencyHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.frequency",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided",
                                       "route":"/:version/dictionary/wiktionary/:language/frequency/:word",
                                       "method":"get"
                                   },
                                   "wikiExtendedFrequencyHandler":{
-                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.frequency",
+                                      "type":"adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided",
                                       "route":"/:version/dictionary/wiktionary/:language/frequency/:word/:lexicalCategory",
                                       "method":"get"
                                   },

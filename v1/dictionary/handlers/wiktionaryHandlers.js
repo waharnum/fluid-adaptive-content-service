@@ -125,107 +125,30 @@ adaptiveContentServices.handlers.dictionary.wiktionary.definition.requiredData =
     return promise;
 };
 
-//Wiktionary synonyms grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.synonyms", {
+//Wiktionary "Service not provided" grade
+fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided", {
     gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.getSynonyms",
+            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.requiredData"
+        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.requiredData"
     }
 });
 
-//Wiktionary synonyms handler
-adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.getSynonyms = function (request, version, that) {
-    var message = "This Service doesn't provide synonyms";
+adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl = function (request, version, that) {
+    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g; //to extract name of the endpoint from the url
+    var match = endpointNameRegex.exec(request.req.originalUrl);
+
+    var message = "This Service doesn't provide " + match[1];
 
     that.sendErrorResponse(request, version, "Wiktionary", 400, message);
 };
 
-adaptiveContentServices.handlers.dictionary.wiktionary.synonyms.requiredData = function () {
-  /*
-   * Service doesn't provide synonyms
-   * So no data required
-   */
-};
-
-//Wiktionary antonyms grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.antonyms", {
-    gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
-    invokers: {
-        dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.getAntonyms",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
-        },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.requiredData"
-    }
-});
-
-//Wiktionary antonyms handler
-adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.getAntonyms = function (request, version, that) {
-    var message = "This Service doesn't provide antonyms";
-
-    that.sendErrorResponse(request, version, "Wiktionary", 400, message);
-};
-
-adaptiveContentServices.handlers.dictionary.wiktionary.antonyms.requiredData = function () {
-  /*
-   * Service doesn't provide antonyms
-   * So no data required
-   */
-};
-
-//Wiktionary pronunciations grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations", {
-    gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
-    invokers: {
-        dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.getPronunciations",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
-        },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.requiredData"
-    }
-});
-
-//Wiktionary pronunciations handler
-adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.getPronunciations = function (request, version, that) {
-    var message = "This Service doesn't provide pronunciations";
-
-    that.sendErrorResponse(request, version, "Wiktionary", 400, message);
-};
-
-adaptiveContentServices.handlers.dictionary.wiktionary.pronunciations.requiredData = function () {
-  /*
-   * Service doesn't provide pronunciations
-   * So no data required
-   */
-};
-
-
-//Wiktionary frequency grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.frequency", {
-    gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
-    invokers: {
-        dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.frequency.getFrequency",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
-        },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.frequency.requiredData"
-    }
-});
-
-//Wiktionary frequency handler
-adaptiveContentServices.handlers.dictionary.wiktionary.frequency.getFrequency = function (request, version, that) {
-    var message = "This Service doesn't provide frequency";
-
-    that.sendErrorResponse(request, version, "Wiktionary", 400, message);
-};
-
-adaptiveContentServices.handlers.dictionary.wiktionary.frequency.requiredData = function () {
-  /*
-   * Service doesn't provide frequency
-   * So no data required
-   */
+adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.requiredData = function () {
+    /*
+     * Service doesn't provide synonyms
+     * So no data required
+     */
 };
