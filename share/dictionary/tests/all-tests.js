@@ -18,12 +18,12 @@ var testIncludes = [
     // "./oxford/pronunciationsOxfordTests.js",
     // "./oxford/frequencyOxfordTests.js",
     // "./oxford/extendedFrequencyOxfordTests.js",
-    "./wiktionary/antonymsWiktionaryTests.js",
-    "./wiktionary/definitionWiktionaryTests.js",
-    "./wiktionary/synonymsWiktionaryTests.js",
-    "./wiktionary/pronunciationsWiktionaryTests.js",
-    "./wiktionary/frequencyWiktionaryTests.js",
-    "./wiktionary/extendedFrequencyWiktionaryTests.js"
+    // "./wiktionary/antonymsWiktionaryTests.js",
+    // "./wiktionary/definitionWiktionaryTests.js",
+    // "./wiktionary/synonymsWiktionaryTests.js",
+    // "./wiktionary/pronunciationsWiktionaryTests.js",
+    // "./wiktionary/frequencyWiktionaryTests.js",
+    // "./wiktionary/extendedFrequencyWiktionaryTests.js"
 ];
 
 fluid.each(testIncludes, function (path) {

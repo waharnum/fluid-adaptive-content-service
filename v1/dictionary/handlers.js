@@ -5,6 +5,8 @@ var adaptiveContentServices = fluid.registerNamespace("adaptiveContentServices")
 
 require("kettle");
 
+require("../handlerUtils");
+
 /* Abstract grade for dictionary service endpoints
  * from which other service grades will inherit
  */
@@ -20,8 +22,14 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary", {
             funcName: "adaptiveContentServices.handlers.dictionary.uriErrHandler",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        sendSuccessResponse: "adaptiveContentServices.handlers.dictionary.sendSuccessResponse",
-        sendErrorResponse: "adaptiveContentServices.handlers.dictionary.sendErrorResponse",
+        sendSuccessResponse: {
+          funcName: "adaptiveContentServices.handlerUtils.sendSuccessResponse",
+          args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Dictionary"]
+        },
+        sendErrorResponse: {
+          funcName: "adaptiveContentServices.handlerUtils.sendErrorResponse",
+          args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Dictionary"]
+        },
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented",
         checkDictionaryErrorImpl: "fluid.notImplemented"
@@ -57,33 +65,6 @@ adaptiveContentServices.handlers.dictionary.uriErrHandler = function (request, v
     else {
         return false;
     }
-};
-
-// Common function for all dictionary endpoints to send success response
-adaptiveContentServices.handlers.dictionary.sendSuccessResponse = function (request, version, serviceName, statusCode, message, jsonResponse) {
-    request.events.onSuccess.fire({
-        version: version,
-        service: {
-            name: "Dictionary",
-            source: serviceName
-        },
-        statusCode: statusCode,
-        message: message,
-        jsonResponse: jsonResponse
-    });
-};
-
-adaptiveContentServices.handlers.dictionary.sendErrorResponse = function (request, version, serviceName, statusCode, message) {
-    request.events.onError.fire({
-        version: version,
-        service: {
-            name: "Dictionary",
-            source: serviceName
-        },
-        statusCode: statusCode,
-        message: message,
-        jsonResponse: {}
-    });
 };
 
 require("./handlers/wiktionaryHandlers");
