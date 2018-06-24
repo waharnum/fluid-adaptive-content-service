@@ -23,12 +23,12 @@ fluid.defaults("adaptiveContentService.handlers.dictionary", {
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
         sendSuccessResponse: {
-          funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
-          args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Dictionary"]
+            funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Dictionary"]
         },
         sendErrorResponse: {
-          funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
-          args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Dictionary"]
+            funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Dictionary"]
         },
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented",
@@ -57,9 +57,11 @@ adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function
  */
 adaptiveContentService.handlers.dictionary.uriErrHandler = function (request, version, word, serviceName, that) {
     if (word.length > 128) {
-        var message = "Request URI too long: \"word\" can have maximum 128 characters";
+        var message = "Request URI too long: \'word\' can have maximum 128 characters";
 
-        that.sendErrorResponse(request, version, serviceName, 414, message);
+        if (that !== null) {
+            that.sendErrorResponse(request, version, serviceName, 414, message);
+        }
         return true;
     }
     else {

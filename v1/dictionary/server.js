@@ -53,27 +53,27 @@ fluid.defaults("adaptiveContentService.dictionary.serverConfig", {
                                     "method": "get"
                                 },
                                 wikiSynonymsHandler: {
-                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.synonyms",
+                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided",
                                     "route":  "/:version/dictionary/wiktionary/:language/synonyms/:word",
                                     "method": "get"
                                 },
                                 wikiAntonymsHandler: {
-                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.antonyms",
+                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided",
                                     "route":  "/:version/dictionary/wiktionary/:language/antonyms/:word",
                                     "method": "get"
                                 },
                                 wikiPronunciationsHandler: {
-                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.pronunciations",
+                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided",
                                     "route":  "/:version/dictionary/wiktionary/:language/pronunciations/:word",
                                     "method": "get"
                                 },
                                 wikiFrequencyHandler: {
-                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.frequency",
+                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided",
                                     "route":  "/:version/dictionary/wiktionary/:language/frequency/:word",
                                     "method": "get"
                                 },
                                 wikiExtendedFrequencyHandler: {
-                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.frequency",
+                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided",
                                     "route":  "/:version/dictionary/wiktionary/:language/frequency/:word/:lexicalCategory",
                                     "method": "get"
                                 },

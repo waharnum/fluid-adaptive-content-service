@@ -42,8 +42,8 @@ adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = fun
         //Default return object when error hasn"t been handled yet
         else {
             return {
-                statusCode: 500,
-                errorMessage: "The error hasn\"t been handled yet"
+                statusCode: 501,
+                errorMessage: "The error hasn't been handled yet"
             };
         }
     }
@@ -62,7 +62,8 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.definition
             funcName: "adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData"
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData",
+        constructResponse: "adaptiveContentService.handlers.dictionary.wiktionary.definition.constructResponse"
     }
 });
 
@@ -92,17 +93,9 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition =
                     //No error : Word found
                     else {
                         message = "Word Found";
-                        var jsonResponse = {
-                            word: serviceResponse.word,
-                            entries: [
-                                {
-                                    category: serviceResponse.category,
-                                    definitions: [serviceResponse.definition]
-                                }
-                            ]
-                        };
+                        var response = that.constructResponse(serviceResponse);
 
-                        that.sendSuccessResponse(request, version, "Wiktionary", 200, "Word Found", jsonResponse);
+                        that.sendSuccessResponse(request, version, "Wiktionary", 200, "Word Found", response);
                     }
                 }
             );
@@ -125,6 +118,21 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData = 
     return promise;
 };
 
+//function to construct a useful response from the data provided by the word-definition (Wiktionary) service
+adaptiveContentService.handlers.dictionary.wiktionary.definition.constructResponse = function (jsonServiceResponse) {
+    var response = {
+        word: jsonServiceResponse.word,
+        entries: [
+            {
+                category: jsonServiceResponse.category,
+                definitions: [jsonServiceResponse.definition]
+            }
+        ]
+    };
+
+    return response;
+};
+
 //Wiktionary "Service not provided" grade
 fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided", {
     gradeNames: ["adaptiveContentService.handlers.dictionary.wiktionary"],
@@ -133,17 +141,26 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.serviceNot
             funcName: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
+        getEndpointName: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.getEndpointName",
         requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.requiredData"
     }
 });
 
+//Wiktionary service not provided handler function
 adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl = function (request, version, that) {
-    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g; //to extract name of the endpoint from the url
-    var match = endpointNameRegex.exec(request.req.originalUrl);
+    var endpointName = that.getEndpointName(request.req.originalUrl);
 
-    var message = "This Service doesn't provide " + match[1];
+    var message = "This Service doesn't provide " + endpointName;
 
     that.sendErrorResponse(request, version, "Wiktionary", 400, message);
+};
+
+//function to get the endpoint name from the request url
+adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.getEndpointName = function (url) {
+    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g; //to extract name of the endpoint from the url
+    var match = endpointNameRegex.exec(url);
+
+    return match[1];
 };
 
 adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.requiredData = function () {

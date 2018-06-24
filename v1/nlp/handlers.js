@@ -14,23 +14,24 @@ fluid.defaults("adaptiveContentService.handlers.nlp.compromise.sentenceTagging",
     characterLimit: 10000,
     invokers: {
         handleRequest: {
-          funcName: "adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags",
-          args: ["{arguments}.0", "{that}"]
+            funcName: "adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags",
+            args: ["{arguments}.0", "{that}"]
         },
         sendSuccessResponse: {
-          funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
-          args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Natural Language Processing (NLP)"]
+            funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Natural Language Processing (NLP)"]
         },
         sendErrorResponse: {
-          funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
-          args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Natural Language Processing (NLP)"]
-        },
+            funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Natural Language Processing (NLP)"]
+        }
     }
 });
 
 adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags = function (request, that) {
     var version = request.req.params.version;
     var sentence = request.req.body.sentence;
+    var message;
     try {
         if (sentence) {
             if (sentence.length <= that.options.characterLimit) {
@@ -56,26 +57,26 @@ adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags = functio
                     response.tagsArray.push(tags[i].tags);
                 }
 
-                var message = "Sentence Tagged";
+                message = "Sentence Tagged";
                 that.sendSuccessResponse(request, version, "Compromise", 200, message, response);
             }
             else {
                 // Too long sentence
-                var message = "Sentence in request body should have character count less than or equal to " + that.options.characterLimit;
+                message = "Sentence in request body should have character count less than or equal to " + that.options.characterLimit;
 
                 that.sendErrorResponse(request, version, "Compromise", 413, message);
             }
         }
         else {
             // No sentence field in request body
-            var message = "Request body doesn't contain 'sentence' field";
+            message = "Request body doesn't contain 'sentence' field";
 
             that.sendErrorResponse(request, version, "Compromise", 400, message);
         }
     }
     //Error with the API code
     catch (error) {
-        var message = "Internal Server Error: " + error;
+        message = "Internal Server Error: " + error;
         that.sendErrorResponse(request, version, "Compromise", 501, message);
     }
 };
