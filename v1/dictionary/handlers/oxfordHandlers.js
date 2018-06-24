@@ -1,7 +1,7 @@
 "use strict";
 
 var fluid = require("infusion");
-var adaptiveContentServices = fluid.registerNamespace("adaptiveContentServices");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
 
@@ -10,8 +10,8 @@ var cheerio = require("cheerio");//npm package used for scrapping html responses
 require("dotenv").config();//npm package to get variables from '.env' file
 
 //Specific grade for Oxford
-fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary",
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
+    gradeNames: "adaptiveContentService.handlers.dictionary",
     authenticationOptions: {
         "app_id": "@expand:kettle.resolvers.env(OXFORD_APP_ID)",
         "app_key": "@expand:kettle.resolvers.env(OXFORD_APP_KEY)"
@@ -23,16 +23,16 @@ fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford", {
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented",
         serviceKeysImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.serviceKeys",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.serviceKeys",
             args: ["{that}"]
         },
-        checkDictionaryErrorImpl: "adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError",
-        errorMsgScrape: "adaptiveContentServices.handlers.dictionary.oxford.errorMsgScrape"
+        checkDictionaryErrorImpl: "adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError",
+        errorMsgScrape: "adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape"
     }
 });
 
 //function to return object giving oxford key and id (acquired from environment variables)
-adaptiveContentServices.handlers.dictionary.oxford.serviceKeys = function (that) {
+adaptiveContentService.handlers.dictionary.oxford.serviceKeys = function (that) {
     var appId = that.options.authenticationOptions.app_id;
     var appKey = that.options.authenticationOptions.app_key;
 
@@ -45,7 +45,7 @@ adaptiveContentServices.handlers.dictionary.oxford.serviceKeys = function (that)
 };
 
 //function  to catch the errors for oxford service
-adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError = function (serviceResponse, that) {
+adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = function (serviceResponse, that) {
     var OXFORD_ERROR_CODES = [400, 403, 404, 414, 500, 502, 503, 504];
 
     //Check if there is an error
@@ -70,7 +70,7 @@ adaptiveContentServices.handlers.dictionary.oxford.checkDictionaryError = functi
 };
 
 //function to scrape the error message from the html response given by oxford
-adaptiveContentServices.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
+adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
     var $ = cheerio.load(htmlResponse);
     var isHTML = $("h1").text(); //is the response in html
 
@@ -84,22 +84,22 @@ adaptiveContentServices.handlers.dictionary.oxford.errorMsgScrape = function (ht
 };
 
 //Oxford definition grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.definition", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary.oxford",
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
         requiredDataImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.requiredData",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         }
     }
 });
 
 //Oxford definition handler
-adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = function (request, version, word, lang, that) {
+adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = function (request, version, word, lang, that) {
     try {
 
         //Check for long URI
@@ -155,7 +155,7 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.getDefinition = fu
 };
 
 //function to get definition from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.definition.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
 
     var requestHeaders = that.serviceKeysImpl();
@@ -183,23 +183,23 @@ adaptiveContentServices.handlers.dictionary.oxford.definition.requiredData = fun
 };
 
 //Oxford synonyms grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.synonyms", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary.oxford",
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.synonyms", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
         requiredDataImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
-        constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.synonyms.constructResponse"
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse"
     }
 });
 
 //Oxford synonyms handler
-adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms = function (request, version, word, lang, that) {
+adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = function (request, version, word, lang, that) {
     try {
 
         //Check for long URI
@@ -244,7 +244,7 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.getSynonyms = functi
 };
 
 //function to get the synonyms from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
 
     var requestHeaders = that.serviceKeysImpl();
@@ -272,7 +272,7 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.requiredData = funct
 };
 
 //function to construct a useful response from the synonyms data provided by the Oxford Service
-adaptiveContentServices.handlers.dictionary.oxford.synonyms.constructResponse = function (jsonServiceResponse) {
+adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.results[0].id,
         entries: []
@@ -336,23 +336,23 @@ adaptiveContentServices.handlers.dictionary.oxford.synonyms.constructResponse = 
 };
 
 //Oxford antonyms grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.antonyms", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary.oxford",
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.antonyms", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
         requiredDataImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
-        constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.antonyms.constructResponse"
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse"
     }
 });
 
 //Oxford antonyms handler
-adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms = function (request, version, word, lang, that) {
+adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = function (request, version, word, lang, that) {
     try {
 
         //Check for long URI
@@ -397,7 +397,7 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.getAntonyms = functi
 };
 
 //function to get the antonyms from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
 
     var requestHeaders = that.serviceKeysImpl();
@@ -425,7 +425,7 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.requiredData = funct
 };
 
 //function to construct a useful response from the antonyms data provided by the Oxford Service
-adaptiveContentServices.handlers.dictionary.oxford.antonyms.constructResponse = function (jsonServiceResponse) {
+adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.results[0].id,
         entries: []
@@ -489,23 +489,23 @@ adaptiveContentServices.handlers.dictionary.oxford.antonyms.constructResponse = 
 };
 
 //Oxford pronunciations grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.pronunciations", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary.oxford",
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.pronunciations", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.pronunciations.getPronunciations",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciations",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
         requiredDataImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.pronunciations.requiredData",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
-        constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructResponse"
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructResponse"
     }
 });
 
 //Oxford pronunciations handler
-adaptiveContentServices.handlers.dictionary.oxford.pronunciations.getPronunciations = function (request, version, word, lang, that) {
+adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciations = function (request, version, word, lang, that) {
     try {
 
         //Check for long URI
@@ -556,7 +556,7 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.getPronunciati
 };
 
 //function to get the pronunciations link from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.pronunciations.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData = function (lang, word, that) {
     var promise = fluid.promise();
 
     var requestHeaders = that.serviceKeysImpl();
@@ -584,7 +584,7 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.requiredData =
 };
 
 //function to construct a useful response from the pronunciation data provided by the Oxford Service
-adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructResponse = function (jsonServiceResponse) {
+adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.results[0].id,
         entries: []
@@ -649,23 +649,23 @@ adaptiveContentServices.handlers.dictionary.oxford.pronunciations.constructRespo
 };
 
 //Oxford frequency grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.oxford.frequency", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary.oxford",
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.frequency", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.frequency.getFrequency",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
         requiredDataImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{that}"]
         },
-        constructResponse: "adaptiveContentServices.handlers.dictionary.oxford.frequency.constructResponse"
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse"
     }
 });
 
 //Oxford frquency handler
-adaptiveContentServices.handlers.dictionary.oxford.frequency.getFrequency = function (request, version, word, lang, that) {
+adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = function (request, version, word, lang, that) {
     try {
 
         //Check for long URI
@@ -711,7 +711,7 @@ adaptiveContentServices.handlers.dictionary.oxford.frequency.getFrequency = func
 };
 
 //function to get the frequency data from the oxford service
-adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, lexicalCategory, that) {
+adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, lexicalCategory, that) {
     var promise = fluid.promise();
 
     var requestHeaders = that.serviceKeysImpl();
@@ -748,7 +748,7 @@ adaptiveContentServices.handlers.dictionary.oxford.frequency.requiredData = func
 };
 
 //function to construct a useful response from the frequency data provided by the Oxford Service
-adaptiveContentServices.handlers.dictionary.oxford.frequency.constructResponse = function (jsonServiceResponse) {
+adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.result.lemma,
         frequency: jsonServiceResponse.result.frequency

@@ -1,26 +1,26 @@
 "use strict";
 
 var fluid = require("infusion");
-var adaptiveContentServices = fluid.registerNamespace("adaptiveContentServices");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
 
 var wd = require("word-definition");
 
 //Specific grade for Wiktionary
-fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary",
+fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary", {
+    gradeNames: "adaptiveContentService.handlers.dictionary",
     invokers: {
-        checkDictionaryErrorImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.checkDictionaryError",
+        checkDictionaryErrorImpl: "adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError",
         dictionaryHandlerImpl: "fluid.notImplemented",
         requiredDataImpl: "fluid.notImplemented"
     }
 });
 
 //function  to catch the errors for wiktionary service (common to all endpoints provided by wiktionary grade)
-adaptiveContentServices.handlers.dictionary.wiktionary.checkDictionaryError = function (serviceResponse) {
+adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = function (serviceResponse) {
 
-    //Check if there is an error
+  //Check if there is an error
     if (serviceResponse.err) {
 
         //Word not found
@@ -55,19 +55,19 @@ adaptiveContentServices.handlers.dictionary.wiktionary.checkDictionaryError = fu
 };
 
 //Wiktionary definition grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.definition", {
-    gradeNames: "adaptiveContentServices.handlers.dictionary.wiktionary",
+fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.definition", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.wiktionary",
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.definition.getDefinition",
+            funcName: "adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.definition.requiredData"
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData"
     }
 });
 
 //Wiktionary definition handler
-adaptiveContentServices.handlers.dictionary.wiktionary.definition.getDefinition = function (request, version, word, lang, that) {
+adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition = function (request, version, word, lang, that) {
     try {
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Wiktionary")) {
@@ -117,7 +117,7 @@ adaptiveContentServices.handlers.dictionary.wiktionary.definition.getDefinition 
 };
 
 //function to get definition from the wiktionary service
-adaptiveContentServices.handlers.dictionary.wiktionary.definition.requiredData = function (lang, word) {
+adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData = function (lang, word) {
     var promise = fluid.promise();
     wd.getDef(word, lang, null, function (data) {
         promise.resolve(data);
@@ -126,18 +126,18 @@ adaptiveContentServices.handlers.dictionary.wiktionary.definition.requiredData =
 };
 
 //Wiktionary "Service not provided" grade
-fluid.defaults("adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided", {
-    gradeNames: ["adaptiveContentServices.handlers.dictionary.wiktionary"],
+fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided", {
+    gradeNames: ["adaptiveContentService.handlers.dictionary.wiktionary"],
     invokers: {
         dictionaryHandlerImpl: {
-            funcName: "adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl",
+            funcName: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.requiredData"
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.requiredData"
     }
 });
 
-adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl = function (request, version, that) {
+adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl = function (request, version, that) {
     var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g; //to extract name of the endpoint from the url
     var match = endpointNameRegex.exec(request.req.originalUrl);
 
@@ -146,7 +146,7 @@ adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.handle
     that.sendErrorResponse(request, version, "Wiktionary", 400, message);
 };
 
-adaptiveContentServices.handlers.dictionary.wiktionary.serviceNotProvided.requiredData = function () {
+adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.requiredData = function () {
     /*
      * Service doesn't provide synonyms
      * So no data required

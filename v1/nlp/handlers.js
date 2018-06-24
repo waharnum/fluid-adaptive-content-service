@@ -1,7 +1,7 @@
 "use strict";
 
 var fluid = require("infusion");
-var adaptiveContentServices = fluid.registerNamespace("adaptiveContentServices");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
 
@@ -9,26 +9,26 @@ require("../handlerUtils");
 
 var nlp = require("compromise");//npm package that provides NLP services
 
-fluid.defaults("adaptiveContentServices.handlers.nlp.compromise.sentenceTagging", {
+fluid.defaults("adaptiveContentService.handlers.nlp.compromise.sentenceTagging", {
     gradeNames: "kettle.request.http",
     characterLimit: 10000,
     invokers: {
         handleRequest: {
-          funcName: "adaptiveContentServices.handlers.nlp.compromise.sentenceTagging.getTags",
+          funcName: "adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags",
           args: ["{arguments}.0", "{that}"]
         },
         sendSuccessResponse: {
-          funcName: "adaptiveContentServices.handlerUtils.sendSuccessResponse",
+          funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
           args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Natural Language Processing (NLP)"]
         },
         sendErrorResponse: {
-          funcName: "adaptiveContentServices.handlerUtils.sendErrorResponse",
+          funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
           args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Natural Language Processing (NLP)"]
         },
     }
 });
 
-adaptiveContentServices.handlers.nlp.compromise.sentenceTagging.getTags = function (request, that) {
+adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags = function (request, that) {
     var version = request.req.params.version;
     var sentence = request.req.body.sentence;
     try {

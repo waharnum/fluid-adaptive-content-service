@@ -1,11 +1,11 @@
 "use strict";
 
 var fluid = require("infusion");
-var adaptiveContentServices = fluid.registerNamespace("adaptiveContentServices");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
 
-fluid.defaults("adaptiveContentServices.nlp.serverConfig", {
+fluid.defaults("adaptiveContentService.nlp.serverConfig", {
     gradeNames: "fluid.component",
     components: {
         server: {
@@ -18,7 +18,7 @@ fluid.defaults("adaptiveContentServices.nlp.serverConfig", {
                         options: {
                             requestHandlers: {
                                 compromiseSentenceTaggingHandler: {
-                                    "type": "adaptiveContentServices.handlers.nlp.compromise.sentenceTagging",
+                                    "type": "adaptiveContentService.handlers.nlp.compromise.sentenceTagging",
                                     "route": "/:version/nlp/compromise/tags/",
                                     "method": "post"
                                 }
@@ -33,4 +33,4 @@ fluid.defaults("adaptiveContentServices.nlp.serverConfig", {
 
 require("./handlers.js");
 
-adaptiveContentServices.nlp.serverConfig();
+adaptiveContentService.nlp.serverConfig();
