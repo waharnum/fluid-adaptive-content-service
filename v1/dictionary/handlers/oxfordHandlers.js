@@ -73,7 +73,7 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
 adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
     var $ = cheerio.load(htmlResponse);
     var isHTML = $("h1").text(); //is the response in html
-
+    console.log(htmlResponse);
     if (isHTML) {
         var message = $("h1").text() + ": " + $("p").text();
         return message;
