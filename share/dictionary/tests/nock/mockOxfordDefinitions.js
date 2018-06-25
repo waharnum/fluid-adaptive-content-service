@@ -44,4 +44,5 @@ nock(urlBase)
 .reply(
     404,
     "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in en, es, gu, hi, lv, sw, ta</p>"
-);
+)
+.persist();
