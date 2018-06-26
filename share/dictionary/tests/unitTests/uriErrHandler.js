@@ -10,27 +10,35 @@ fluid.registerNamespace("adaptiveContentService.tests.dictionary.unitTests.uriEr
 
 require("../../../../v1/dictionary/handlers");
 
-var testWords = {
+adaptiveContentService.tests.dictionary.unitTests.uriErrHandler = function (testMessage, expectedReturnVal, testWord) {
+    var returnVal = adaptiveContentService.handlers.dictionary.uriErrHandler(null, null, testWord, null, null);
+
+    jqunit.assertEquals(testMessage, expectedReturnVal, returnVal);
+};
+
+var testWord = {
     shortWord: "short",
     longWord: "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"
 };
 
-adaptiveContentService.tests.dictionary.unitTests.uriErrHandler.uriShort = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.uriErrHandler(null, null, testWords.shortWord, null, null);
-
-    jqunit.assertEquals("Unit Test : For uriErrHandler function : Successful with short uri", false, returnVal);
+var testMessage = {
+    shortWord: "Unit Test : For uriErrHandler function : Successful with short uri",
+    longWord: "Unit Test : For uriErrHandler function : Successful with long uri"
 };
 
-adaptiveContentService.tests.dictionary.unitTests.uriErrHandler.uriLong = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.uriErrHandler(null, null, testWords.longWord, null, null);
-
-    jqunit.assertEquals("Unit Test : For uriErrHandler function : Successful with long uri", true, returnVal);
+var expectedReturnVal = {
+    shortWord: false,
+    longWord: true
 };
 
 jqunit.test(
     "Unit Test : For uriErrHandler function (Dictionary Service)",
     function () {
-        adaptiveContentService.tests.dictionary.unitTests.uriErrHandler.uriShort();
-        adaptiveContentService.tests.dictionary.unitTests.uriErrHandler.uriLong();
+
+        // for uri with short word
+        adaptiveContentService.tests.dictionary.unitTests.uriErrHandler(testMessage.shortWord, expectedReturnVal.shortWord, testWord.shortWord);
+
+        // for uri with long word
+        adaptiveContentService.tests.dictionary.unitTests.uriErrHandler(testMessage.longWord, expectedReturnVal.longWord, testWord.longWord);
     }
 );

@@ -30,50 +30,45 @@ var serviceResponse = {
     }
 };
 
-// fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
-
-// kettle.loadTestingSupport();
-
-// adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError = [{
-//     name: "Unit Test : For checkDictionaryError function (Wiktionary Service)",
-//     expect: 1,
-//     sequence: [
-//         {
-//             func: "adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.noError"
-//         }
-//     ]
-// }];
-
-adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.noError = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError(serviceResponse.noError);
-
-    jqunit.assertEquals("Unit Test : For checkDictionary function : Successful with 'no error' response", undefined, returnVal);
+var testMessage = {
+    noError: "Unit Test : For checkDictionary function : Successful with 'no error' response",
+    wrongWord: "Unit Test : For checkDictionary function : Successful with 'wrong word' response",
+    wrongLang: "Unit Test : For checkDictionary function : Successful with 'wrong language' response",
+    otherErrors: "Unit Test : For checkDictionary function : Successful with any other response"
 };
 
-adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.wrongWord = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError(serviceResponse.wrongWord);
-
-    jqunit.assertEquals("Unit Test : For checkDictionary function : Successful with 'wrong word' response", 404, returnVal.statusCode);
+var expectedReturnVal = {
+    noError: undefined,
+    wrongWord: 404,
+    wrongLang: 404,
+    otherErrors: 501
 };
 
-adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.wrongLang = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError(serviceResponse.wrongLang);
+adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError = function (serviceResponse, testMessage, expectedReturnVal) {
+    var returnVal = adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError(serviceResponse);
 
-    jqunit.assertEquals("Unit Test : For checkDictionary function : Successful with 'wrong language' response", 404, returnVal.statusCode);
-};
-
-adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.otherErrors = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError(serviceResponse.otherErrors);
-
-    jqunit.assertEquals("Unit Test : For checkDictionary function : Successful with any other response", 501, returnVal.statusCode);
+    if (returnVal) {
+        jqunit.assertEquals(testMessage, expectedReturnVal, returnVal.statusCode);
+    }
+    else {
+        jqunit.assertEquals(testMessage, expectedReturnVal, returnVal);
+    }
 };
 
 jqunit.test(
     "Unit Test : For checkDictionaryError function (Wiktionary Service)",
     function () {
-        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.noError();
-        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.wrongWord();
-        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.wrongLang();
-        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError.otherErrors();
+
+        // for 'no error' response
+        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError(serviceResponse.noError, testMessage.noError, expectedReturnVal.noError);
+
+        // for 'wrong word' error response
+        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError(serviceResponse.wrongWord, testMessage.wrongWord, expectedReturnVal.wrongWord);
+
+        // for 'wrong lang' error response
+        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError(serviceResponse.wrongLang, testMessage.wrongLang, expectedReturnVal.wrongLang);
+
+        //for all other errors response
+        adaptiveContentService.tests.dictionary.wiktionary.unitTests.checkDictionaryError(serviceResponse.otherErrors, testMessage.otherErrors, expectedReturnVal.otherErrors);
     }
 );

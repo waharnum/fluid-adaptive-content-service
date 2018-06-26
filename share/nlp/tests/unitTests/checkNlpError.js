@@ -10,6 +10,17 @@ fluid.registerNamespace("adaptiveContentService.tests.nlp.compromise.unitTests.c
 
 require("../../../../v1/nlp/handlers");
 
+adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError = function (requestSentence, characterLimit, testMessage, expectedReturnVal) {
+    var returnVal = adaptiveContentService.handlers.nlp.compromise.sentenceTagging.checkNlpError(requestSentence, characterLimit);
+
+    if (returnVal) {
+        jqunit.assertEquals(testMessage, expectedReturnVal, returnVal.statusCode);
+    }
+    else {
+        jqunit.assertEquals(testMessage, expectedReturnVal, returnVal);
+    }
+};
+
 var characterLimit = 30;
 
 var requestSentence = {
@@ -18,29 +29,29 @@ var requestSentence = {
     emptySentence: ""
 };
 
-adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError.correctSentence = function () {
-    var returnVal = adaptiveContentService.handlers.nlp.compromise.sentenceTagging.checkNlpError(requestSentence.correctSentence, characterLimit);
-
-    jqunit.assertEquals("Unit Test : For checkNlpError function : Successful with correct sentence", undefined, returnVal);
+var testMessage = {
+    correctSentence: "Unit Test : For checkNlpError function : Successful with correct sentence",
+    longSentence: "Unit Test : For checkNlpError function : Successful with long sentence",
+    emptySentence: "Unit Test : For checkNlpError function : Successful with empty sentence"
 };
 
-adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError.longSentence = function () {
-    var returnVal = adaptiveContentService.handlers.nlp.compromise.sentenceTagging.checkNlpError(requestSentence.longSentence, characterLimit);
-
-    jqunit.assertEquals("Unit Test : For checkNlpError function : Successful with long sentence", 413, returnVal.statusCode);
-};
-
-adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError.emptySentence = function () {
-    var returnVal = adaptiveContentService.handlers.nlp.compromise.sentenceTagging.checkNlpError(requestSentence.emptySentence, characterLimit);
-
-    jqunit.assertEquals("Unit Test : For checkNlpError function : Successful with empty sentence", 400, returnVal.statusCode);
+var expectedReturnVal = {
+    correctSentence: undefined,
+    longSentence: 413,
+    emptySentence: 400
 };
 
 jqunit.test(
     "Unit Test : For checkNlpError function (Compromise Service)",
     function () {
-        adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError.correctSentence();
-        adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError.longSentence();
-        adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError.emptySentence();
+
+        // for correct request sentence
+        adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError(requestSentence.correctSentence, characterLimit, testMessage.correctSentence, expectedReturnVal.correctSentence);
+
+        // for long request sentence
+        adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError(requestSentence.longSentence, characterLimit, testMessage.longSentence, expectedReturnVal.longSentence);
+
+        // for empty request sentence
+        adaptiveContentService.tests.nlp.compromise.unitTests.checkNlpError(requestSentence.emptySentence, characterLimit, testMessage.emptySentence, expectedReturnVal.emptySentence);
     }
 );

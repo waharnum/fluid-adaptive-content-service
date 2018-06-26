@@ -10,29 +10,35 @@ fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.unitTest
 
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 
+adaptiveContentService.tests.dictionary.oxford.unitTests.errorMsgScrape = function (testMessage, expectedReturnVal, errResponse) {
+    var returnVal = adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape(errResponse);
+
+    jqunit.assertEquals(testMessage, expectedReturnVal, returnVal);
+};
+
 var errResponse = {
     html: "<title>404 Not Found</title><h1>Not Found</h1><p>No entry available for 'wrongword' in 'en'</p>",
     nonHtml: "Error message not in HTML format"
 };
 
-adaptiveContentService.tests.dictionary.oxford.unitTests.errorMsgScrape.html = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape(errResponse.html);
-
-    var expectedReturnVal = "Not Found: No entry available for 'wrongword' in 'en'";
-
-    jqunit.assertEquals("Unit Test : For checkDictionary function : Successful with html error response", expectedReturnVal, returnVal);
+var testMessage = {
+    html: "Unit Test : For checkDictionary function : Successful with html error response",
+    nonHtml: "Unit Test : For checkDictionary function : Successful with nonHtml error response"
 };
 
-adaptiveContentService.tests.dictionary.oxford.unitTests.errorMsgScrape.nonHtml = function () {
-    var returnVal = adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape(errResponse.nonHtml);
-
-    jqunit.assertEquals("Unit Test : For checkDictionary function : Successful with nonHtml error response", errResponse.nonHtml, returnVal);
+var expectedReturnVal = {
+    html: "Not Found: No entry available for 'wrongword' in 'en'",
+    nonHtml: errResponse.nonHtml
 };
 
 jqunit.test(
     "Unit Test : For errorMsgScrape function (Oxford Service)",
     function () {
-        adaptiveContentService.tests.dictionary.oxford.unitTests.errorMsgScrape.html();
-        adaptiveContentService.tests.dictionary.oxford.unitTests.errorMsgScrape.nonHtml();
+
+        // for error message in html format
+        adaptiveContentService.tests.dictionary.oxford.unitTests.errorMsgScrape(testMessage.html, expectedReturnVal.html, errResponse.html);
+
+        // for error message in plain text format
+        adaptiveContentService.tests.dictionary.oxford.unitTests.errorMsgScrape(testMessage.nonHtml, expectedReturnVal.nonHtml, errResponse.nonHtml);
     }
 );
