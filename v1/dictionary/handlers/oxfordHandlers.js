@@ -45,26 +45,26 @@ adaptiveContentService.handlers.dictionary.oxford.serviceKeys = function (that) 
 };
 
 //function  to catch the errors for oxford service
-adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = function (serviceResponse, that) {
-    var OXFORD_ERROR_CODES = [400, 403, 404, 414, 500, 502, 503, 504];
+adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = function (serviceResponse) {
+    var OXFORD_ERROR_CODES = [400, 403, 404, 500, 502, 503, 504];
 
     //Check if there is an error
     if (serviceResponse.statusCode !== 200) {
-
+        
         //Handles all the errors together
         if (OXFORD_ERROR_CODES.indexOf(serviceResponse.statusCode) >= 0) {
             return {
                 statusCode: serviceResponse.statusCode,
-                errorMessage: that.errorMsgScrape(serviceResponse.body)
-            };
+                responseBody: serviceResponse.body
+            }
         }
 
         //Default return object when error hasn"t been handled yet
         else {
             return {
                 statusCode: 501,
-                errorMessage: "The error hasn\"t been handled yet"
-            };
+                responseBody: "The error hasn\'t been handled yet"
+            }
         }
     }
 };
@@ -73,7 +73,7 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
 adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
     var $ = cheerio.load(htmlResponse);
     var isHTML = $("h1").text(); //is the response in html
-    console.log(htmlResponse);
+    
     if (isHTML) {
         var message = $("h1").text() + ": " + $("p").text();
         return message;
@@ -104,20 +104,19 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
 
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse, errorContent;
+            var serviceResponse;
 
             that.requiredDataImpl(lang, word)
             .then(
                 function (result) {
                     serviceResponse = result;
-
-                    errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
-
                     var message;
+
+                    var errorContent = that.checkDictionaryErrorImpl(serviceResponse);
 
                     //Error Responses
                     if (errorContent) {
-                        message = errorContent.errorMessage;
+                        message = that.errorMsgScrape(errorContent.responseBody);
                         var statusCode = errorContent.statusCode;
 
                         that.sendErrorResponse(request, version, "Oxford", statusCode, message);

@@ -12,12 +12,14 @@ require("../handlerUtils");
  */
 fluid.defaults("adaptiveContentService.handlers.dictionary", {
     gradeNames: "kettle.request.http",
+    wordCharacterLimit: 128,
     invokers: {
         handleRequest: {
             func: "{that}.commonDictionaryDispatcher",
             args: ["{arguments}.0", "{that}.dictionaryHandlerImpl", "{that}"]
         },
         commonDictionaryDispatcher: "adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher",
+        checkWordLength: "adaptiveContentService.handlers.dictionary.checkWordLength",
         uriErrHandler: {
             funcName: "adaptiveContentService.handlers.dictionary.uriErrHandler",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
@@ -52,16 +54,24 @@ adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function
     serviceSpecificImp(request, version, word, lang, that);
 };
 
+//Checks if the word exceeds character limit (returns false if it does and true if it doesn't)
+adaptiveContentService.handlers.dictionary.checkWordLength = function (word, characterLimit) {
+    if (word.length > characterLimit) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 /* Common function for all the dictionary endpoints
  * to check for long uri
  */
 adaptiveContentService.handlers.dictionary.uriErrHandler = function (request, version, word, serviceName, that) {
-    if (word.length > 128) {
+    if (!that.checkWordLength(word, that.options.wordCharacterLimit)) {
         var message = "Request URI too long: \'word\' can have maximum 128 characters";
+        that.sendErrorResponse(request, version, serviceName, 414, message);
 
-        if (that !== null) {
-            that.sendErrorResponse(request, version, serviceName, 414, message);
-        }
         return true;
     }
     else {
