@@ -1,14 +1,12 @@
 "use strict";
 
 var fluid = require("infusion");
-// var kettle = require("kettle");
 var jqunit = require("node-jqunit");
-// require("dotenv").config();
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.nlp.compromise.unitTests.constructResponse");
 
-require("../../../../v1/nlp/handlers");
+require("../../../../../v1/nlp/handlers");
 
 var sentence = "This is correct sentence";
 var serviceTags = [

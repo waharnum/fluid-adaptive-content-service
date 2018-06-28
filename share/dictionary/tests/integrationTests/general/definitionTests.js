@@ -5,7 +5,7 @@ var kettle = require("kettle");
 require("dotenv").config();
 
 require("../../../../../index.js");
-require("../../testUtils");
+require("../../../../testUtils");
 
 var correctWord = "word",
     wrongWord = "wrongword",

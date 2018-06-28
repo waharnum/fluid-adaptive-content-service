@@ -2,12 +2,10 @@
 
 var fluid = require("infusion");
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-
-require("kettle");
-
 var makeRequest = require("request");//npm package used to make requests to third-party services used
 var cheerio = require("cheerio");//npm package used for scrapping html responses
 require("dotenv").config();//npm package to get variables from '.env' file
+require("kettle");
 
 //Specific grade for Oxford
 fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
@@ -33,12 +31,9 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
 
 //function to return object giving oxford key and id (acquired from environment variables)
 adaptiveContentService.handlers.dictionary.oxford.serviceKeys = function (that) {
-    var appId = that.options.authenticationOptions.app_id;
-    var appKey = that.options.authenticationOptions.app_key;
-
     var authHeaders = {
-        "app_id": appId,
-        "app_key": appKey
+        "app_id": that.options.authenticationOptions.app_id,
+        "app_key": that.options.authenticationOptions.app_key
     };
 
     return authHeaders;
@@ -72,12 +67,14 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
 //function to scrape the error message from the html response given by oxford
 adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
     var $ = cheerio.load(htmlResponse);
-    var isHTML = $("h1").text(); //is the response in html
+    var isHTML = $("h1").text(); //check if the response is in html
 
+    //if the error msg is in html format (oxford's format)
     if (isHTML) {
         var message = $("h1").text() + ": " + $("p").text();
         return message;
     }
+    //if the error msg is in plain text format
     else {
         return htmlResponse;
     }
@@ -91,7 +88,8 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.definition.requiredData"
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.definition.requiredData",
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse"
     }
 });
 
@@ -102,14 +100,13 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse;
-
             var requestHeaders = that.serviceKeysImpl(that);
+
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
             .then(
                 function (result) {
                     serviceResponse = result;
                     var message;
-
                     var errorContent = that.checkDictionaryErrorImpl(serviceResponse);
 
                     //Error Responses
@@ -124,18 +121,7 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
                         message = "Word Found";
 
                         var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                        var response = {
-                            word: word,
-                            entries: []
-                        };
-
-                        var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
-                        fluid.each(lexicalEntries, function (element, index) {
-                            response.entries[index] = {
-                                category: element.lexicalCategory,
-                                definitions: element.entries[0].senses[0].definitions
-                            };
-                        });
+                        var response = that.constructResponse(jsonServiceResponse);
 
                         that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                     }
@@ -176,6 +162,35 @@ adaptiveContentService.handlers.dictionary.oxford.definition.requiredData = func
     );
 
     return promise;
+};
+
+//function to construct a useful response from the data provided by the Oxford Service
+adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse = function (jsonServiceResponse) {
+    var response = {
+        word: jsonServiceResponse.results[0].id,
+        entries: []
+    };
+
+    var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
+    fluid.each(lexicalEntries, function (lexicalEntryElement, lexicalEntryIndex) {
+        response.entries[lexicalEntryIndex] = {};
+
+        response.entries[lexicalEntryIndex].category = lexicalEntryElement.lexicalCategory;
+
+        response.entries[lexicalEntryIndex].definitions = [];
+
+        var senses = lexicalEntryElement.entries[0].senses;
+        fluid.each(senses, function (senseElement) {
+            response.entries[lexicalEntryIndex].definitions = response.entries[lexicalEntryIndex].definitions.concat(senseElement.definitions);
+
+            var subsenses = senseElement.subsenses;
+            fluid.each(subsenses, function (subsenseElement) {
+                response.entries[lexicalEntryIndex].definitions = response.entries[lexicalEntryIndex].definitions.concat(subsenseElement.definitions);
+            });
+        });
+    });
+
+    return response;
 };
 
 //Oxford synonyms grade

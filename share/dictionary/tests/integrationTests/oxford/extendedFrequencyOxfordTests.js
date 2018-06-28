@@ -5,7 +5,7 @@ var kettle = require("kettle");
 require("dotenv").config();
 
 require("../../../../../index.js");
-require("../../testUtils");
+require("../../../../testUtils");
 
 require("../../nock/mockOxfordExtendedFrequency"); // providing mock data as an alternative to actual Oxford response
 

@@ -56,8 +56,8 @@ adaptiveContentService.handlers.nlp.compromise.sentenceTagging.checkNlpError = f
 // get the required data from the compromise service
 adaptiveContentService.handlers.nlp.compromise.sentenceTagging.requiredData = function (sentence) {
     var sentenceData = nlp(sentence);
-    var tags = sentenceData.out("tags");
-    return tags;
+    var tagsData = sentenceData.out("tags");
+    return tagsData;
 };
 
 adaptiveContentService.handlers.nlp.compromise.sentenceTagging.constructResponse = function (sentence, serviceTags) {
