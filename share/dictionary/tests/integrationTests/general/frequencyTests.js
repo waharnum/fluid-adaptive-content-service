@@ -4,25 +4,24 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
-require("../nock/mockOxfordExtendedFrequency"); // providing mock data as an alternative to actual Oxford response
+require("../../nock/mockOxfordFrequency"); // providing mock data as an alternative to actual Oxford response
 
 var correctWord = "play",
     correctLang = "en",
-    wrongLang = "wrong",
-    lexicalCategory = "noun";
+    wrongLang = "wrong";
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.extendedFrequency");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.frequency");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
-    name: "GET request for the Frequency (extended) dictionary endpoint",
+adaptiveContentService.tests.dictionary.general.frequency = [{
+    name: "GET request for the Frequency dictionary endpoint",
     expect: 3,
     config: {
         configName: "dictionaryServerConfig",
@@ -32,21 +31,21 @@ adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/frequency/" + correctWord + "/" + lexicalCategory,
+                path: "/v1/dictionary/" + correctLang + "/frequency/" + correctWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + wrongLang + "/frequency/" + correctWord + "/" + lexicalCategory,
+                path: "/v1/dictionary/" + wrongLang + "/frequency/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/" + lexicalCategory,
+                path: "/v1/dictionary/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -57,7 +56,7 @@ adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
     {
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Frequency (extended) test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongLangTest}.send"
@@ -65,7 +64,7 @@ adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
     {
         event: "{wrongLangTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Frequency (extended) test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{longUriTest}.send"
@@ -73,15 +72,15 @@ adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
     {
         event: "{longUriTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Frequency (extended) test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
 /*
- * No wrong word test and wrong lexical category test here
+ * No wrong word test here
  * because the frequency is returned
  * 0 for them
  */
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.extendedFrequency);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.frequency);

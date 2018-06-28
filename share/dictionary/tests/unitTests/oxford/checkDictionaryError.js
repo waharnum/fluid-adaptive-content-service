@@ -10,7 +10,7 @@ require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 
 var serviceResponse = {
     noError: {
-        statusCode: 200,
+        statusCode: 200
     },
     authFail: {
         statusCode: 403,

@@ -50,13 +50,13 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
 
     //Check if there is an error
     if (serviceResponse.statusCode !== 200) {
-        
+
         //Handles all the errors together
         if (OXFORD_ERROR_CODES.indexOf(serviceResponse.statusCode) >= 0) {
             return {
                 statusCode: serviceResponse.statusCode,
                 responseBody: serviceResponse.body
-            }
+            };
         }
 
         //Default return object when error hasn"t been handled yet
@@ -64,7 +64,7 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
             return {
                 statusCode: 501,
                 responseBody: "The error hasn\'t been handled yet"
-            }
+            };
         }
     }
 };
@@ -73,7 +73,7 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
 adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
     var $ = cheerio.load(htmlResponse);
     var isHTML = $("h1").text(); //is the response in html
-    
+
     if (isHTML) {
         var message = $("h1").text() + ": " + $("p").text();
         return message;
@@ -91,10 +91,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: {
-            funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.requiredData",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
-        }
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.definition.requiredData"
     }
 });
 
@@ -106,7 +103,8 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse;
 
-            that.requiredDataImpl(lang, word)
+            var requestHeaders = that.serviceKeysImpl(that);
+            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
             .then(
                 function (result) {
                     serviceResponse = result;
@@ -154,13 +152,12 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
 };
 
 //function to get definition from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.definition.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.definition.requiredData = function (lang, word, urlBase, requestHeaders) {
     var promise = fluid.promise();
 
-    var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word,
+            url: urlBase + "entries/" + lang + "/" + word,
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -189,10 +186,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.synonyms", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: {
-            funcName: "adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
-        },
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse"
     }
 });
@@ -205,7 +199,8 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse, errorContent;
 
-            that.requiredDataImpl(lang, word)
+            var requestHeaders = that.serviceKeysImpl(that);
+            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
             .then(
                 function (result) {
                     serviceResponse = result;
@@ -243,13 +238,12 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
 };
 
 //function to get the synonyms from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData = function (lang, word, urlBase, requestHeaders) {
     var promise = fluid.promise();
 
-    var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word + "/synonyms",
+            url: urlBase + "entries/" + lang + "/" + word + "/synonyms",
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -342,10 +336,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.antonyms", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: {
-            funcName: "adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
-        },
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse"
     }
 });
@@ -358,7 +349,8 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse, errorContent;
 
-            that.requiredDataImpl(lang, word)
+            var requestHeaders = that.serviceKeysImpl(that);
+            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
             .then(
                 function (result) {
                     serviceResponse = result;
@@ -396,13 +388,12 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
 };
 
 //function to get the antonyms from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData = function (lang, word, urlBase, requestHeaders) {
     var promise = fluid.promise();
 
-    var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word + "/antonyms",
+            url: urlBase + "entries/" + lang + "/" + word + "/antonyms",
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -495,10 +486,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.pronunciations
             funcName: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciations",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: {
-            funcName: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData",
-            args: ["{arguments}.0", "{arguments}.1", "{that}"]
-        },
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructResponse"
     }
 });
@@ -511,7 +499,8 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciatio
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse, errorContent;
 
-            that.requiredDataImpl(lang, word)
+            var requestHeaders = that.serviceKeysImpl(that);
+            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
             .then(
                 function (result) {
                     serviceResponse = result;
@@ -555,13 +544,12 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciatio
 };
 
 //function to get the pronunciations link from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData = function (lang, word, that) {
+adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData = function (lang, word, urlBase, requestHeaders) {
     var promise = fluid.promise();
 
-    var requestHeaders = that.serviceKeysImpl();
     makeRequest(
         {
-            url: that.options.serviceConfig.urlBase + "entries/" + lang + "/" + word,
+            url: urlBase + "entries/" + lang + "/" + word,
             headers: requestHeaders
         },
         function (error, response, body) {
@@ -655,10 +643,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.frequency", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: {
-            funcName: "adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{that}"]
-        },
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse"
     }
 });
@@ -672,7 +657,8 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
             var serviceResponse, errorContent;
             var lexicalCategory = request.req.params.lexicalCategory;
 
-            that.requiredDataImpl(lang, word, lexicalCategory)
+            var requestHeaders = that.serviceKeysImpl(that);
+            that.requiredDataImpl(lang, word, lexicalCategory, that.options.serviceConfig.urlBase, requestHeaders)
             .then(
                 function (result) {
                     serviceResponse = result;
@@ -710,17 +696,16 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
 };
 
 //function to get the frequency data from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, lexicalCategory, that) {
+adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, lexicalCategory, urlBase, requestHeaders) {
     var promise = fluid.promise();
 
-    var requestHeaders = that.serviceKeysImpl();
     var requestURL;
 
     if (lexicalCategory) {
-        requestURL = that.options.serviceConfig.urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
+        requestURL = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
     }
     else {
-        requestURL = that.options.serviceConfig.urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
+        requestURL = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
     }
 
     makeRequest(

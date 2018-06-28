@@ -4,10 +4,10 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
-require("../nock/mockOxfordAntonyms"); // providing mock data as an alternative to actual Oxford response
+require("../../nock/mockOxfordAntonyms"); // providing mock data as an alternative to actual Oxford response
 
 var correctWord = "play",
     wrongWord = "wrongword",
@@ -15,14 +15,14 @@ var correctWord = "play",
     wrongLang = "wrong";
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.antonyms");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.antonyms");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.general.antonyms = [{
-    name: "GET request for the Antonyms dictionary endpoint",
+adaptiveContentService.tests.dictionary.oxford.antonyms = [{
+    name: "GET request for the Antonyms dictionary endpoint of Oxford Service",
     expect: 4,
     config: {
         configName: "dictionaryServerConfig",
@@ -32,28 +32,28 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/antonyms/" + correctWord,
+                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/antonyms/" + wrongWord,
+                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/" + wrongWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary" + wrongLang + "/antonyms/" + correctWord,
+                path: "/v1/dictionary/oxford/" + wrongLang + "/antonyms/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -93,4 +93,4 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.antonyms);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.oxford.antonyms);

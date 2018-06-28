@@ -4,10 +4,10 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
-require("../nock/mockOxfordExtendedFrequency"); // providing mock data as an alternative to actual Oxford response
+require("../../nock/mockOxfordExtendedFrequency"); // providing mock data as an alternative to actual Oxford response
 
 var correctWord = "play",
     correctLang = "en",
@@ -15,14 +15,14 @@ var correctWord = "play",
     lexicalCategory = "noun";
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.extendedFrequency");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.extendedFrequency");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.oxford.extendedFrequency = [{
-    name: "GET request for the Frequency (extended) dictionary endpoint of Oxford Service",
+adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
+    name: "GET request for the Frequency (extended) dictionary endpoint",
     expect: 3,
     config: {
         configName: "dictionaryServerConfig",
@@ -32,21 +32,21 @@ adaptiveContentService.tests.dictionary.oxford.extendedFrequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/" + correctWord + "/" + lexicalCategory,
+                path: "/v1/dictionary/" + correctLang + "/frequency/" + correctWord + "/" + lexicalCategory,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/frequency/" + correctWord + "/" + lexicalCategory,
+                path: "/v1/dictionary/" + wrongLang + "/frequency/" + correctWord + "/" + lexicalCategory,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/" + lexicalCategory,
+                path: "/v1/dictionary/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/" + lexicalCategory,
                 method: "get"
             }
         }
@@ -84,4 +84,4 @@ adaptiveContentService.tests.dictionary.oxford.extendedFrequency = [{
  * 0 for them
  */
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.oxford.extendedFrequency);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.extendedFrequency);

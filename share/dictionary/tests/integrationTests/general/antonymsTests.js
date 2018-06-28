@@ -4,23 +4,25 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
-var correctWord = "word",
+require("../../nock/mockOxfordAntonyms"); // providing mock data as an alternative to actual Oxford response
+
+var correctWord = "play",
     wrongWord = "wrongword",
     correctLang = "en",
     wrongLang = "wrong";
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.definition");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.antonyms");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.general.definition = [{
-    name: "GET request for the definition dictionary endpoint",
+adaptiveContentService.tests.dictionary.general.antonyms = [{
+    name: "GET request for the Antonyms dictionary endpoint",
     expect: 4,
     config: {
         configName: "dictionaryServerConfig",
@@ -30,28 +32,28 @@ adaptiveContentService.tests.dictionary.general.definition = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/definition/" + correctWord,
+                path: "/v1/dictionary/" + correctLang + "/antonyms/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/definition/" + wrongWord,
+                path: "/v1/dictionary/" + correctLang + "/antonyms/" + wrongWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary" + wrongLang + "/definition/" + correctWord,
+                path: "/v1/dictionary" + wrongLang + "/antonyms/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + correctLang + "/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -62,7 +64,7 @@ adaptiveContentService.tests.dictionary.general.definition = [{
     {
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Definition test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Antonyms test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"
@@ -70,7 +72,7 @@ adaptiveContentService.tests.dictionary.general.definition = [{
     {
         event: "{wrongWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Definition test for wrong word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Antonyms test for wrong word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongLangTest}.send"
@@ -78,7 +80,7 @@ adaptiveContentService.tests.dictionary.general.definition = [{
     {
         event: "{wrongLangTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Definition test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Antonyms test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{longUriTest}.send"
@@ -86,9 +88,9 @@ adaptiveContentService.tests.dictionary.general.definition = [{
     {
         event: "{longUriTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Definition test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Antonyms test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.definition);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.antonyms);

@@ -4,18 +4,18 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.pronunciation");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.extendedFrequency");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.wiktionary.pronunciation = [{
-    name: "GET request for the Pronunciations dictionary endpoint of the Wiktionary Service",
+adaptiveContentService.tests.dictionary.wiktionary.extendedFrequency = [{
+    name: "GET request for the Frequency (extended) dictionary endpoint of the Wiktionary Service",
     expect: 1,
     config: {
         configName: "dictionaryServerConfig",
@@ -25,7 +25,7 @@ adaptiveContentService.tests.dictionary.wiktionary.pronunciation = [{
         serviceNotProvidedTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wiktionary/en/pronunciations/word",
+                path: "/v1/dictionary/wiktionary/en/frequency/word/noun",
                 method: "get"
             }
         }
@@ -36,9 +36,9 @@ adaptiveContentService.tests.dictionary.wiktionary.pronunciation = [{
     {
         event: "{serviceNotProvidedTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Pronunciations test for Wiktionary Service successful", 400, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency (extended) test for Wiktionary Service successful", 400, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.pronunciation);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.extendedFrequency);

@@ -4,18 +4,18 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.frequency");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.pronunciation");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.wiktionary.frequency = [{
-    name: "GET request for the Frequency dictionary endpoint of the Wiktionary Service",
+adaptiveContentService.tests.dictionary.wiktionary.pronunciation = [{
+    name: "GET request for the Pronunciations dictionary endpoint of the Wiktionary Service",
     expect: 1,
     config: {
         configName: "dictionaryServerConfig",
@@ -25,7 +25,7 @@ adaptiveContentService.tests.dictionary.wiktionary.frequency = [{
         serviceNotProvidedTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wiktionary/en/frequency/word",
+                path: "/v1/dictionary/wiktionary/en/pronunciations/word",
                 method: "get"
             }
         }
@@ -36,9 +36,9 @@ adaptiveContentService.tests.dictionary.wiktionary.frequency = [{
     {
         event: "{serviceNotProvidedTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Frequency test for Wiktionary Service successful", 400, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Pronunciations test for Wiktionary Service successful", 400, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.frequency);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.pronunciation);

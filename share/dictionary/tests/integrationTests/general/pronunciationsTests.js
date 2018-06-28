@@ -4,25 +4,25 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
-require("../nock/mockOxfordAntonyms"); // providing mock data as an alternative to actual Oxford response
+require("../../nock/mockOxfordPronunciations"); // providing mock data as an alternative to actual Oxford response
 
-var correctWord = "play",
+var correctWord = "bath",
     wrongWord = "wrongword",
     correctLang = "en",
     wrongLang = "wrong";
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.antonyms");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.pronunciations");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.oxford.antonyms = [{
-    name: "GET request for the Antonyms dictionary endpoint of Oxford Service",
+adaptiveContentService.tests.dictionary.general.pronunciations = [{
+    name: "GET request for the Pronunciations dictionary endpoint",
     expect: 4,
     config: {
         configName: "dictionaryServerConfig",
@@ -32,28 +32,28 @@ adaptiveContentService.tests.dictionary.oxford.antonyms = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/" + correctWord,
+                path: "/v1/dictionary/" + correctLang + "/pronunciations/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/" + wrongWord,
+                path: "/v1/dictionary/" + correctLang + "/pronunciations/" + wrongWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/antonyms/" + correctWord,
+                path: "/v1/dictionary/" + wrongLang + "/pronunciations/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + correctLang + "/pronunciations/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -64,7 +64,7 @@ adaptiveContentService.tests.dictionary.oxford.antonyms = [{
     {
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Antonyms test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"
@@ -72,7 +72,7 @@ adaptiveContentService.tests.dictionary.oxford.antonyms = [{
     {
         event: "{wrongWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Antonyms test for wrong word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency test for wrong word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongLangTest}.send"
@@ -80,7 +80,7 @@ adaptiveContentService.tests.dictionary.oxford.antonyms = [{
     {
         event: "{wrongLangTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Antonyms test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{longUriTest}.send"
@@ -88,9 +88,9 @@ adaptiveContentService.tests.dictionary.oxford.antonyms = [{
     {
         event: "{longUriTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Antonyms test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Frequency test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.oxford.antonyms);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.pronunciations);

@@ -4,25 +4,23 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
-require("../nock/mockOxfordPronunciations"); // providing mock data as an alternative to actual Oxford response
-
-var correctWord = "bath",
+var correctWord = "word",
     wrongWord = "wrongword",
     correctLang = "en",
     wrongLang = "wrong";
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.pronunciations");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.definition");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.oxford.pronunciations = [{
-    name: "GET request for the Pronunciations dictionary endpoint of Oxford Service",
+adaptiveContentService.tests.dictionary.general.definition = [{
+    name: "GET request for the definition dictionary endpoint",
     expect: 4,
     config: {
         configName: "dictionaryServerConfig",
@@ -32,28 +30,28 @@ adaptiveContentService.tests.dictionary.oxford.pronunciations = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/pronunciations/" + correctWord,
+                path: "/v1/dictionary/" + correctLang + "/definition/" + correctWord,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/pronunciations/" + wrongWord,
+                path: "/v1/dictionary/" + correctLang + "/definition/" + wrongWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/pronunciations/" + correctWord,
+                path: "/v1/dictionary" + wrongLang + "/definition/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/pronunciations/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + correctLang + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -64,7 +62,7 @@ adaptiveContentService.tests.dictionary.oxford.pronunciations = [{
     {
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Pronunciations test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"
@@ -72,7 +70,7 @@ adaptiveContentService.tests.dictionary.oxford.pronunciations = [{
     {
         event: "{wrongWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Pronunciations test for correct word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for wrong word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongLangTest}.send"
@@ -80,7 +78,7 @@ adaptiveContentService.tests.dictionary.oxford.pronunciations = [{
     {
         event: "{wrongLangTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Pronunciations test for correct word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{longUriTest}.send"
@@ -88,9 +86,9 @@ adaptiveContentService.tests.dictionary.oxford.pronunciations = [{
     {
         event: "{longUriTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Pronunciations test for correct word successful", 414, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.oxford.pronunciations);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.definition);

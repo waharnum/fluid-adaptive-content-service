@@ -4,25 +4,18 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
-
-require("../nock/mockOxfordSynonyms"); // providing mock data as an alternative to actual Oxford response
-
-var correctWord = "play",
-    wrongWord = "wrongword",
-    correctLang = "en",
-    wrongLang = "wrong";
+require("../../../../../index.js");
+require("../../testUtils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.synonyms");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.definition");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.oxford.synonyms = [{
-    name: "GET request for the Synonyms dictionary endpoint of Oxford Service",
+adaptiveContentService.tests.dictionary.wiktionary.definition = [{
+    name: "GET request for the definition dictionary endpoint",
     expect: 4,
     config: {
         configName: "dictionaryServerConfig",
@@ -32,28 +25,28 @@ adaptiveContentService.tests.dictionary.oxford.synonyms = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/" + correctWord,
+                path: "/v1/dictionary/wiktionary/en/definition/word",
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/" + wrongWord,
+                path: "/v1/dictionary/wiktionary/en/definition/wrongword",
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/synonyms/" + correctWord,
+                path: "/v1/dictionary/wiktionary/wrong/definition/word",
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/wiktionary/en/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -64,7 +57,7 @@ adaptiveContentService.tests.dictionary.oxford.synonyms = [{
     {
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Synonyms test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"
@@ -72,7 +65,7 @@ adaptiveContentService.tests.dictionary.oxford.synonyms = [{
     {
         event: "{wrongWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Synonyms test for correct word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for wrong word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongLangTest}.send"
@@ -80,7 +73,7 @@ adaptiveContentService.tests.dictionary.oxford.synonyms = [{
     {
         event: "{wrongLangTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Synonyms test for correct word successful", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for unsupported language successful", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{longUriTest}.send"
@@ -88,9 +81,9 @@ adaptiveContentService.tests.dictionary.oxford.synonyms = [{
     {
         event: "{longUriTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Synonyms test for correct word successful", 414, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Definition test for long uri successful", 414, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.oxford.synonyms);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.definition);

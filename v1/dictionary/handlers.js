@@ -62,7 +62,7 @@ adaptiveContentService.handlers.dictionary.checkWordLength = function (word, cha
     else {
         return true;
     }
-}
+};
 
 /* Common function for all the dictionary endpoints
  * to check for long uri

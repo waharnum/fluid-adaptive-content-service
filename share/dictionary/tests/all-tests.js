@@ -6,24 +6,24 @@ var kettle = require("kettle");
 kettle.loadTestingSupport();
 
 var testIncludes = [
-    "./general/antonymsTests.js",
-    "./general/definitionTests.js",
-    "./general/synonymsTests.js",
-    "./general/pronunciationsTests.js",
-    "./general/frequencyTests.js",
-    "./general/extendedFrequencyTests.js",
-    "./oxford/antonymsOxfordTests.js",
-    "./oxford/definitionOxfordTests.js",
-    "./oxford/synonymsOxfordTests.js",
-    "./oxford/pronunciationsOxfordTests.js",
-    "./oxford/frequencyOxfordTests.js",
-    "./oxford/extendedFrequencyOxfordTests.js",
-    "./wiktionary/antonymsWiktionaryTests.js",
-    "./wiktionary/definitionWiktionaryTests.js",
-    "./wiktionary/synonymsWiktionaryTests.js",
-    "./wiktionary/pronunciationsWiktionaryTests.js",
-    "./wiktionary/frequencyWiktionaryTests.js",
-    "./wiktionary/extendedFrequencyWiktionaryTests.js"
+    "./integrationTests/general/antonymsTests.js",
+    "./integrationTests/general/definitionTests.js",
+    "./integrationTests/general/synonymsTests.js",
+    "./integrationTests/general/pronunciationsTests.js",
+    "./integrationTests/general/frequencyTests.js",
+    "./integrationTests/general/extendedFrequencyTests.js",
+    "./integrationTests/oxford/antonymsOxfordTests.js",
+    "./integrationTests/oxford/definitionOxfordTests.js",
+    "./integrationTests/oxford/synonymsOxfordTests.js",
+    "./integrationTests/oxford/pronunciationsOxfordTests.js",
+    "./integrationTests/oxford/frequencyOxfordTests.js",
+    "./integrationTests/oxford/extendedFrequencyOxfordTests.js",
+    "./integrationTests/wiktionary/antonymsWiktionaryTests.js",
+    "./integrationTests/wiktionary/definitionWiktionaryTests.js",
+    "./integrationTests/wiktionary/synonymsWiktionaryTests.js",
+    "./integrationTests/wiktionary/pronunciationsWiktionaryTests.js",
+    "./integrationTests/wiktionary/frequencyWiktionaryTests.js",
+    "./integrationTests/wiktionary/extendedFrequencyWiktionaryTests.js"
 ];
 
 fluid.each(testIncludes, function (path) {

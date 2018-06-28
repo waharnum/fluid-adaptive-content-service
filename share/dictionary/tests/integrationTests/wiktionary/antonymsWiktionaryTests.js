@@ -4,18 +4,18 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.synonyms");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.antonyms");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.wiktionary.synonyms = [{
-    name: "GET request for the Synonyms dictionary endpoint of the Wiktionary Service",
+adaptiveContentService.tests.dictionary.wiktionary.antonyms = [{
+    name: "GET request for the Antonyms dictionary endpoint of the Wiktionary Service",
     expect: 1,
     config: {
         configName: "dictionaryServerConfig",
@@ -25,7 +25,7 @@ adaptiveContentService.tests.dictionary.wiktionary.synonyms = [{
         serviceNotProvidedTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wiktionary/en/synonyms/word",
+                path: "/v1/dictionary/wiktionary/en/antonyms/word",
                 method: "get"
             }
         }
@@ -36,9 +36,9 @@ adaptiveContentService.tests.dictionary.wiktionary.synonyms = [{
     {
         event: "{serviceNotProvidedTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Dictionary Tests : Synonyms test for Wiktionary Service successful", 400, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Dictionary Tests : Antonyms test for Wiktionary Service successful", 400, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.synonyms);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.wiktionary.antonyms);

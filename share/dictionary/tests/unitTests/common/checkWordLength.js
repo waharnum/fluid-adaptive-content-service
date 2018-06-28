@@ -8,7 +8,7 @@ var jqunit = require("node-jqunit");
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.unitTests.checkWordLength");
 
-require("../../../../v1/dictionary/handlers");
+require("../../../../../v1/dictionary/handlers");
 
 adaptiveContentService.tests.dictionary.unitTests.checkWordLength = function (testMessage, expectedReturnVal, testWord, wordCharacterLimit) {
     var returnVal = adaptiveContentService.handlers.dictionary.checkWordLength(testWord, wordCharacterLimit);

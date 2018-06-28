@@ -4,24 +4,24 @@ var fluid = require("infusion");
 var kettle = require("kettle");
 require("dotenv").config();
 
-require("../../../../index.js");
-require("../testUtils");
+require("../../../../../index.js");
+require("../../testUtils");
 
-require("../nock/mockOxfordFrequency"); // providing mock data as an alternative to actual Oxford response
+require("../../nock/mockOxfordFrequency"); // providing mock data as an alternative to actual Oxford response
 
 var correctWord = "play",
     correctLang = "en",
     wrongLang = "wrong";
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.frequency");
+fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.frequency");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-adaptiveContentService.tests.dictionary.general.frequency = [{
-    name: "GET request for the Frequency dictionary endpoint",
+adaptiveContentService.tests.dictionary.oxford.frequency = [{
+    name: "GET request for the Frequency dictionary endpoint of Oxford Service",
     expect: 3,
     config: {
         configName: "dictionaryServerConfig",
@@ -31,21 +31,21 @@ adaptiveContentService.tests.dictionary.general.frequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/frequency/" + correctWord,
+                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/" + correctWord,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + wrongLang + "/frequency/" + correctWord,
+                path: "/v1/dictionary/oxford/" + wrongLang + "/frequency/" + correctWord,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
@@ -83,4 +83,4 @@ adaptiveContentService.tests.dictionary.general.frequency = [{
  * 0 for them
  */
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.general.frequency);
+kettle.test.bootstrapServer(adaptiveContentService.tests.dictionary.oxford.frequency);
