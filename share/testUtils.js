@@ -24,28 +24,64 @@ adaptiveContentService.tests.utils.objectHasProperties = function (object, prope
         else {
             propertiesAbsent.push(property);
         }
-
-        return {
-            present: propertiesPresent,
-            absent: propertiesAbsent
-        };
     });
+
+    return {
+        present: propertiesPresent,
+        absent: propertiesAbsent
+    };
 };
 
 //for a given array of variables, sort them on the basis of whether they arrays or not
 adaptiveContentService.tests.utils.areArrays = function (entities) {
+    var arrays = [], nonArrays = [];
     fluid.each(entities, function (entity) {
-        var arrays = [], nonArrays = [];
-        if (Array.isArray(entity)) {
-            arrays.push(entity);
+        if (fluid.isArrayable(entity.value)) {
+            arrays.push(entity.name);
         }
         else {
-            nonArrays.push(entity);
+            nonArrays.push(entity.name);
         }
-
-        return {
-            arrays: arrays,
-            nonArrays: nonArrays
-        };
     });
+
+    return {
+        arrays: arrays,
+        nonArrays: nonArrays
+    };
+};
+
+//for a given array of variables, sort them on the basis of whether they plain objects or not
+adaptiveContentService.tests.utils.areObjects = function (entities) {
+    var objects = [], nonObjects = [];
+    fluid.each(entities, function (entity) {
+        if (fluid.isPlainObject(entity.value)) {
+            objects.push(entity.name);
+        }
+        else {
+            nonObjects.push(entity.name);
+        }
+    });
+
+    return {
+        objects: objects,
+        nonObjects: nonObjects
+    };
+};
+
+adaptiveContentService.tests.utils.constructEntities = function (names, values) {
+    // check if the parameters given are correct
+    if (names.length === values.length) {
+        var entities = [];
+        fluid.each(values, function (entitiyValue, index) {
+            entities.push({
+                name: names[index],
+                value: entitiyValue
+            });
+        });
+
+        return entities;
+    }
+    else {
+        jqunit.fail("\n\nError with the test code : The arrays - 'names' and 'entities' should have the same length\n");
+    }
 };
