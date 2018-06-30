@@ -172,22 +172,24 @@ adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse =
     };
 
     var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
-    fluid.each(lexicalEntries, function (lexicalEntryElement, lexicalEntryIndex) {
-        response.entries[lexicalEntryIndex] = {};
+    fluid.each(lexicalEntries, function (lexicalEntryElement) {
+        var currentResponseEntry = {};
 
-        response.entries[lexicalEntryIndex].category = lexicalEntryElement.lexicalCategory;
+        currentResponseEntry.category = lexicalEntryElement.lexicalCategory;
 
-        response.entries[lexicalEntryIndex].definitions = [];
+        currentResponseEntry.definitions = [];
 
         var senses = lexicalEntryElement.entries[0].senses;
         fluid.each(senses, function (senseElement) {
-            response.entries[lexicalEntryIndex].definitions = response.entries[lexicalEntryIndex].definitions.concat(senseElement.definitions);
+            currentResponseEntry.definitions = currentResponseEntry.definitions.concat(senseElement.definitions);
 
             var subsenses = senseElement.subsenses;
             fluid.each(subsenses, function (subsenseElement) {
-                response.entries[lexicalEntryIndex].definitions = response.entries[lexicalEntryIndex].definitions.concat(subsenseElement.definitions);
+                currentResponseEntry.definitions = currentResponseEntry.definitions.concat(subsenseElement.definitions);
             });
         });
+
+        response.entries.push(currentResponseEntry);
     });
 
     return response;
@@ -287,12 +289,8 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse = f
     };
 
     var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
-    fluid.each(lexicalEntries, function (lexicalEntryElement, lexicalEntryIndex) {
-        var sensesIndex = 0;
-
-        response.entries[lexicalEntryIndex] = {};
-
-        var currentResponseEntry = response.entries[lexicalEntryIndex];
+    fluid.each(lexicalEntries, function (lexicalEntryElement) {
+        var currentResponseEntry = {};
 
         currentResponseEntry.category = lexicalEntryElement.lexicalCategory;
         currentResponseEntry.senses = [];
@@ -304,7 +302,7 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse = f
             var senses = entryElement.senses;
 
             fluid.each(senses, function (senseElement) {
-                currentResponseEntry.senses[sensesIndex] = {
+                var currentSenseEntry = {
                     examples: [],
                     synonyms: []
                 };
@@ -312,14 +310,14 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse = f
                 var examples = senseElement.examples;
                 if (examples) {
                     fluid.each(examples, function (exampleElement) {
-                        currentResponseEntry.senses[sensesIndex].examples.push(exampleElement.text);
+                        currentSenseEntry.examples.push(exampleElement.text);
                     });
                 }
 
                 var synonyms = senseElement.synonyms;
                 if (synonyms) {
                     fluid.each(synonyms, function (synonymElement) {
-                        currentResponseEntry.senses[sensesIndex].synonyms.push(synonymElement.text);
+                        currentSenseEntry.synonyms.push(synonymElement.text);
                     });
                 }
 
@@ -329,15 +327,17 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse = f
                         var subsenseSynonyms = subsenseElement.synonyms;
                         if (subsenseSynonyms) {
                             fluid.each(subsenseSynonyms, function (subsenseSynonymElement) {
-                                currentResponseEntry.senses[sensesIndex].synonyms.push(subsenseSynonymElement.text);
+                                currentSenseEntry.synonyms.push(subsenseSynonymElement.text);
                             });
                         }
                     });
                 }
 
-                sensesIndex++;
+                currentResponseEntry.senses.push(currentSenseEntry);
             });
         });
+
+        response.entries.push(currentResponseEntry);
     });
 
     return response;
@@ -437,12 +437,8 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse = f
     };
 
     var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
-    fluid.each(lexicalEntries, function (lexicalEntryElement, lexicalEntryIndex) {
-        var sensesIndex = 0;
-
-        response.entries[lexicalEntryIndex] = {};
-
-        var currentResponseEntry = response.entries[lexicalEntryIndex];
+    fluid.each(lexicalEntries, function (lexicalEntryElement) {
+        var currentResponseEntry = {};
 
         currentResponseEntry.category = lexicalEntryElement.lexicalCategory;
         currentResponseEntry.senses = [];
@@ -454,7 +450,7 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse = f
             var senses = entryElement.senses;
 
             fluid.each(senses, function (senseElement) {
-                currentResponseEntry.senses[sensesIndex] = {
+                var currentSenseEntry = {
                     examples: [],
                     antonyms: []
                 };
@@ -462,14 +458,14 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse = f
                 var examples = senseElement.examples;
                 if (examples) {
                     fluid.each(examples, function (exampleElement) {
-                        currentResponseEntry.senses[sensesIndex].examples.push(exampleElement.text);
+                        currentSenseEntry.examples.push(exampleElement.text);
                     });
                 }
 
                 var antonyms = senseElement.antonyms;
                 if (antonyms) {
                     fluid.each(antonyms, function (synonymElement) {
-                        currentResponseEntry.senses[sensesIndex].antonyms.push(synonymElement.text);
+                        currentSenseEntry.antonyms.push(synonymElement.text);
                     });
                 }
 
@@ -479,15 +475,17 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse = f
                         var subsenseAntonyms = subsenseElement.antonyms;
                         if (subsenseAntonyms) {
                             fluid.each(subsenseAntonyms, function (subsenseSynonymElement) {
-                                currentResponseEntry.senses[sensesIndex].antonyms.push(subsenseSynonymElement.text);
+                                currentSenseEntry.antonyms.push(subsenseSynonymElement.text);
                             });
                         }
                     });
                 }
 
-                sensesIndex++;
+                currentResponseEntry.senses.push(currentSenseEntry);
             });
         });
+
+        response.entries.push(currentResponseEntry);
     });
 
     return response;
@@ -592,33 +590,31 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructRespon
         entries: []
     };
 
-    var entryCount = 0;
     var rootPronunciations = jsonServiceResponse.results[0].pronunciations;
     if (rootPronunciations) {
-        response.entries[entryCount] = {
+        var currentResponseEntry = {
             category: "",
             pronunciations: []
         };
 
-        fluid.each(rootPronunciations, function (element, index) {
-            response.entries[entryCount].pronunciations[index] = element;
+        fluid.each(rootPronunciations, function (element) {
+            currentResponseEntry.pronunciations.push(element);
         });
-        entryCount++;
+
+        response.entries.push(currentResponseEntry);
     }
 
     var lexicalEntries = jsonServiceResponse.results[0].lexicalEntries;
     fluid.each(lexicalEntries, function (lexicalEntryElement) {
-        response.entries[entryCount] = {
+        var currentResponseEntry = {
             category: lexicalEntryElement.lexicalCategory,
             pronunciations: []
         };
 
-        var pronunciationCount = 0, pronunciations;
-        pronunciations = lexicalEntryElement.pronunciations;
+        var pronunciations = lexicalEntryElement.pronunciations;
         if (pronunciations) {
             fluid.each(pronunciations, function (pronunciationElement) {
-                response.entries[entryCount].pronunciations[pronunciationCount] = pronunciationElement;
-                pronunciationCount++;
+                currentResponseEntry.pronunciations.push(pronunciationElement);
             });
         }
 
@@ -627,8 +623,7 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructRespon
             pronunciations = entryElement.pronunciations;
             if (pronunciations) {
                 fluid.each(pronunciations, function (pronunciationElement) {
-                    response.entries[entryCount].pronunciations[pronunciationCount] = pronunciationElement;
-                    pronunciationCount++;
+                    currentResponseEntry.pronunciations.push(pronunciationElement);
                 });
             }
 
@@ -637,14 +632,13 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructRespon
                 pronunciations = senseElement.pronunciations;
                 if (pronunciations) {
                     fluid.each(pronunciations, function (pronunciationElement) {
-                        response.entries[entryCount].pronunciations[pronunciationCount] = pronunciationElement;
-                        pronunciationCount++;
+                        currentResponseEntry.pronunciations.push(pronunciationElement);
                     });
                 }
             });
         });
 
-        entryCount++;
+        response.entries.push(currentResponseEntry);
     });
 
     return response;
