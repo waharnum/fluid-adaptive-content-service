@@ -24,6 +24,10 @@ adaptiveContentService.tests.utils.logAjvErrors = function (errors) {
         else if (error.keyword === "type") {
             fluid.log("'data" + error.dataPath + "' SHOULD be of the type " + error.params.type.toUpperCase());
         }
+        //default
+        else {
+            fluid.log("AJV error : \n" + error.message);
+        }
     });
 };
 
