@@ -181,12 +181,16 @@ adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse =
 
         var senses = lexicalEntryElement.entries[0].senses;
         fluid.each(senses, function (senseElement) {
-            currentResponseEntry.definitions = currentResponseEntry.definitions.concat(senseElement.definitions);
+            if (senseElement.definitions) {
+                currentResponseEntry.definitions = currentResponseEntry.definitions.concat(senseElement.definitions);
+            }
 
             var subsenses = senseElement.subsenses;
-            fluid.each(subsenses, function (subsenseElement) {
-                currentResponseEntry.definitions = currentResponseEntry.definitions.concat(subsenseElement.definitions);
-            });
+            if (subsenses) {
+                fluid.each(subsenses, function (subsenseElement) {
+                    currentResponseEntry.definitions = currentResponseEntry.definitions.concat(subsenseElement.definitions);
+                });
+            }
         });
 
         response.entries.push(currentResponseEntry);

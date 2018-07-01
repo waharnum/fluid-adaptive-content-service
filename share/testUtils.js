@@ -2,8 +2,8 @@
 
 var fluid = require("infusion");
 require("kettle");
-
 var jqunit = require("node-jqunit");
+var Ajv = require("ajv");//npm package for JSON scheme validation
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.utils");
@@ -14,74 +14,40 @@ adaptiveContentService.tests.utils.assertStatusCode = function (message, expecte
     jqunit.assertEquals(message, expectedStatusCode, responseStatusCode);
 };
 
-//for a given object and array of properties, sort the array into properties that are present in the object and the ones which are absent
-adaptiveContentService.tests.utils.objectHasProperties = function (object, properties) {
-    var propertiesPresent = [], propertiesAbsent = [];
-    fluid.each(properties, function (property) {
-        if (object.hasOwnProperty(property)) {
-            propertiesPresent.push(property);
+adaptiveContentService.tests.utils.logAjvErrors = function (errors) {
+    fluid.each(errors, function (error) {
+        // property required but not found
+        if (error.keyword === "required") {
+            fluid.log("'" + error.params.missingProperty + "' is a REQUIRED property, but was absent");
         }
-        else {
-            propertiesAbsent.push(property);
-        }
-    });
-
-    return {
-        present: propertiesPresent,
-        absent: propertiesAbsent
-    };
-};
-
-//for a given array of variables, sort them on the basis of whether they arrays or not
-adaptiveContentService.tests.utils.areArrays = function (entities) {
-    var arrays = [], nonArrays = [];
-    fluid.each(entities, function (entity) {
-        if (fluid.isArrayable(entity.value)) {
-            arrays.push(entity.name);
-        }
-        else {
-            nonArrays.push(entity.name);
+        // property of unexpected type
+        else if (error.keyword === "type") {
+            fluid.log("'data" + error.dataPath + "' SHOULD be of the type " + error.params.type.toUpperCase());
         }
     });
-
-    return {
-        arrays: arrays,
-        nonArrays: nonArrays
-    };
 };
 
-//for a given array of variables, sort them on the basis of whether they plain objects or not
-adaptiveContentService.tests.utils.areObjects = function (entities) {
-    var objects = [], nonObjects = [];
-    fluid.each(entities, function (entity) {
-        if (fluid.isPlainObject(entity.value)) {
-            objects.push(entity.name);
-        }
-        else {
-            nonObjects.push(entity.name);
-        }
-    });
+adaptiveContentService.tests.utils.contractTestHandler = function (data, schema, allSchemas, successMessage, failureMessage) {
+    var ajv = new Ajv({ allErrors: true, schemas: allSchemas });
+    require("ajv-merge-patch")(ajv);
+    var validate = ajv.compile(schema);
+    var valid = validate(data);
 
-    return {
-        objects: objects,
-        nonObjects: nonObjects
-    };
-};
-
-adaptiveContentService.tests.utils.constructEntities = function (names, values) {
-    // check if the parameters given are correct
-    if (names.length === values.length) {
-        var entities = [];
-        fluid.each(values, function (entitiyValue, index) {
-            entities.push({
-                name: names[index],
-                value: entitiyValue
-            });
-        });
-
-        return entities;
+    //if the data from the service follows the expected schema
+    if (valid) {
+        jqunit.assert("\n\n" + successMessage + "\n");
     }
+    //if the data from the service does not follow the expected schema
     else {
-        jqunit.fail("\n\nError with the test code : The arrays - 'names' and 'entities' should have the same length\n");
+        var errors = validate.errors;
+        adaptiveContentService.tests.utils.logAjvErrors(errors);
+        jqunit.fail("\n\n" + failureMessage + "\n");
     }
+};
+
+adaptiveContentService.tests.utils.getOxfordRequestHeaders = function () {
+    return {
+        "app_id": process.env.OXFORD_APP_ID,
+        "app_key": process.env.OXFORD_APP_KEY
+    };
 };
