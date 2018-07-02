@@ -15,6 +15,7 @@ nock(urlBase)
     {
         results: [
             {
+                id: correctWord,
                 lexicalEntries: [
                     {
                         lexicalCategory: "Verb",
@@ -23,7 +24,14 @@ nock(urlBase)
                                 senses: [
                                     {
                                         definitions: [
-                                            "engage in activity for enjoyment and recreation rather than a serious or practical purpose"
+                                            "mock definition 1"
+                                        ],
+                                        subsenses: [
+                                            {
+                                                definitions: [
+                                                    "mock definition 2"
+                                                ]
+                                            }
                                         ]
                                     }
                                 ]

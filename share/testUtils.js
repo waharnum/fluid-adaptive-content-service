@@ -14,6 +14,12 @@ adaptiveContentService.tests.utils.assertStatusCode = function (message, expecte
     jqunit.assertEquals(message, expectedStatusCode, responseStatusCode);
 };
 
+adaptiveContentService.tests.utils.unitTestsDictionaryConstructResponse = function (functionToTested, testData, expectedReturnVal, message) {
+    var returnVal = functionToTested(testData);
+
+    jqunit.assertDeepEq(message, expectedReturnVal, returnVal);
+};
+
 adaptiveContentService.tests.utils.logAjvErrors = function (errors) {
     fluid.each(errors, function (error) {
         // property required but not found
@@ -49,6 +55,7 @@ adaptiveContentService.tests.utils.contractTestHandler = function (data, schema,
     }
 };
 
+//TODO: figure out how to use kettle resolvers here
 adaptiveContentService.tests.utils.getOxfordRequestHeaders = function () {
     return {
         "app_id": process.env.OXFORD_APP_ID,

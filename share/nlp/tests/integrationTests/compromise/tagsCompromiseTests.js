@@ -21,6 +21,8 @@ var testRequestBody = {
     emptySentence: {}
 };
 
+//TODO: figure how to test for long sentences
+
 adaptiveContentService.tests.nlp.compromise.sentenceTagging = [{
     name: "GET request for the Sentence Tagging NLP endpoint",
     expect: 2,

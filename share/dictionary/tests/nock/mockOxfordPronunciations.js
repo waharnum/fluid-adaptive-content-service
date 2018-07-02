@@ -28,6 +28,7 @@ nock(urlBase)
                 ],
                 lexicalEntries: [
                     {
+                        lexicalCategory: "Noun",
                         pronunciations: [
                             {
                                 "audioFile": "http://audio.oxforddictionaries.com/en/mp3/bath_gb_1.mp3",
