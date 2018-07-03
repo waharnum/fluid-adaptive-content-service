@@ -18,7 +18,7 @@ module.exports = {
         }
     },
     wrongLang: {
-      "$ref": "/schemas/commonOxfordErrorSchema.json"
+        "$ref": "/schemas/commonOxfordErrorSchema.json"
     }
 };
 

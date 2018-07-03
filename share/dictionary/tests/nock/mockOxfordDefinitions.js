@@ -8,49 +8,22 @@ var correctWord = "word",
 
 var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 
+var mockDefinitionsData = require("../mockData/oxford/definitions")(correctWord, wrongWord);// file holding object with mock data
+
 nock(urlBase)
 .get("/entries/" + correctLang + "/" + correctWord)
 .reply(
     200,
-    {
-        results: [
-            {
-                id: correctWord,
-                lexicalEntries: [
-                    {
-                        lexicalCategory: "Verb",
-                        entries: [
-                            {
-                                senses: [
-                                    {
-                                        definitions: [
-                                            "mock definition 1"
-                                        ],
-                                        subsenses: [
-                                            {
-                                                definitions: [
-                                                    "mock definition 2"
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
+    mockDefinitionsData.correctWord
 )
 .get("/entries/" + correctLang + "/" + wrongWord)
 .reply(
     404,
-    "<title>404 Not Found</title><h1>Not Found</h1><p>No entry available for 'wrongword' in 'en'</p>"
+    mockDefinitionsData.wrongWord
 )
 .get("/entries/" + wrongLang + "/" + correctWord)
 .reply(
     404,
-    "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in en, es, gu, hi, lv, sw, ta</p>"
+    mockDefinitionsData.wrongLang
 )
 .persist();

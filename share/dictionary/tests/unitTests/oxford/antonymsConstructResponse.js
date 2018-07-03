@@ -13,45 +13,8 @@ var testMessage = "Unit Test : For constructResponse function of antonyms endpoi
 var constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var jsonServiceData =     {
-    results: [
-        {
-            id: testWord,
-            lexicalEntries: [
-                {
-                    entries: [
-                        {
-                            senses: [
-                                {
-                                    antonyms: [
-                                        {
-                                            text: "mock antonym 1"
-                                        }
-                                    ],
-                                    examples: [
-                                        {
-                                            text: "mock example 1"
-                                        }
-                                    ],
-                                    subsenses: [
-                                        {
-                                            antonyms: [
-                                                {
-                                                    text: "mock antonym 2"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    lexicalCategory: "Noun"
-                }
-            ]
-        }
-    ]
-};
+var mockAntonymsData = require("../../mockData/oxford/antonyms")(testWord, null);// file holding object with mock data
+var jsonServiceData = mockAntonymsData.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {
@@ -66,6 +29,15 @@ var expectedReturnVal = {
                         "mock antonym 1",
                         "mock antonym 2"
                     ]
+                }
+            ]
+        },
+        {
+            category: "Verb",
+            senses: [
+                {
+                    examples: [],
+                    antonyms: [ "mock antonym 3" ]
                 }
             ]
         }

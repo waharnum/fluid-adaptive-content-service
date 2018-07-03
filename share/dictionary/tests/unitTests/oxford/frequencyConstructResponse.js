@@ -9,39 +9,32 @@ require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 require("../../../../testUtils");
 
 var testWord = "play";
+var testFrequency = 123;
+var testLexicalCategory = "noun";
 var testMessage = {
     frequency: "Unit Test : For constructResponse function of frequency endpoint : Successful (Oxford Service)",
-    extendedFrequency: "Unit Test : For constructResponse function of extended frequency endpoint : Successful (Oxford Service)" 
+    extendedFrequency: "Unit Test : For constructResponse function of extended frequency endpoint : Successful (Oxford Service)"
 };
 var constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse; //from oxfordHandlers.js
 
 // mock service data
+var mockFrequencyData = require("../../mockData/oxford/frequency")(testWord, testFrequency);// file holding object with mock data (frequency)
+var mockExtendedFrequencyData = require("../../mockData/oxford/extendedFrequency")(testWord, testFrequency, testLexicalCategory);// file holding object with mock data
 var jsonServiceData = {
-    frequency: {
-        result: {
-            frequency: 1,
-            lemma: testWord
-        }
-    },
-    extendedFrequency: {
-        result: {
-            frequency: 1,
-            lemma: testWord,
-            lexicalCategory: "noun"
-        }
-    }
+    frequency: mockFrequencyData.correctWord,
+    extendedFrequency: mockExtendedFrequencyData.correctWord
 };
 
 // expected return value from the function being tested
 var expectedReturnVal = {
     frequency: {
         word: testWord,
-        frequency: 1
+        frequency: testFrequency
     },
     extendedFrequency: {
         word: testWord,
-        frequency: 1,
-        lexicalCategory: "noun"
+        frequency: testFrequency,
+        lexicalCategory: testLexicalCategory
     }
 };
 

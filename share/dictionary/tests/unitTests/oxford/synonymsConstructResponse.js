@@ -13,45 +13,8 @@ var testMessage = "Unit Test : For constructResponse function of synonyms endpoi
 var constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var jsonServiceData = {
-    results: [
-        {
-            id: testWord,
-            lexicalEntries: [
-                {
-                    entries: [
-                        {
-                            senses: [
-                                {
-                                    synonyms: [
-                                        {
-                                            text: "mock synonym 1"
-                                        }
-                                    ],
-                                    examples: [
-                                        {
-                                            text: "mock example 1"
-                                        }
-                                    ],
-                                    subsenses: [
-                                        {
-                                            synonyms: [
-                                                {
-                                                    text: "mock synonym 2"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    lexicalCategory: "Noun"
-                }
-            ]
-        }
-    ]
-};
+var mockSynonymsData = require("../../mockData/oxford/synonyms")(testWord, null);// file holding object with mock data
+var jsonServiceData = mockSynonymsData.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {
@@ -66,6 +29,15 @@ var expectedReturnVal = {
                         "mock synonym 1",
                         "mock synonym 2"
                     ]
+                }
+            ]
+        },
+        {
+            category: "Verb",
+            senses: [
+                {
+                    examples: [],
+                    synonyms: [ "mock synonym 3" ]
                 }
             ]
         }

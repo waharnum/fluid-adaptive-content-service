@@ -96,37 +96,35 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
 //Oxford definition handler
 adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = function (request, version, word, lang, that) {
     try {
-
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse;
             var requestHeaders = that.serviceKeysImpl(that);
 
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
-            .then(
-                function (result) {
-                    serviceResponse = result;
-                    var message;
-                    var errorContent = that.checkDictionaryErrorImpl(serviceResponse);
+                .then(
+                    function (result) {
+                        var serviceResponse = result;
+                        var message;
+                        var errorContent = that.checkDictionaryErrorImpl(serviceResponse);
 
-                    //Error Responses
-                    if (errorContent) {
-                        message = that.errorMsgScrape(errorContent.responseBody);
-                        var statusCode = errorContent.statusCode;
+                        //Error Responses
+                        if (errorContent) {
+                            message = that.errorMsgScrape(errorContent.responseBody);
+                            var statusCode = errorContent.statusCode;
 
-                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                        }
+                        //No error : Word found
+                        else {
+                            message = "Word Found";
+
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
+                            var response = that.constructResponse(jsonServiceResponse);
+
+                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        }
                     }
-                    //No error : Word found
-                    else {
-                        message = "Word Found";
-
-                        var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                        var response = that.constructResponse(jsonServiceResponse);
-
-                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                    }
-                }
-            );
+                );
         }
     }
     //Error with the API code
@@ -179,18 +177,21 @@ adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse =
 
         currentResponseEntry.definitions = [];
 
-        var senses = lexicalEntryElement.entries[0].senses;
-        fluid.each(senses, function (senseElement) {
-            if (senseElement.definitions) {
-                currentResponseEntry.definitions = currentResponseEntry.definitions.concat(senseElement.definitions);
-            }
+        var entries = lexicalEntryElement.entries;
+        fluid.each(entries, function (entryElement) {
+            var senses = entryElement.senses;
+            fluid.each(senses, function (senseElement) {
+                if (senseElement.definitions) {
+                    currentResponseEntry.definitions = currentResponseEntry.definitions.concat(senseElement.definitions);
+                }
 
-            var subsenses = senseElement.subsenses;
-            if (subsenses) {
-                fluid.each(subsenses, function (subsenseElement) {
-                    currentResponseEntry.definitions = currentResponseEntry.definitions.concat(subsenseElement.definitions);
-                });
-            }
+                var subsenses = senseElement.subsenses;
+                if (subsenses) {
+                    fluid.each(subsenses, function (subsenseElement) {
+                        currentResponseEntry.definitions = currentResponseEntry.definitions.concat(subsenseElement.definitions);
+                    });
+                }
+            });
         });
 
         response.entries.push(currentResponseEntry);
@@ -222,32 +223,32 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
 
             var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
-            .then(
-                function (result) {
-                    serviceResponse = result;
+                .then(
+                    function (result) {
+                        serviceResponse = result;
 
-                    errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
+                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
 
-                    var message;
+                        var message;
 
-                    //Error Responses
-                    if (errorContent) {
-                        message = errorContent.errorMessage;
-                        var statusCode = errorContent.statusCode;
+                        //Error Responses
+                        if (errorContent) {
+                            message = errorContent.errorMessage;
+                            var statusCode = errorContent.statusCode;
 
-                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                        }
+                        //No error : Word found
+                        else {
+                            message = "Word Found";
+
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
+                            var response = that.constructResponse(jsonServiceResponse);
+
+                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        }
                     }
-                    //No error : Word found
-                    else {
-                        message = "Word Found";
-
-                        var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                        var response = that.constructResponse(jsonServiceResponse);
-
-                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                    }
-                }
-            );
+                );
         }
     }
     //Error with the API code
@@ -370,32 +371,32 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
 
             var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
-            .then(
-                function (result) {
-                    serviceResponse = result;
+                .then(
+                    function (result) {
+                        serviceResponse = result;
 
-                    errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
+                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
 
-                    var message;
+                        var message;
 
-                    //Error Responses
-                    if (errorContent) {
-                        message = errorContent.errorMessage;
-                        var statusCode = errorContent.statusCode;
+                        //Error Responses
+                        if (errorContent) {
+                            message = errorContent.errorMessage;
+                            var statusCode = errorContent.statusCode;
 
-                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                        }
+                        //No error : Word found
+                        else {
+                            message = "Word Found";
+
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
+                            var response = that.constructResponse(jsonServiceResponse);
+
+                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        }
                     }
-                    //No error : Word found
-                    else {
-                        message = "Word Found";
-
-                        var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                        var response = that.constructResponse(jsonServiceResponse);
-
-                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                    }
-                }
-            );
+                );
         }
     }
     //Error with the API code
@@ -518,38 +519,38 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciatio
 
             var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
-            .then(
-                function (result) {
-                    serviceResponse = result;
+                .then(
+                    function (result) {
+                        serviceResponse = result;
 
-                    errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
+                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
 
-                    var message;
+                        var message;
 
-                    //Error Responses
-                    if (errorContent) {
-                        message = errorContent.errorMessage;
-                        var statusCode = errorContent.statusCode;
+                        //Error Responses
+                        if (errorContent) {
+                            message = errorContent.errorMessage;
+                            var statusCode = errorContent.statusCode;
 
-                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
-                    }
-                    //No error : Word found
-                    else {
-                        var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                        var response = that.constructResponse(jsonServiceResponse);
-
-                        if (response.entries.length === 0) {
-                            message = "No pronunciations found for the word \'" + word + "\'";
-                            that.sendErrorResponse(request, version, "Oxford", 404, message);
+                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
                         }
-
+                        //No error : Word found
                         else {
-                            message = "Word Found";
-                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
+                            var response = that.constructResponse(jsonServiceResponse);
+
+                            if (response.entries.length === 0) {
+                                message = "No pronunciations found for the word \'" + word + "\'";
+                                that.sendErrorResponse(request, version, "Oxford", 404, message);
+                            }
+
+                            else {
+                                message = "Word Found";
+                                that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                            }
                         }
                     }
-                }
-            );
+                );
         }
     }
     //Error with the API code
@@ -672,32 +673,32 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
 
             var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, lexicalCategory, that.options.serviceConfig.urlBase, requestHeaders)
-            .then(
-                function (result) {
-                    serviceResponse = result;
+                .then(
+                    function (result) {
+                        serviceResponse = result;
 
-                    errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
+                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
 
-                    var message;
+                        var message;
 
-                    //Error Responses
-                    if (errorContent) {
-                        message = errorContent.errorMessage;
-                        var statusCode = errorContent.statusCode;
+                        //Error Responses
+                        if (errorContent) {
+                            message = errorContent.errorMessage;
+                            var statusCode = errorContent.statusCode;
 
-                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                        }
+                        //No error : Word found
+                        else {
+                            message = "Word Found";
+
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
+                            var response = that.constructResponse(jsonServiceResponse);
+
+                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        }
                     }
-                    //No error : Word found
-                    else {
-                        message = "Word Found";
-
-                        var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                        var response = that.constructResponse(jsonServiceResponse);
-
-                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                    }
-                }
-            );
+                );
         }
     }
     //Error with the API code

@@ -3,24 +3,22 @@
 var nock = require("nock");
 var correctWord = "play",
     correctLang = "en",
-    wrongLang = "wrong";
+    wrongLang = "wrong",
+    frequency = 8458134;
 
 var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
+
+var mockFrequencyData = require("../mockData/oxford/frequency")(correctWord, frequency);// file holding object with mock data
 
 nock(urlBase)
 .get("/stats/frequency/word/" + correctLang + "/?lemma=" + correctWord)
 .reply(
     200,
-    {
-        result: {
-            frequency: 8458134,
-            lemma: "play"
-        }
-    }
+    mockFrequencyData.correctWord
 )
 .get("/stats/frequency/word/" + wrongLang + "/?lemma=" + correctWord)
 .reply(
     404,
-    "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in zu, ro, ta, sw, de, tn, lv, id, ur, en, nso, ms, gu, pt, hi, es</p>"
+    mockFrequencyData.wrongLang
 )
 .persist();

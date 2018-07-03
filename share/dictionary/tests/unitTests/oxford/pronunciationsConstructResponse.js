@@ -13,66 +13,8 @@ var testMessage = "Unit Test : For constructResponse function of pronunciations 
 var constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var jsonServiceData = {
-    results: [
-        {
-            id: testWord,
-            pronunciations: [
-                {
-                    "audioFile": "http://audio.oxforddictionaries.com/en/mp3/bath_gb_1.mp3",
-                    "dialects": [
-                        "British English"
-                    ],
-                    "phoneticNotation": "IPA",
-                    "phoneticSpelling": "bɑːθ"
-                }
-            ],
-            lexicalEntries: [
-                {
-                    lexicalCategory: "Noun",
-                    pronunciations: [
-                        {
-                            "audioFile": "http://audio.oxforddictionaries.com/en/mp3/bath_gb_1.mp3",
-                            "dialects": [
-                                "British English"
-                            ],
-                            "phoneticNotation": "IPA",
-                            "phoneticSpelling": "bɑːθ"
-                        }
-                    ],
-                    entries: [
-                        {
-                            pronunciations: [
-                                {
-                                    "audioFile": "http://audio.oxforddictionaries.com/en/mp3/bath_gb_1.mp3",
-                                    "dialects": [
-                                        "British English"
-                                    ],
-                                    "phoneticNotation": "IPA",
-                                    "phoneticSpelling": "bɑːθ"
-                                }
-                            ],
-                            senses: [
-                                {
-                                    pronunciations: [
-                                        {
-                                            "audioFile": "http://audio.oxforddictionaries.com/en/mp3/bath_gb_1.mp3",
-                                            "dialects": [
-                                                "British English"
-                                            ],
-                                            "phoneticNotation": "IPA",
-                                            "phoneticSpelling": "bɑːθ"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-};
+var mockPronunciationsData = require("../../mockData/oxford/pronunciations")(testWord, null);// file holding object with mock data
+var jsonServiceData = mockPronunciationsData.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {
@@ -110,6 +52,19 @@ var expectedReturnVal = {
                     "phoneticNotation": "IPA",
                     "phoneticSpelling": "bɑːθ"
                 },
+                {
+                    "audioFile": "http://audio.oxforddictionaries.com/en/mp3/bath_gb_1.mp3",
+                    "dialects": [
+                        "British English"
+                    ],
+                    "phoneticNotation": "IPA",
+                    "phoneticSpelling": "bɑːθ"
+                }
+            ]
+        },
+        {
+            category: "Verb",
+            pronunciations: [
                 {
                     "audioFile": "http://audio.oxforddictionaries.com/en/mp3/bath_gb_1.mp3",
                     "dialects": [

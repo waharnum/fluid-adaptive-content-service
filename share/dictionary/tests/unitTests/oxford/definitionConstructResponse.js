@@ -13,41 +13,8 @@ var testMessage = "Unit Test : For constructResponse function of definitions end
 var constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var jsonServiceData = {
-    results: [
-        {
-            id: testWord,
-            lexicalEntries: [
-                {
-                    lexicalCategory: "Verb",
-                    entries: [
-                        {
-                            senses: [
-                                {
-                                    definitions: [
-                                        "mock definition 1"
-                                    ],
-                                    subsenses: [
-                                        {
-                                            definitions: [
-                                                "mock definition 2"
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    definitions: [
-                                        "mock definition 3"
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-};
+var mockDefinitionsData = require("../../mockData/oxford/definitions")(testWord, null);// file holding object with mock data
+var jsonServiceData = mockDefinitionsData.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {
@@ -58,7 +25,14 @@ var expectedReturnVal = {
             definitions: [
                 "mock definition 1",
                 "mock definition 2",
-                "mock definition 3"
+                "mock definition 3",
+                "mock definition 4"
+            ]
+        },
+        {
+            category: "Noun",
+            definitions: [
+                "mock definition 5"
             ]
         }
     ]
