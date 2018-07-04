@@ -1,9 +1,10 @@
 "use strict";
 
-var fluid = require("infusion");
+var fluid = require("infusion"),
+    jqunit = require("node-jqunit"),
+    Ajv = require("ajv");//npm package for JSON scheme validation
+
 require("kettle");
-var jqunit = require("node-jqunit");
-var Ajv = require("ajv");//npm package for JSON scheme validation
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.utils");
@@ -39,9 +40,11 @@ adaptiveContentService.tests.utils.logAjvErrors = function (errors) {
 
 adaptiveContentService.tests.utils.contractTestHandler = function (data, schema, allSchemas, successMessage, failureMessage) {
     var ajv = new Ajv({ allErrors: true, schemas: allSchemas });
+
     require("ajv-merge-patch")(ajv);
-    var validate = ajv.compile(schema);
-    var valid = validate(data);
+
+    var validate = ajv.compile(schema),
+        valid = validate(data);
 
     //if the data from the service follows the expected schema
     if (valid) {

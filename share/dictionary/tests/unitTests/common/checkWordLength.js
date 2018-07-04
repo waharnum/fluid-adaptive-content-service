@@ -1,9 +1,7 @@
 "use strict";
 
-var fluid = require("infusion");
-// var kettle = require("kettle");
-var jqunit = require("node-jqunit");
-// require("dotenv").config();
+var fluid = require("infusion"),
+    jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.unitTests.checkWordLength");

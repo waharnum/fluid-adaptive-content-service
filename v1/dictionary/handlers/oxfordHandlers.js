@@ -1,9 +1,10 @@
 "use strict";
 
-var fluid = require("infusion");
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-var makeRequest = require("request");//npm package used to make requests to third-party services used
-var cheerio = require("cheerio");//npm package used for scrapping html responses
+var fluid = require("infusion"),
+    adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    makeRequest = require("request"),//npm package used to make requests to third-party services used
+    cheerio = require("cheerio");//npm package used for scrapping html responses
+
 require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
 
@@ -66,8 +67,8 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
 
 //function to scrape the error message from the html response given by oxford
 adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape = function (htmlResponse) {
-    var $ = cheerio.load(htmlResponse);
-    var isHTML = $("h1").text(); //check if the response is in html
+    var $ = cheerio.load(htmlResponse),
+        isHTML = $("h1").text(); //check if the response is in html
 
     //if the error msg is in html format (oxford's format)
     if (isHTML) {
@@ -103,9 +104,9 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
                 .then(
                     function (result) {
-                        var serviceResponse = result;
-                        var message;
-                        var errorContent = that.checkDictionaryErrorImpl(serviceResponse);
+                        var serviceResponse = result,
+                            message,
+                            errorContent = that.checkDictionaryErrorImpl(serviceResponse);
 
                         //Error Responses
                         if (errorContent) {
@@ -118,8 +119,8 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
                         else {
                             message = "Word Found";
 
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                            var response = that.constructResponse(jsonServiceResponse);
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
+                                response = that.constructResponse(jsonServiceResponse);
 
                             that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                         }
@@ -219,9 +220,10 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
 
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse, errorContent;
+            var serviceResponse,
+                errorContent,
+                requestHeaders = that.serviceKeysImpl(that);
 
-            var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
                 .then(
                     function (result) {
@@ -242,8 +244,8 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
                         else {
                             message = "Word Found";
 
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                            var response = that.constructResponse(jsonServiceResponse);
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
+                                response = that.constructResponse(jsonServiceResponse);
 
                             that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                         }
@@ -367,9 +369,10 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
 
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse, errorContent;
+            var serviceResponse,
+                errorContent,
+                requestHeaders = that.serviceKeysImpl(that);
 
-            var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
                 .then(
                     function (result) {
@@ -390,8 +393,8 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
                         else {
                             message = "Word Found";
 
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                            var response = that.constructResponse(jsonServiceResponse);
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
+                                response = that.constructResponse(jsonServiceResponse);
 
                             that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                         }
@@ -515,9 +518,10 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciatio
 
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse, errorContent;
+            var serviceResponse,
+                errorContent,
+                requestHeaders = that.serviceKeysImpl(that);
 
-            var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
                 .then(
                     function (result) {
@@ -668,10 +672,11 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
 
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse, errorContent;
-            var lexicalCategory = request.req.params.lexicalCategory;
+            var serviceResponse,
+                errorContent,
+                lexicalCategory = request.req.params.lexicalCategory,
+                requestHeaders = that.serviceKeysImpl(that);
 
-            var requestHeaders = that.serviceKeysImpl(that);
             that.requiredDataImpl(lang, word, lexicalCategory, that.options.serviceConfig.urlBase, requestHeaders)
                 .then(
                     function (result) {
@@ -692,8 +697,8 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
                         else {
                             message = "Word Found";
 
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                            var response = that.constructResponse(jsonServiceResponse);
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
+                                response = that.constructResponse(jsonServiceResponse);
 
                             that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                         }
@@ -711,9 +716,8 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
 
 //function to get the frequency data from the oxford service
 adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, lexicalCategory, urlBase, requestHeaders) {
-    var promise = fluid.promise();
-
-    var requestURL;
+    var promise = fluid.promise(),
+        requestURL;
 
     if (lexicalCategory) {
         requestURL = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;

@@ -1,9 +1,8 @@
 "use strict";
 
-var fluid = require("infusion");
-var kettle = require("kettle");
-
-var wd = require("word-definition");
+var fluid = require("infusion"),
+    kettle = require("kettle"),
+    wd = require("word-definition");
 
 require("../../../../testUtils");
 
@@ -46,13 +45,13 @@ fluid.defaults("adaptiveContentService.tests.dictionary.wiktionary.contractTests
     }
 });
 
-var correctWord = "word";
-var correctLang = "en";
-var wrongWord = "wrongWord";
-var wrongLang = "wrongLang";
+var correctWord = "word",
+    correctLang = "en",
+    wrongWord = "wrongWord",
+    wrongLang = "wrongLang";
 
-var definitionSchemas = require("./schemas/definitionSchemas"); //main schema to be compiled
-var allSchemas = []; //array of all schemas required (other than main schema)
+var definitionSchemas = require("./schemas/definitionSchemas"), //main schema to be compiled
+    allSchemas = []; //array of all schemas required (other than main schema)
 
 var successMessage = {
     correctWord: "Contract Test : For definitions with correct word and language successful (Wiktionary Service)",

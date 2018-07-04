@@ -1,7 +1,7 @@
 "use strict";
 
-var fluid = require("infusion");
-var kettle = require("kettle");
+var fluid = require("infusion"),
+    kettle = require("kettle");
 require("dotenv").config();
 
 require("../../../../../index.js");

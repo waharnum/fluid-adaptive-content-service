@@ -1,13 +1,12 @@
 "use strict";
 
-var fluid = require("infusion");
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var fluid = require("infusion"),
+    adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    nlp = require("compromise");//npm package that provides NLP services
 
 require("kettle");
 
 require("../handlerUtils");
-
-var nlp = require("compromise");//npm package that provides NLP services
 
 // Compromise sentence tagging grade
 fluid.defaults("adaptiveContentService.handlers.nlp.compromise.sentenceTagging", {
@@ -55,8 +54,8 @@ adaptiveContentService.handlers.nlp.compromise.sentenceTagging.checkNlpError = f
 
 // get the required data from the compromise service
 adaptiveContentService.handlers.nlp.compromise.sentenceTagging.requiredData = function (sentence) {
-    var sentenceData = nlp(sentence);
-    var tagsData = sentenceData.out("tags");
+    var sentenceData = nlp(sentence),
+        tagsData = sentenceData.out("tags");
     return tagsData;
 };
 
@@ -77,9 +76,9 @@ adaptiveContentService.handlers.nlp.compromise.sentenceTagging.constructResponse
 
 // Compromise sentence tagging handler
 adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags = function (request, that) {
-    var version = request.req.params.version;
-    var sentence = request.req.body.sentence;
-    var message;
+    var version = request.req.params.version,
+        sentence = request.req.body.sentence,
+        message;
     try {
         var errorContent = that.checkNlpError(sentence, that.options.characterLimit);
 

@@ -1,8 +1,8 @@
 "use strict";
 
-var fluid = require("infusion");
-var kettle = require("kettle");
-var jqunit = require("node-jqunit");
+var fluid = require("infusion"),
+    kettle = require("kettle"),
+    jqunit = require("node-jqunit");
 require("dotenv").config();//npm package to get variables from '.env' file
 
 var makeRequest = require("request");//npm package used to make requests to third-party services used
@@ -83,13 +83,13 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
     }
 });
 
-var correctWord = "bath";
-var correctLang = "en";
-var wrongWord = "wrongWord";
-var wrongLang = "wrongLang";
+var correctWord = "bath",
+    correctLang = "en",
+    wrongWord = "wrongWord",
+    wrongLang = "wrongLang";
 
-var pronunciationSchemas = require("./schemas/pronunciationSchemas"); //main schemas which will be compiled
-var commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
+var pronunciationSchemas = require("./schemas/pronunciationSchemas"), //main schemas which will be compiled
+    commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
 
 
 //array of all the schemas that are needed (other than the main schema)

@@ -1,15 +1,14 @@
 "use strict";
 
-var nock = require("nock");
+var nock = require("nock"),
+    mockExtendedFrequencyData = require("../mockData/oxford/extendedFrequency")(correctWord, frequency, lexicalCategory);// file holding object with mock data
+
 var correctWord = "play",
     correctLang = "en",
     wrongLang = "wrong",
     frequency = 123,
-    lexicalCategory = "noun";
-
-var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
-
-var mockExtendedFrequencyData = require("../mockData/oxford/extendedFrequency")(correctWord, frequency, lexicalCategory);// file holding object with mock data
+    lexicalCategory = "noun",
+    urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 
 nock(urlBase)
 .get("/stats/frequency/word/" + correctLang + "/?lemma=" + correctWord + "&lexicalCategory=" + lexicalCategory)

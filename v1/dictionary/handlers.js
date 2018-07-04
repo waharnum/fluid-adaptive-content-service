@@ -1,7 +1,7 @@
 "use strict";
 
-var fluid = require("infusion");
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var fluid = require("infusion"),
+    adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
 
@@ -40,9 +40,9 @@ fluid.defaults("adaptiveContentService.handlers.dictionary", {
 
 //Common dispatcher for all dictionary endpoints
 adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function (request, serviceSpecificImp, that) {
-    var version = request.req.params.version;
-    var word = request.req.params.word;
-    var lang = request.req.params.language;
+    var version = request.req.params.version,
+        word = request.req.params.word,
+        lang = request.req.params.language;
 
     //setting the required headers for the response
     request.res.set({

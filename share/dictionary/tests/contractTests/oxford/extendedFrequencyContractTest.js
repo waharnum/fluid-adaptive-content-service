@@ -1,8 +1,8 @@
 "use strict";
 
-var fluid = require("infusion");
-var kettle = require("kettle");
-var jqunit = require("node-jqunit");
+var fluid = require("infusion"),
+    kettle = require("kettle"),
+    jqunit = require("node-jqunit");
 require("dotenv").config();//npm package to get variables from '.env' file
 
 var makeRequest = require("request");//npm package used to make requests to third-party services used
@@ -83,14 +83,14 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ext
     }
 });
 
-var correctWord = "happy";
-var correctLang = "en";
-var wrongLang = "wrongLang";
-var lexicalCategory = "noun";
+var correctWord = "happy",
+    correctLang = "en",
+    wrongLang = "wrongLang",
+    lexicalCategory = "noun";
 
-var extendedFrequencySchemas = require("./schemas/extendedFrequencySchemas"); //main schemas which will be compiled
-var frequencySchemas = require("./schemas/frequencySchemas"); //frequency schema
-var commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
+var extendedFrequencySchemas = require("./schemas/extendedFrequencySchemas"), //main schemas which will be compiled
+    frequencySchemas = require("./schemas/frequencySchemas"), //frequency schema
+    commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
 
 
 //array of all the schemas that are needed (other than the main schema)

@@ -1,36 +1,36 @@
 "use strict";
 
-var fluid = require("infusion");
-var jqunit = require("node-jqunit");
+var fluid = require("infusion"),
+    jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.nlp.compromise.unitTests.constructResponse");
 
 require("../../../../../v1/nlp/handlers");
 
-var sentence = "This is correct sentence";
-var serviceTags = [
-    {
-        text: "This",
-        normal: "this",
-        tags: [ "TitleCase", "Determiner" ]
-    },
-    {
-        text: "is",
-        normal: "is",
-        tags: [ "Copula", "Verb", "VerbPhrase" ]
-    },
-    {
-        text: "correct",
-        normal: "correct",
-        tags: [ "Adjective" ]
-    },
-    {
-        text: "sentence",
-        normal: "sentence",
-        tags: [ "Noun", "Singular" ]
-    }
-];
+var sentence = "This is correct sentence",
+    serviceTags = [
+        {
+            text: "This",
+            normal: "this",
+            tags: [ "TitleCase", "Determiner" ]
+        },
+        {
+            text: "is",
+            normal: "is",
+            tags: [ "Copula", "Verb", "VerbPhrase" ]
+        },
+        {
+            text: "correct",
+            normal: "correct",
+            tags: [ "Adjective" ]
+        },
+        {
+            text: "sentence",
+            normal: "sentence",
+            tags: [ "Noun", "Singular" ]
+        }
+    ];
 
 adaptiveContentService.tests.nlp.compromise.unitTests.constructResponse = function () {
     var returnVal = adaptiveContentService.handlers.nlp.compromise.sentenceTagging.constructResponse(sentence, serviceTags);

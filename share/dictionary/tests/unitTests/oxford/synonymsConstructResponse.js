@@ -1,20 +1,20 @@
 "use strict";
 
-var fluid = require("infusion");
-var jqunit = require("node-jqunit");
+var fluid = require("infusion"),
+    jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 require("../../../../testUtils");
 
-var testWord = "word";
-var testMessage = "Unit Test : For constructResponse function of synonyms endpoint : Successful (Oxford Service)";
-var constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse; //from oxfordHandlers.js
+var testWord = "word",
+    testMessage = "Unit Test : For constructResponse function of synonyms endpoint : Successful (Oxford Service)",
+    constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var mockSynonymsData = require("../../mockData/oxford/synonyms")(testWord, null);// file holding object with mock data
-var jsonServiceData = mockSynonymsData.correctWord;
+var mockSynonymsData = require("../../mockData/oxford/synonyms")(testWord, null),// file holding object with mock data
+    jsonServiceData = mockSynonymsData.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {

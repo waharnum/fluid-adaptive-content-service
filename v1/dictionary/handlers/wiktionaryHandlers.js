@@ -1,11 +1,10 @@
 "use strict";
 
-var fluid = require("infusion");
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var fluid = require("infusion"),
+    adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    wd = require("word-definition");
 
 require("kettle");
-
-var wd = require("word-definition");
 
 //Specific grade for Wiktionary
 fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary", {
@@ -148,17 +147,16 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.serviceNot
 
 //Wiktionary service not provided handler function
 adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl = function (request, version, that) {
-    var endpointName = that.getEndpointName(request.req.originalUrl);
-
-    var message = "This Service doesn't provide " + endpointName;
+    var endpointName = that.getEndpointName(request.req.originalUrl),
+        message = "This Service doesn't provide " + endpointName;
 
     that.sendErrorResponse(request, version, "Wiktionary", 400, message);
 };
 
 //function to get the endpoint name from the request url
 adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.getEndpointName = function (url) {
-    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g; //to extract name of the endpoint from the url
-    var match = endpointNameRegex.exec(url);
+    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g, //to extract name of the endpoint from the url
+        match = endpointNameRegex.exec(url);
 
     return match[1];
 };

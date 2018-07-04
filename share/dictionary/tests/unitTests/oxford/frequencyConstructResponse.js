@@ -1,29 +1,29 @@
 "use strict";
 
-var fluid = require("infusion");
-var jqunit = require("node-jqunit");
+var fluid = require("infusion"),
+    jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 require("../../../../testUtils");
 
-var testWord = "play";
-var testFrequency = 123;
-var testLexicalCategory = "noun";
-var testMessage = {
-    frequency: "Unit Test : For constructResponse function of frequency endpoint : Successful (Oxford Service)",
-    extendedFrequency: "Unit Test : For constructResponse function of extended frequency endpoint : Successful (Oxford Service)"
-};
-var constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse; //from oxfordHandlers.js
+var testWord = "play",
+    testFrequency = 123,
+    testLexicalCategory = "noun",
+    testMessage = {
+        frequency: "Unit Test : For constructResponse function of frequency endpoint : Successful (Oxford Service)",
+        extendedFrequency: "Unit Test : For constructResponse function of extended frequency endpoint : Successful (Oxford Service)"
+    },
+    constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var mockFrequencyData = require("../../mockData/oxford/frequency")(testWord, testFrequency);// file holding object with mock data (frequency)
-var mockExtendedFrequencyData = require("../../mockData/oxford/extendedFrequency")(testWord, testFrequency, testLexicalCategory);// file holding object with mock data
-var jsonServiceData = {
-    frequency: mockFrequencyData.correctWord,
-    extendedFrequency: mockExtendedFrequencyData.correctWord
-};
+var mockFrequencyData = require("../../mockData/oxford/frequency")(testWord, testFrequency), //file holding object with mock data (frequency)
+    mockExtendedFrequencyData = require("../../mockData/oxford/extendedFrequency")(testWord, testFrequency, testLexicalCategory),// file holding object with mock data
+    jsonServiceData = {
+        frequency: mockFrequencyData.correctWord,
+        extendedFrequency: mockExtendedFrequencyData.correctWord
+    };
 
 // expected return value from the function being tested
 var expectedReturnVal = {

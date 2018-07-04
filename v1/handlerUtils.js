@@ -2,8 +2,9 @@
 
 "use strict";
 
-var fluid = require("infusion");
-var adaptiveContentService = {}  ;
+var fluid = require("infusion"),
+    adaptiveContentService = {};
+
 adaptiveContentService.handlerUtils = fluid.registerNamespace("adaptiveContentService.handlerUtils");
 
 require("kettle");

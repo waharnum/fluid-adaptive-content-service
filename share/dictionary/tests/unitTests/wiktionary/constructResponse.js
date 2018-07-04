@@ -1,7 +1,7 @@
 "use strict";
 
-var fluid = require("infusion");
-var jqunit = require("node-jqunit");
+var fluid = require("infusion"),
+    jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.unitTests.constructResponse");
