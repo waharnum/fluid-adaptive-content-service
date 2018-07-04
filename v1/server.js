@@ -121,6 +121,18 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                                 }
                             }
                         }
+                    },
+                    translationApp: {
+                        type: "kettle.app",
+                        options: {
+                            requestHandlers: {
+                                translateTextHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.yandex.translateText",
+                                    "route": "/:version/translation/yandex/:sourceLang-:targetLang",
+                                    "method": "post"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -130,5 +142,6 @@ fluid.defaults("adaptiveContentService.serverConfig", {
 
 require("./dictionary/handlers");
 require("./nlp/handlers");
+require("./translation/handlers");
 
 adaptiveContentService.serverConfig();

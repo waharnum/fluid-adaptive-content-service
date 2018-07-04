@@ -1,8 +1,9 @@
 "use strict";
 
 var fluid = require("infusion"),
-    adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
     nlp = require("compromise");//npm package that provides NLP services
+
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
 
@@ -105,6 +106,6 @@ adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags = functio
     catch (error) {
         message = "Internal Server Error: " + error;
 
-        that.sendErrorResponse(request, version, "Compromise", 501, message);
+        that.sendErrorResponse(request, version, "Compromise", 500, message);
     }
 };

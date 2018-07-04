@@ -29,7 +29,7 @@ var expectedReturnVal = {
     longWord: false
 };
 
-var wordCharacterLimit = 128;
+var wordCharacterLimit = 128; // set character limit for testing purpose
 
 jqunit.test(
     "Unit Test : For checkWordLength function (Dictionary Service)",
