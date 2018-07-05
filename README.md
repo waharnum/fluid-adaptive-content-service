@@ -37,6 +37,7 @@ This will run all the nlp service endpoints, at port 8082
 
 When the server starts, it is ready to accept requests at the available endpoints.
 
+## Available Endpoints
 Currently available endpoints - 
 ### Dictionary Service
 - `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}`\
@@ -101,17 +102,48 @@ Example endpoints:
 - `http://localhost:8081/v1/dictionary/wiktionary/fr/definition/rien`
 - `http://localhost:8081/v1/dictionary/oxford/en/definition/horse`
 
-Tests for these endpoints lie in `share/dictionary/tests`\
-To run all the tests in one go
+## Running Tests
+
+Tests for these endpoints lie in -
+- `share/dictionary/tests/` - Tests for dictionary endpoints
+- `share/nlp/tests/` - Tests for nlp endpoints
+
+
+There are 3 kinds of tests for each service -
+- **Unit Tests** - Tests for individual functions
+- **Integration Tests** - Testing the overall functioning of the endpoint (using mock test servers)
+- **Contract Tests** - Testing if the external service provides data with the expected structure
+
+There are several ways of running the tests - 
+- Running all `Unit` and `Integration` tests of all services togther
 ```
 npm test
 ```
-when at the root of the repository.\
-OR\
-To run a particular test
+- Running all `Contract` tests of all services together
 ```
-node ./share/dictionary/tests/{testFolderName}/{testFileName}.js
+npm run test-contract
 ```
-when at the root of the repository.
+- Running all `Unit` and `Integration` tests of a particular service
+```
+// for dictionary service
+npm run test-dictionary
 
+// for nlp service
+npm run test-nlp
+```
+- Running all `Contract` tests of a particular service
+```
+// for dictionary service
+npm run test-dictionary-contract
+
+// for nlp service
+npm run test-nlp-contract
+```
+- To run a particular test
+```
+node /relative/path/to/the/test/file
+```
+**Note** that all the above commands for running tests should be performed at the root of the repository
+
+## Documentation
 Learn more about the service and the endpoints, in its documentation, which can be found [here](https://app.swaggerhub.com/apis/kunal4/fluid-adaptive-content-service/1.0.0).

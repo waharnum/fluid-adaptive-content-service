@@ -23,7 +23,18 @@ var testIncludes = [
     "./integrationTests/wiktionary/synonymsWiktionaryTests.js",
     "./integrationTests/wiktionary/pronunciationsWiktionaryTests.js",
     "./integrationTests/wiktionary/frequencyWiktionaryTests.js",
-    "./integrationTests/wiktionary/extendedFrequencyWiktionaryTests.js"
+    "./integrationTests/wiktionary/extendedFrequencyWiktionaryTests.js",
+    "./unitTests/common/checkWordLength.js",
+    "./unitTests/oxford/antonymsConstructResponse.js",
+    "./unitTests/oxford/checkDictionaryError.js",
+    "./unitTests/oxford/definitionConstructResponse.js",
+    "./unitTests/oxford/errorMsgScrape.js",
+    "./unitTests/oxford/frequencyConstructResponse.js",
+    "./unitTests/oxford/pronunciationsConstructResponse.js",
+    "./unitTests/oxford/synonymsConstructResponse.js",
+    "./unitTests/wiktionary/checkDictionaryError.js",
+    "./unitTests/wiktionary/constructResponse.js",
+    "./unitTests/wiktionary/getEndpointName.js"
 ];
 
 fluid.each(testIncludes, function (path) {
