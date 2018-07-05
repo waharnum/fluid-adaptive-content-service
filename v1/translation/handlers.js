@@ -9,6 +9,9 @@ require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
 require("../handlerUtils");
 
+//TEMPORARY:
+// require("../../share/translation/tests/nock/mockYandexTranslation");
+
 //Yandex translation grade
 fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText", {
     gradeNames: "kettle.request.http",
@@ -30,47 +33,99 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Translation"]
         },
         requiredData: "adaptiveContentService.handlers.translation.yandex.translateText.requiredData",
-        checkSourceText: "adaptiveContentService.handlers.translation.yandex.translateText.checkSourceText"
+        checkSourceText: "adaptiveContentService.handlers.translation.yandex.translateText.checkSourceText",
+        serviceKey: {
+            funcName: "adaptiveContentService.handlers.translation.yandex.translateText.serviceKey",
+            args: ["{that}"]
+        },
+        checkServiceKey: "adaptiveContentService.handlers.translation.yandex.translateText.checkServiceKey",
+        checkTranslationError: "adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError"
     }
 });
 
-adaptiveContentService.handlers.translation.yandex.translateText.requiredData = function (sourceLang, targetLang, text) {
-    // var promise = fluid.promise();
+// TEST: check for errors with the service keys present in environment variables
+adaptiveContentService.handlers.translation.yandex.translateText.checkServiceKey = function (serviceKey) {
+    // No keys present in the environment variables
+    if (!serviceKey) {
+        var message = "Authentication failed - API key not found. Please check your environment variables";
 
-    var apiKey = "trnsl.1.1.20180317T094258Z.ad4fd157a0024e3a.0ef6fb779d50af9aa52593dc77a350e7d1e1e12a";
+        return {
+            statusCode: 403,
+            errorMessage: message
+        };
+    }
+    // keys present in the environment variables
+    else {
+        return false;
+    }
+};
+
+// return the service keys
+adaptiveContentService.handlers.translation.yandex.translateText.serviceKey = function (that) {
+    var serviceKey = that.options.authenticationOptions.app_key;
+
+    return serviceKey;
+};
+
+//function to get the required translation data from yandex
+adaptiveContentService.handlers.translation.yandex.translateText.requiredData = function (sourceLang, targetLang, text, serviceKey) {
+    var promise = fluid.promise();
 
     makeRequest.post(
         {
-            url: "https://translate.yandex.net/api/v1.5/tr.json/translate?key=" + apiKey + "&lang=" + sourceLang + "-" + targetLang,
+            url: "https://translate.yandex.net/api/v1.5/tr.json/translate?key=" + serviceKey + "&lang=" + sourceLang + "-" + targetLang,
             form: {
                 text: text
             }
         },
         function (error, response, body) {
-            console.log(body); 
+            if (error) {
+                promise.resolve({
+                    statusCode: 500,
+                    body: {
+                        message: "Internal Server Error - " + error
+                    }
+                });
+            }
+            else {
+                var responseBody = JSON.parse(body);
+
+                promise.resolve({
+                    statusCode: responseBody.code,
+                    body: responseBody
+                });
+            }
         }
-    )
+    );
+
+    return promise;
 };
 
+// TESTED: check for errors in the text provided in the request body
 adaptiveContentService.handlers.translation.yandex.translateText.checkSourceText = function (sourceText, characterLimit) {
     //no text found in request body
-    if(!sourceText) {
+    if (!sourceText) {
         return {
             statusCode: 400,
             errorMessage: "Request body doesn't contain 'text' field"
-        }
+        };
     }
     //too long text
     else if (sourceText.length > characterLimit) {
         return {
             statusCode: 413,
             errorMessage: "Text in the request body should have character count less than or equal to " + characterLimit
-        }
+        };
     }
     //No error regarding the request text
     else {
         return false;
     }
+};
+
+//function to catch the error content from the yandex service resopnse
+adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError = function (serviceResponse) {
+    console.log(serviceResponse);
 };
 
 //Yandex translate text handler
@@ -91,7 +146,25 @@ adaptiveContentService.handlers.translation.yandex.translateText.getTranslation 
         }
         //No error with the text in request body
         else {
+            var serviceKey = that.serviceKey(),
+                serviceKeyErrorContent = that.checkServiceKey(serviceKey);
 
+            if (serviceKeyErrorContent) {
+                that.sendErrorResponse(request, version, "Yandex", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
+            }
+            else {
+                that.requiredData(sourceLang, targetLang, text, serviceKey)
+                    .then(
+                        function (result) {
+                            // var serviceResponse = result,
+                            //     errorContent = that.checkTranslationError(serviceResponse),
+                            //     message;
+
+                            //     console.log(errorContent);
+                            console.log(result);
+                        }
+                    );
+            }
         }
     }
     //Error with the API code
@@ -100,4 +173,4 @@ adaptiveContentService.handlers.translation.yandex.translateText.getTranslation 
 
         that.sendErrorResponse(request, version, "Yandex", 500, message);
     }
-}
+};

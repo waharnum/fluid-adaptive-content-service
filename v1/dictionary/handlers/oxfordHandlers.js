@@ -105,8 +105,8 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
                 .then(
                     function (result) {
                         var serviceResponse = result,
-                            message,
-                            errorContent = that.checkDictionaryErrorImpl(serviceResponse);
+                            errorContent = that.checkDictionaryErrorImpl(serviceResponse),
+                            message;
 
                         //Error Responses
                         if (errorContent) {

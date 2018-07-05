@@ -20,7 +20,7 @@ var testText = {
     noTextField: undefined,
     emptyTextField: "",
     tooLongText: "This text is too long, it exceeds the limit"
-}
+};
 
 var expectedReturnVal = {
     noTextField: {

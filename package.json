@@ -11,6 +11,7 @@
     "test-nlp-contract": "node ./share/nlp/tests/nlp-contract-tests.js",
     "test-dictionary": "node ./share/dictionary/tests/dictionary-all-tests.js",
     "test-nlp": "node ./share/nlp/tests/nlp-all-tests.js",
+    "test-translation": "node ./share/translation/tests/translation-all-tests.js",
     "dictionary": "node ./v1/dictionary/server.js",
     "nlp": "node ./v1/nlp/server.js"
   },
