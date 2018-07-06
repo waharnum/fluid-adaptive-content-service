@@ -8,6 +8,9 @@ fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.unitTest
 
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 
+//mock data
+var mockData = require("../../mockData/oxford/definitions")(null, "wrongword");
+
 var serviceResponse = {
     noError: {
         statusCode: 200
@@ -18,11 +21,11 @@ var serviceResponse = {
     },
     wrongWord: {
         statusCode: 404,
-        body: "<title>404 Not Found</title><h1>Not Found</h1><p>No entry available for 'wrongword' in 'en'</p>"
+        body: mockData.wrongWord
     },
     wrongLang: {
         statusCode: 404,
-        body: "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in en, es, gu, hi, lv, sw, ta</p>"
+        body: mockData.wrongLang
     },
     unhandledError: {
         statusCode: 555, //random code that has not been handled

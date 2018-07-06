@@ -9,9 +9,6 @@ require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
 require("../handlerUtils");
 
-//TEMPORARY:
-// require("../../share/translation/tests/nock/mockYandexTranslation");
-
 //Yandex translation grade
 fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText", {
     gradeNames: "kettle.request.http",
@@ -50,7 +47,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText
     }
 });
 
-// TESTED: check for errors with the service keys present in environment variables
+// check for errors with the service keys present in environment variables
 adaptiveContentService.handlers.translation.yandex.translateText.checkServiceKey = function (serviceKey) {
     // No keys present in the environment variables
     if (!serviceKey) {
@@ -108,7 +105,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.requiredData = 
     return promise;
 };
 
-// TESTED: check for errors in the text provided in the request body
+// check for errors in the text provided in the request body
 adaptiveContentService.handlers.translation.yandex.translateText.checkSourceText = function (sourceText, characterLimit) {
     //no text found in request body
     if (!sourceText) {
@@ -130,7 +127,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.checkSourceText
     }
 };
 
-//TEST: check for errors with the language codes
+//check for errors with the language codes
 adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes = function (sourceLang, targetLang) {
     //source lang code has invalid length
     if (sourceLang.length > 3) {
@@ -155,8 +152,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCo
 // check for errors in the input data, before making the request to external service
 adaptiveContentService.handlers.translation.yandex.translateText.preRequestErrorCheck = function (characterLimit, serviceKey, sourceLang, targetLang, text, that) {
     //Error with the text in request body
-    var characterLimit = that.options.characterLimit,
-    sourceTextErrorContent = that.checkSourceText(text, characterLimit);
+    var sourceTextErrorContent = that.checkSourceText(text, characterLimit);
 
     if (sourceTextErrorContent) {
         return sourceTextErrorContent;
@@ -164,11 +160,9 @@ adaptiveContentService.handlers.translation.yandex.translateText.preRequestError
     //No error with the text in request body
     else {
         //Error with the service keys in the environment variables
-        var serviceKey = that.serviceKey(), //TODO:
-            serviceKeyErrorContent = that.checkServiceKey(serviceKey);
+        var serviceKeyErrorContent = that.checkServiceKey(serviceKey);
 
         if (serviceKeyErrorContent) {
-          console.log(serviceKeyErrorContent);
             return serviceKeyErrorContent;
         }
         //No error with the service keys
@@ -187,9 +181,9 @@ adaptiveContentService.handlers.translation.yandex.translateText.preRequestError
     }
 };
 
-//TEST: function to catch the error content from the yandex service resopnse
+//function to catch the error content from the yandex service resopnse
 adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError = function (serviceResponse) {
-    
+
     //No error
     if (serviceResponse.statusCode === 200) {
         return false;
@@ -224,7 +218,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.checkTranslatio
     }
 };
 
-//TEST:  function to construct a response from the data provided by the Yandex service
+// function to construct a response from the data provided by the Yandex service
 adaptiveContentService.handlers.translation.yandex.translateText.constructResponse = function (serviceResponse, sourceLang, targetLang, sourceText) {
     return {
         sourceLang: sourceLang,
@@ -262,7 +256,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.getTranslation 
 
                         //Check for error responses
                         if (errorContent) {
-                            that.sendErrorResponse(request, version, "Yandex", errorContent.statusCode, errorContent.message);
+                            that.sendErrorResponse(request, version, "Yandex", errorContent.statusCode, errorContent.errorMessage);
                         }
                         //No error response
                         else {

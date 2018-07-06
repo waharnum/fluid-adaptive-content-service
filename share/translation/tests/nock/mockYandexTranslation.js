@@ -17,6 +17,9 @@ var sourceLang = "en",
     blockedApiKey = "blockedkey",
     urlBase = "https://translate.yandex.net/api/v1.5/tr.json";
 
+// mock data
+var mockTranslationData = require("../mockData/yandex/translation")(sourceLang, targetLang);
+
 nock(urlBase)
 .post(
     "/translate?key=" + apiKey + "&lang=" + sourceLang + "-" + targetLang,
@@ -26,11 +29,7 @@ nock(urlBase)
 )
 .reply(
     200,
-    {
-        "code": 200,
-        "lang": sourceLang + "-" + targetLang,
-        "text": [ "Dies ist der text, der übersetzt werden" ]
-    }
+    mockTranslationData.noError
 )
 // Invalid api key
 .post(
@@ -41,10 +40,7 @@ nock(urlBase)
 )
 .reply(
     401,
-    {
-        "code": 401,
-        "message": "API key is invalid"
-    }
+    mockTranslationData.keyInvalid
 )
 // Blocked api key
 .post(
@@ -55,10 +51,7 @@ nock(urlBase)
 )
 .reply(
     402,
-    {
-        "code": 402,
-        "message": "API key is blocked"
-    }
+    mockTranslationData.keyBlocked
 )
 // Exceeding daily limit
 .post(
@@ -69,10 +62,7 @@ nock(urlBase)
 )
 .reply(
     404,
-    {
-        "code": 404,
-        "message": "Exceeded the daily limit on the amount of translated text"
-    }
+    mockTranslationData.limitExceeded
 )
 //translation direction not supported
 .post(
@@ -83,10 +73,7 @@ nock(urlBase)
 )
 .reply(
     501,
-    {
-        "code": 501,
-        "message": "The specified translation direction is not supported"
-    }
+    mockTranslationData.unsupportedTranslation
 )
 //invalid lang code
 .post(
@@ -97,9 +84,6 @@ nock(urlBase)
 )
 .reply(
     502,
-    {
-        "code": 502,
-        "message": "Invalide 'lang' parameter"
-    }
+    mockTranslationData.invalidLangCode
 )
 .persist();
