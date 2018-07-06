@@ -17,6 +17,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText
     gradeNames: "kettle.request.http",
     authenticationOptions: {
         "app_key": "@expand:kettle.resolvers.env(YANDEX_APP_KEY)"
+        // "app_key": "randomstring"
     },
     characterLimit: 500,
     invokers: {
@@ -39,11 +40,17 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText
             args: ["{that}"]
         },
         checkServiceKey: "adaptiveContentService.handlers.translation.yandex.translateText.checkServiceKey",
-        checkTranslationError: "adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError"
+        checkLanguageCodes: "adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes",
+        checkTranslationError: "adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError",
+        preRequestErrorCheck: {
+            funcName: "adaptiveContentService.handlers.translation.yandex.translateText.preRequestErrorCheck",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{that}"]
+        },
+        constructResponse: "adaptiveContentService.handlers.translation.yandex.translateText.constructResponse"
     }
 });
 
-// TEST: check for errors with the service keys present in environment variables
+// TESTED: check for errors with the service keys present in environment variables
 adaptiveContentService.handlers.translation.yandex.translateText.checkServiceKey = function (serviceKey) {
     // No keys present in the environment variables
     if (!serviceKey) {
@@ -123,9 +130,108 @@ adaptiveContentService.handlers.translation.yandex.translateText.checkSourceText
     }
 };
 
-//function to catch the error content from the yandex service resopnse
+//TEST: check for errors with the language codes
+adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes = function (sourceLang, targetLang) {
+    //source lang code has invalid length
+    if (sourceLang.length > 3) {
+        return {
+            statusCode: 404,
+            errorMessage: "Invalid 'sourceLang' parameter - Please check the language code"
+        };
+    }
+    //target lang code has invalid length
+    else if (targetLang.length > 3) {
+        return {
+            statusCode: 404,
+            errorMessage: "Invalid 'targetLang' parameter - Please check the language code"
+        };
+    }
+    //valid lang code length
+    else {
+        return false;
+    }
+};
+
+// check for errors in the input data, before making the request to external service
+adaptiveContentService.handlers.translation.yandex.translateText.preRequestErrorCheck = function (characterLimit, serviceKey, sourceLang, targetLang, text, that) {
+    //Error with the text in request body
+    var characterLimit = that.options.characterLimit,
+    sourceTextErrorContent = that.checkSourceText(text, characterLimit);
+
+    if (sourceTextErrorContent) {
+        return sourceTextErrorContent;
+    }
+    //No error with the text in request body
+    else {
+        //Error with the service keys in the environment variables
+        var serviceKey = that.serviceKey(), //TODO:
+            serviceKeyErrorContent = that.checkServiceKey(serviceKey);
+
+        if (serviceKeyErrorContent) {
+          console.log(serviceKeyErrorContent);
+            return serviceKeyErrorContent;
+        }
+        //No error with the service keys
+        else {
+            //Error with the language codes provided
+            var langCodeErrorContent = that.checkLanguageCodes(sourceLang, targetLang);
+
+            if (langCodeErrorContent) {
+                return langCodeErrorContent;
+            }
+            //No pre request error found
+            else {
+                return false;
+            }
+        }
+    }
+};
+
+//TEST: function to catch the error content from the yandex service resopnse
 adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError = function (serviceResponse) {
-    console.log(serviceResponse);
+    
+    //No error
+    if (serviceResponse.statusCode === 200) {
+        return false;
+    }
+    //invalid api key
+    else if (serviceResponse.statusCode === 401) {
+        return {
+            statusCode: 403,
+            errorMessage: "Authenticaion failed - " + serviceResponse.body.message
+        };
+    }
+    //daily limit exceeded
+    else if (serviceResponse.statusCode === 404) {
+        return {
+            statusCode: 429,
+            errorMessage: serviceResponse.body.message
+        };
+    }
+    //unsupported translation direction
+    else if (serviceResponse.statusCode === 501) {
+        return {
+            statusCode: 404,
+            errorMessage: serviceResponse.body.message + " - Please check the language codes"
+        };
+    }
+    //remaining errors
+    else {
+        return {
+            statusCode: serviceResponse.body.code,
+            errorMessage: serviceResponse.body.message
+        };
+    }
+};
+
+//TEST:  function to construct a response from the data provided by the Yandex service
+adaptiveContentService.handlers.translation.yandex.translateText.constructResponse = function (serviceResponse, sourceLang, targetLang, sourceText) {
+    return {
+        sourceLang: sourceLang,
+        targetLang: targetLang,
+        sourceText: sourceText,
+        translatedText: serviceResponse.body.text
+    };
 };
 
 //Yandex translate text handler
@@ -136,40 +242,42 @@ adaptiveContentService.handlers.translation.yandex.translateText.getTranslation 
         text = request.req.body.text;
 
     try {
-
-        //Error with the text in request body
         var characterLimit = that.options.characterLimit,
-            sourceTextErrorContent = that.checkSourceText(text, characterLimit);
+            serviceKey = that.serviceKey();
 
-        if (sourceTextErrorContent) {
-            that.sendErrorResponse(request, version, "Yandex", sourceTextErrorContent.statusCode, sourceTextErrorContent.errorMessage);
+        //check for errors before making request to the service
+        var preRequestErrorContent = that.preRequestErrorCheck(characterLimit, serviceKey, sourceLang, targetLang, text);
+
+        if (preRequestErrorContent) {
+            that.sendErrorResponse(request, version, "Yandex", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
         }
-        //No error with the text in request body
+        //No pre request errors
         else {
-            var serviceKey = that.serviceKey(),
-                serviceKeyErrorContent = that.checkServiceKey(serviceKey);
+            //making request to the service
+            that.requiredData(sourceLang, targetLang, text, serviceKey)
+                .then(
+                    function (result) {
+                        var serviceResponse = result,
+                            errorContent = that.checkTranslationError(serviceResponse);
 
-            if (serviceKeyErrorContent) {
-                that.sendErrorResponse(request, version, "Yandex", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
-            }
-            else {
-                that.requiredData(sourceLang, targetLang, text, serviceKey)
-                    .then(
-                        function (result) {
-                            // var serviceResponse = result,
-                            //     errorContent = that.checkTranslationError(serviceResponse),
-                            //     message;
-
-                            //     console.log(errorContent);
-                            console.log(result);
+                        //Check for error responses
+                        if (errorContent) {
+                            that.sendErrorResponse(request, version, "Yandex", errorContent.statusCode, errorContent.message);
                         }
-                    );
-            }
+                        //No error response
+                        else {
+                            var message = "Translation Successful",
+                                response = that.constructResponse(serviceResponse, sourceLang, targetLang, text);
+
+                            that.sendSuccessResponse(request, version, "Yandex", serviceResponse.statusCode, message, response);
+                        }
+                    }
+                );
         }
     }
     //Error with the API code
     catch (error) {
-        var message = "Internal Server Erro: " + error;
+        var message = "Internal Server Error: " + error;
 
         that.sendErrorResponse(request, version, "Yandex", 500, message);
     }

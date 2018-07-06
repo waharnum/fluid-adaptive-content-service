@@ -11,8 +11,10 @@ var sourceLang = "en",
     wrongLang = "eng", // valid lang code, but not found
     invalidLang = "english", // greater than 3 digit
     text = "This is the text to be translated",
+    limitExceedText = "Text to trigger limit exceeded endpoint",
     apiKey = process.env.YANDEX_APP_KEY,
     invalidApiKey = "randomstring",
+    blockedApiKey = "blockedkey",
     urlBase = "https://translate.yandex.net/api/v1.5/tr.json";
 
 nock(urlBase)
@@ -41,14 +43,28 @@ nock(urlBase)
     401,
     {
         "code": 401,
-        "message": "Invalid API key"
+        "message": "API key is invalid"
+    }
+)
+// Blocked api key
+.post(
+    "/translate?key=" + blockedApiKey + "&lang=" + sourceLang + "-" + targetLang,
+    {
+        text: text
+    }
+)
+.reply(
+    402,
+    {
+        "code": 402,
+        "message": "API key is blocked"
     }
 )
 // Exceeding daily limit
-.port(
+.post(
     "/translate?key=" + apiKey + "&lang=" + sourceLang + "-" + targetLang,
     {
-        text: text
+        text: limitExceedText
     }
 )
 .reply(
@@ -59,7 +75,7 @@ nock(urlBase)
     }
 )
 //translation direction not supported
-.port(
+.post(
     "/translate?key=" + apiKey + "&lang=" + wrongLang + "-" + targetLang,
     {
         text: text
@@ -73,13 +89,13 @@ nock(urlBase)
     }
 )
 //invalid lang code
-.port(
+.post(
     "/translate?key=" + apiKey + "&lang=" + invalidLang + "-" + targetLang,
     {
         text: text
     }
 )
-  .reply(
+.reply(
     502,
     {
         "code": 502,
