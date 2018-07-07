@@ -10,8 +10,6 @@ var sourceLang = "en",
     targetLang = "de",
     wrongLang = "eng", // valid lang code, but not found
     invalidLang = "english", // greater than 3 digit
-    text = "This is the text to be translated",
-    limitExceedText = "Text to trigger limit exceeded endpoint",
     apiKey = process.env.YANDEX_APP_KEY,
     invalidApiKey = "randomstring",
     blockedApiKey = "blockedkey",
@@ -24,7 +22,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + apiKey + "&lang=" + sourceLang + "-" + targetLang,
     {
-        text: text
+        text: mockTranslationData.text
     }
 )
 .reply(
@@ -35,7 +33,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + invalidApiKey + "&lang=" + sourceLang + "-" + targetLang,
     {
-        text: text
+        text: mockTranslationData.text
     }
 )
 .reply(
@@ -46,7 +44,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + blockedApiKey + "&lang=" + sourceLang + "-" + targetLang,
     {
-        text: text
+        text: mockTranslationData.text
     }
 )
 .reply(
@@ -57,7 +55,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + apiKey + "&lang=" + sourceLang + "-" + targetLang,
     {
-        text: limitExceedText
+        text: mockTranslationData.limitExceedTriggerText
     }
 )
 .reply(
@@ -68,7 +66,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + apiKey + "&lang=" + wrongLang + "-" + targetLang,
     {
-        text: text
+        text: mockTranslationData.text
     }
 )
 .reply(
@@ -79,7 +77,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + apiKey + "&lang=" + invalidLang + "-" + targetLang,
     {
-        text: text
+        text: mockTranslationData.text
     }
 )
 .reply(

@@ -2,6 +2,8 @@
 
 module.exports = function (sourceLang, targetLang) {
     return {
+        text: "This is the text to be translated",
+        limitExceedTriggerText: "This test will trigger limit exceeded endpoint",
         noError: {
             "code": 200,
             "lang": sourceLang + "-" + targetLang,

@@ -65,3 +65,8 @@ adaptiveContentService.tests.utils.getOxfordRequestHeaders = function () {
         "app_key": process.env.OXFORD_APP_KEY
     };
 };
+
+//TODO: figure out how to use kettle resolvers here
+adaptiveContentService.tests.utils.getYandexServiceKey = function () {
+    return process.env.YANDEX_APP_KEY;
+};
