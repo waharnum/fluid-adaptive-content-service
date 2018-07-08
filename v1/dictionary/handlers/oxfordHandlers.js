@@ -20,7 +20,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
     },
     invokers: {
         dictionaryHandlerImpl: "fluid.notImplemented",
-        requiredDataImpl: "fluid.notImplemented",
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.requiredData",
         serviceKeysImpl: {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.serviceKeys",
             args: ["{that}"]
@@ -81,6 +81,35 @@ adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape = function (htm
     }
 };
 
+//function to get the required data from the Oxford Service
+adaptiveContentService.handlers.dictionary.oxford.requiredData = function (url, requestHeaders) {
+    var promise = fluid.promise();
+
+    makeRequest(
+        {
+            url: url,
+            headers: requestHeaders
+        },
+        function (error, response, body) {
+            if (error) {
+                fluid.log("Error making request to the Oxford Service\n");
+                promise.resolve({
+                    statusCode: 500,
+                    body: "Internal server error : Error with making request to the external service (Oxford) - " + error
+                });
+            }
+            else {
+                promise.resolve({
+                    statusCode: response.statusCode,
+                    body: body
+                });
+            }
+        }
+    );
+
+    return promise;
+};
+
 //Oxford definition grade
 fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
     gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
@@ -89,7 +118,6 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.definition.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse"
     }
 });
@@ -99,9 +127,11 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
     try {
         //Check for long URI
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var requestHeaders = that.serviceKeysImpl(that);
+            var requestHeaders = that.serviceKeysImpl(that),
+                urlBase = that.options.serviceConfig.urlBase,
+                url = urlBase + "entries/" + lang + "/" + word;
 
-            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
+            that.requiredDataImpl(url, requestHeaders)
                 .then(
                     function (result) {
                         var serviceResponse = result,
@@ -134,33 +164,6 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
-};
-
-//function to get definition from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.definition.requiredData = function (lang, word, urlBase, requestHeaders) {
-    var promise = fluid.promise();
-
-    makeRequest(
-        {
-            url: urlBase + "entries/" + lang + "/" + word,
-            headers: requestHeaders
-        },
-        function (error, response, body) {
-            if (error) {
-                promise.resolve({
-                    statusCode: 501
-                });
-            }
-            else {
-                promise.resolve({
-                    statusCode: response.statusCode,
-                    body: body
-                });
-            }
-        }
-    );
-
-    return promise;
 };
 
 //function to construct a useful response from the data provided by the Oxford Service
@@ -209,7 +212,6 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.synonyms", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse"
     }
 });
@@ -222,9 +224,11 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse,
                 errorContent,
-                requestHeaders = that.serviceKeysImpl(that);
+                requestHeaders = that.serviceKeysImpl(that),
+                urlBase = that.options.serviceConfig.urlBase,
+                url = urlBase + "entries/" + lang + "/" + word + "/synonyms";
 
-            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
+            that.requiredDataImpl(url, requestHeaders)
                 .then(
                     function (result) {
                         serviceResponse = result;
@@ -259,33 +263,6 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
-};
-
-//function to get the synonyms from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.synonyms.requiredData = function (lang, word, urlBase, requestHeaders) {
-    var promise = fluid.promise();
-
-    makeRequest(
-        {
-            url: urlBase + "entries/" + lang + "/" + word + "/synonyms",
-            headers: requestHeaders
-        },
-        function (error, response, body) {
-            if (error) {
-                promise.resolve({
-                    statusCode: 501
-                });
-            }
-            else {
-                promise.resolve({
-                    statusCode: response.statusCode,
-                    body: body
-                });
-            }
-        }
-    );
-
-    return promise;
 };
 
 //function to construct a useful response from the synonyms data provided by the Oxford Service
@@ -358,7 +335,6 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.antonyms", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.antonyms.constructResponse"
     }
 });
@@ -371,9 +347,11 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse,
                 errorContent,
-                requestHeaders = that.serviceKeysImpl(that);
+                requestHeaders = that.serviceKeysImpl(that),
+                urlBase = that.options.serviceConfig.urlBase,
+                url = urlBase + "entries/" + lang + "/" + word + "/antonyms";
 
-            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
+            that.requiredDataImpl(url, requestHeaders)
                 .then(
                     function (result) {
                         serviceResponse = result;
@@ -408,33 +386,6 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
-};
-
-//function to get the antonyms from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.antonyms.requiredData = function (lang, word, urlBase, requestHeaders) {
-    var promise = fluid.promise();
-
-    makeRequest(
-        {
-            url: urlBase + "entries/" + lang + "/" + word + "/antonyms",
-            headers: requestHeaders
-        },
-        function (error, response, body) {
-            if (error) {
-                promise.resolve({
-                    statusCode: 501
-                });
-            }
-            else {
-                promise.resolve({
-                    statusCode: response.statusCode,
-                    body: body
-                });
-            }
-        }
-    );
-
-    return promise;
 };
 
 //function to construct a useful response from the antonyms data provided by the Oxford Service
@@ -507,7 +458,6 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.pronunciations
             funcName: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciations",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.pronunciations.constructResponse"
     }
 });
@@ -520,9 +470,11 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciatio
         if (!that.uriErrHandler(request, version, word, "Oxford")) {
             var serviceResponse,
                 errorContent,
-                requestHeaders = that.serviceKeysImpl(that);
+                requestHeaders = that.serviceKeysImpl(that),
+                urlBase = that.options.serviceConfig.urlBase,
+                url = urlBase + "entries/" + lang + "/" + word;
 
-            that.requiredDataImpl(lang, word, that.options.serviceConfig.urlBase, requestHeaders)
+            that.requiredDataImpl(url, requestHeaders)
                 .then(
                     function (result) {
                         serviceResponse = result;
@@ -563,33 +515,6 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciatio
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
-};
-
-//function to get the pronunciations link from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.pronunciations.requiredData = function (lang, word, urlBase, requestHeaders) {
-    var promise = fluid.promise();
-
-    makeRequest(
-        {
-            url: urlBase + "entries/" + lang + "/" + word,
-            headers: requestHeaders
-        },
-        function (error, response, body) {
-            if (error) {
-                promise.resolve({
-                    statusCode: 501
-                });
-            }
-            else {
-                promise.resolve({
-                    statusCode: response.statusCode,
-                    body: body
-                });
-            }
-        }
-    );
-
-    return promise;
 };
 
 //function to construct a useful response from the pronunciation data provided by the Oxford Service
@@ -661,7 +586,6 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.frequency", {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
         },
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse"
     }
 });
@@ -675,9 +599,18 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
             var serviceResponse,
                 errorContent,
                 lexicalCategory = request.req.params.lexicalCategory,
-                requestHeaders = that.serviceKeysImpl(that);
+                requestHeaders = that.serviceKeysImpl(that),
+                urlBase = that.options.serviceConfig.urlBase,
+                url;
 
-            that.requiredDataImpl(lang, word, lexicalCategory, that.options.serviceConfig.urlBase, requestHeaders)
+            if (lexicalCategory) {
+                url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
+            }
+            else {
+                url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
+            }
+
+            that.requiredDataImpl(url, requestHeaders)
                 .then(
                     function (result) {
                         serviceResponse = result;
@@ -712,41 +645,6 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
-};
-
-//function to get the frequency data from the oxford service
-adaptiveContentService.handlers.dictionary.oxford.frequency.requiredData = function (lang, word, lexicalCategory, urlBase, requestHeaders) {
-    var promise = fluid.promise(),
-        requestURL;
-
-    if (lexicalCategory) {
-        requestURL = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
-    }
-    else {
-        requestURL = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
-    }
-
-    makeRequest(
-        {
-            url: requestURL,
-            headers: requestHeaders
-        },
-        function (error, response, body) {
-            if (error) {
-                promise.resolve({
-                    statusCode: 501
-                });
-            }
-            else {
-                promise.resolve({
-                    statusCode: response.statusCode,
-                    body: body
-                });
-            }
-        }
-    );
-
-    return promise;
 };
 
 //function to construct a useful response from the frequency data provided by the Oxford Service

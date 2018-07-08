@@ -84,10 +84,11 @@ adaptiveContentService.handlers.translation.yandex.translateText.requiredData = 
         },
         function (error, response, body) {
             if (error) {
+                fluid.log("Error making request to the Yandex Service\n");
                 promise.resolve({
                     statusCode: 500,
                     body: {
-                        message: "Internal Server Error - " + error
+                        message: "Internal Server Error : Error with making request to the external service (Yandex) - " + error
                     }
                 });
             }
