@@ -16,24 +16,28 @@ OXFORD_APP_ID=your_api_id_goes_here
 OXFORD_APP_KEY=your_api_key_goes_here
 ```
 ### Step 4 - Start the service server
-- **All Services together**\
-When at the root of the repository, run
+- **All Services together**
 ```
 npm start
 ```
 This will run all the endpoints, from all the services, at port 8080
-- **Dictionary Service Server**\
-When at the root of the repository, run
+- **Dictionary Service Server**
 ```
 npm run dictionary
 ```
-This will run all the dictionary service endpoints, at port 8081
-- **NLP Service Server**\
-When at the root of the repository, run
+This will run all the dictionary service server, at port 8081
+- **NLP Service Server**
 ```
 npm run nlp
 ```
-This will run all the nlp service endpoints, at port 8082
+This will run all the nlp service server, at port 8082
+- **Translation Service Server**
+```
+npm run translation
+```
+This will run all the translation service server, at port 8083
+
+**Note** that all the above commands should be run at the root of the repository
 
 When the server starts, it is ready to accept requests at the available endpoints.
 
@@ -92,21 +96,36 @@ Currently available endpoints -
 
 (Wiktionary only gives definition)
 
+Example endpoints:
+- `http://localhost:8081/v1/dictionary/en/definition/horse`
+- `http://localhost:8081/v1/dictionary/wiktionary/fr/definition/rien`
+- `http://localhost:8081/v1/dictionary/oxford/en/definition/horse`
+
 ### NLP Service
 - `http://localhost:8082/v1/nlp/compromise/tags`\
 **Method**: `POST`\
 **Request Body Format**: `{ sentence: "{sentence_to_be_tagged}" }`
 
 Example endpoints:
-- `http://localhost:8081/v1/dictionary/en/definition/horse`
-- `http://localhost:8081/v1/dictionary/wiktionary/fr/definition/rien`
-- `http://localhost:8081/v1/dictionary/oxford/en/definition/horse`
+- `http://localhost:8082/v1/nlp/compromise/tags`\
+**Body** `{ sentence: "Hello world! This is a test sentence" }`
+
+### Translation Service
+- `http://localhost:8083/v1/translation/yandex/{source_lang}-{target_lang}`\
+**Method**: `POST`\
+**Request Body Format**: `{ text: "text_to_be_translated"}`\
+**Language Code**: ISO 639-1 (2-lettered language codes)
+
+Example endpoints:
+- `http://localhost:8083/v1/translation/yandex/en-de`\
+**Body** `{ text: "This is the text to be translated" }`
 
 ## Running Tests
 
 Tests for these endpoints lie in -
 - `share/dictionary/tests/` - Tests for dictionary endpoints
 - `share/nlp/tests/` - Tests for nlp endpoints
+- `share/translation/tests/` - Tests for translation endpoints
 
 
 There are 3 kinds of tests for each service -
@@ -130,6 +149,9 @@ npm run test-dictionary
 
 // for nlp service
 npm run test-nlp
+
+// for translation service
+npm run test-translation
 ```
 - Running all `Contract` tests of a particular service
 ```
@@ -138,12 +160,15 @@ npm run test-dictionary-contract
 
 // for nlp service
 npm run test-nlp-contract
+
+// for translation service
+npm run test-translation-contract
 ```
 - To run a particular test
 ```
 node /relative/path/to/the/test/file
 ```
-**Note** that all the above commands for running tests should be performed at the root of the repository
+**Note** that all the above commands for running tests should be run at the root of the repository
 
 ## Documentation
 Learn more about the service and the endpoints, in its documentation, which can be found [here](https://app.swaggerhub.com/apis/kunal4/fluid-adaptive-content-service/1.0.0).
