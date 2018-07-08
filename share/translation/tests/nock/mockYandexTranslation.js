@@ -6,23 +6,16 @@ var nock = require("nock");
 //TODO: mention in README that any random string is enough to run mock server
 require("dotenv").config();//npm package to get variables from '.env' file
 
-var sourceLang = "en",
-    targetLang = "de",
-    wrongLang = "eng", // valid lang code, but not found
-    invalidLang = "english", // greater than 3 digit
-    apiKey = process.env.YANDEX_APP_KEY,
-    invalidApiKey = "randomstring",
-    blockedApiKey = "blockedkey",
-    urlBase = "https://translate.yandex.net/api/v1.5/tr.json";
+var urlBase = "https://translate.yandex.net/api/v1.5/tr.json";
 
 // mock data
-var mockTranslationData = require("../mockData/yandex/translation")(sourceLang, targetLang);
+var mockTranslationData = require("../mockData/yandex/translation");
 
 nock(urlBase)
 .post(
-    "/translate?key=" + apiKey + "&lang=" + sourceLang + "-" + targetLang,
+    "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
-        text: mockTranslationData.text
+        text: mockTranslationData.text.noError
     }
 )
 .reply(
@@ -31,7 +24,7 @@ nock(urlBase)
 )
 // Invalid api key
 .post(
-    "/translate?key=" + invalidApiKey + "&lang=" + sourceLang + "-" + targetLang,
+    "/translate?key=" + mockTranslationData.apiKey.invalid + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
         text: mockTranslationData.text
     }
@@ -42,7 +35,7 @@ nock(urlBase)
 )
 // Blocked api key
 .post(
-    "/translate?key=" + blockedApiKey + "&lang=" + sourceLang + "-" + targetLang,
+    "/translate?key=" + mockTranslationData.apiKey.blocked + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
         text: mockTranslationData.text
     }
@@ -53,7 +46,7 @@ nock(urlBase)
 )
 // Exceeding daily limit
 .post(
-    "/translate?key=" + apiKey + "&lang=" + sourceLang + "-" + targetLang,
+    "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
         text: mockTranslationData.limitExceedTriggerText
     }
@@ -64,7 +57,7 @@ nock(urlBase)
 )
 //translation direction not supported
 .post(
-    "/translate?key=" + apiKey + "&lang=" + wrongLang + "-" + targetLang,
+    "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.wrong + "-" + mockTranslationData.targetLang.correct,
     {
         text: mockTranslationData.text
     }
@@ -75,7 +68,7 @@ nock(urlBase)
 )
 //invalid lang code
 .post(
-    "/translate?key=" + apiKey + "&lang=" + invalidLang + "-" + targetLang,
+    "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.invalid + "-" + mockTranslationData.targetLang.correct,
     {
         text: mockTranslationData.text
     }

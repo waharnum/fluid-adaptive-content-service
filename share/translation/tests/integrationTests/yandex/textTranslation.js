@@ -16,26 +16,10 @@ fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
+//mock data
+var mockTranslationData = require("../../mockData/yandex/translation");
+
 //TODO: figure how to test for large text
-//TODO: figure out a way to have common data here and in nock configs so that there are no conflicts
-
-var sourceLang = {
-    correct: "en",
-    wrong: "eng", //valid lang code, but not found
-    invalid: "english" //greater than 3 letters (invalid)
-};
-
-var targetLang = {
-    correct: "de",
-    wrong: "ger",
-    invalid: "german"
-};
-
-var testText = {
-    noError: "This is the text to be translated",
-    empty: "",
-    absent: undefined
-};
 
 adaptiveContentService.tests.translation.yandex.translateText = [{
     name: "POST request for the Text Translation endpoint of Yandex Service",
@@ -48,49 +32,49 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
         noError: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + sourceLang.correct + "-" + targetLang.correct,
+                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         emptyTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + sourceLang.correct + "-" + targetLang.correct,
+                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         absentTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + sourceLang.correct + "-" + targetLang.correct,
+                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         unsupportedTranslationDirection: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex" + sourceLang.wrong + "-" + targetLang.correct,
+                path: "/v1/translation/yandex" + mockTranslationData.sourceLang.wrong + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         invalidSourceLangCode: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex" + sourceLang.invalid + "-" + targetLang.correct,
+                path: "/v1/translation/yandex" + mockTranslationData.sourceLang.invalid + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         invalidTargetLangCode: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex" + sourceLang.correct + "-" + targetLang.invalid,
+                path: "/v1/translation/yandex" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.invalid,
                 method: "post"
             }
         }
     },
     sequence: [{
         func: "{noError}.send",
-        args: { text: testText.noError }
+        args: { text: mockTranslationData.text.noError }
     },
     {
         event: "{noError}.events.onComplete",
@@ -99,7 +83,7 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     },
     {
         func: "{emptyTextField}.send",
-        args: { text: ""}
+        args: { text: mockTranslationData.text.empty }
     },
     {
         event: "{emptyTextField}.events.onComplete",
@@ -108,7 +92,7 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     },
     {
         func: "{absentTextField}.send",
-        args: { text: testText.empty}
+        args: { text: mockTranslationData.text.empty }
     },
     {
         event: "{absentTextField}.events.onComplete",
@@ -117,7 +101,7 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     },
     {
         func: "{unsupportedTranslationDirection}.send",
-        args: { text: testText.absent}
+        args: { text: mockTranslationData.text.absent }
     },
     {
         event: "{unsupportedTranslationDirection}.events.onComplete",
@@ -126,7 +110,7 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     },
     {
         func: "{invalidSourceLangCode}.send",
-        args: { text: testText.noError}
+        args: { text: mockTranslationData.text.noError }
     },
     {
         event: "{invalidSourceLangCode}.events.onComplete",
@@ -135,7 +119,7 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     },
     {
         func: "{invalidTargetLangCode}.send",
-        args: { text: testText.noError}
+        args: { text: mockTranslationData.text.noError }
     },
     {
         event: "{invalidTargetLangCode}.events.onComplete",

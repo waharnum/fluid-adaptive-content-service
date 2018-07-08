@@ -14,21 +14,17 @@ adaptiveContentService.tests.translation.unitTests.constructResponse = function 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);
 };
 
-var testSourceLang = "en",
-    testTargetLang = "de",
-    testText = "This is the text to be translated";
-
 //mock data
-var mockTranslationData = require("../../mockData/yandex/translation")(testSourceLang, testTargetLang);
+var mockTranslationData = require("../../mockData/yandex/translation");
 
 var testServiceResponse = {
     body: mockTranslationData.noError
 };
 
 var expectedReturnVal = {
-    sourceLang: testSourceLang,
-    targetLang: testTargetLang,
-    sourceText: testText,
+    sourceLang: mockTranslationData.sourceLang.correct,
+    targetLang: mockTranslationData.targetLang.correct,
+    sourceText: mockTranslationData.text.noError,
     translatedText: testServiceResponse.body.text
 };
 
@@ -37,6 +33,6 @@ var testMessage = "Unit Test : For constructResponse function : Successful";
 jqunit.test(
     "Unit Test : For constructResponse function (Translation Service)",
     function () {
-        adaptiveContentService.tests.translation.unitTests.constructResponse(testMessage, expectedReturnVal, testServiceResponse, testSourceLang, testTargetLang, testText);
+        adaptiveContentService.tests.translation.unitTests.constructResponse(testMessage, expectedReturnVal, testServiceResponse, mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.correct, mockTranslationData.text.noError);
     }
 );

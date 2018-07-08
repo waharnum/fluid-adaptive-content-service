@@ -15,7 +15,7 @@ adaptiveContentService.tests.translation.unitTests.checkTranslationError = funct
 };
 
 // mock data
-var mockTranslationData = require("../../mockData/yandex/translation")("en", "de");
+var mockTranslationData = require("../../mockData/yandex/translation");
 
 var testSeviceResponse = {
     noError: {

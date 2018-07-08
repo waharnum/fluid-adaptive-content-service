@@ -8,21 +8,14 @@ fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.chec
 
 require("../../../../../v1/translation/handlers");
 
-adaptiveContentService.tests.translation.unitTests.checkLanguageCodes = function (testMessage, expectedReturnVal, testSourceLang, testTargetLang) {
-    var returnVal = adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes(testSourceLang, testTargetLang);
+adaptiveContentService.tests.translation.unitTests.checkLanguageCodes = function (testMessage, expectedReturnVal, sourceLang, testTargetLang) {
+    var returnVal = adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes(sourceLang, testTargetLang);
 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);
 };
 
-var testSourceLang = {
-    valid: "en",
-    invalid: "english"
-};
-
-var testTargetLang = {
-    valid: "de",
-    invalid: "german"
-};
+//mock data
+var mockTranslationData = require("../../mockData/yandex/translation");
 
 var expectedReturnVal = {
     sourceLangInvalid: {
@@ -47,12 +40,12 @@ jqunit.test(
     function () {
 
         // for invalid sourceLang
-        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.sourceLangInvalid, expectedReturnVal.sourceLangInvalid, testSourceLang.invalid, testTargetLang.valid);
+        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.sourceLangInvalid, expectedReturnVal.sourceLangInvalid, mockTranslationData.sourceLang.invalid, mockTranslationData.targetLang.correct);
 
         // for invalid targetLang
-        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.targetLangInvalid, expectedReturnVal.targetLangInvalid, testSourceLang.valid, testTargetLang.invalid);
+        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.targetLangInvalid, expectedReturnVal.targetLangInvalid, mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.invalid);
 
         // for both sourceLang and targetLang valid
-        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.bothValid, expectedReturnVal.bothValid, testSourceLang.valid, testTargetLang.valid);
+        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.bothValid, expectedReturnVal.bothValid, mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.correct);
     }
 );
