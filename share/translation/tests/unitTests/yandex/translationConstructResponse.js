@@ -4,11 +4,11 @@ var fluid = require("infusion"),
     jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.constructResponse");
+fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.translateText.constructResponse");
 
 require("../../../../../v1/translation/handlers");
 
-adaptiveContentService.tests.translation.unitTests.constructResponse = function (testMessage, expectedReturnVal, serviceResponse, sourceLang, targetLang, sourceText) {
+adaptiveContentService.tests.translation.unitTests.translateText.constructResponse = function (testMessage, expectedReturnVal, serviceResponse, sourceLang, targetLang, sourceText) {
     var returnVal = adaptiveContentService.handlers.translation.yandex.translateText.constructResponse(serviceResponse, sourceLang, targetLang, sourceText);
 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);
@@ -28,11 +28,11 @@ var expectedReturnVal = {
     translatedText: testServiceResponse.body.text
 };
 
-var testMessage = "Unit Test : For constructResponse function : Successful";
+var testMessage = "Unit Test : For translation constructResponse function : Successful";
 
 jqunit.test(
-    "Unit Test : For constructResponse function (Translation Service)",
+    "Unit Test : For translation constructResponse function (Translation Service)",
     function () {
-        adaptiveContentService.tests.translation.unitTests.constructResponse(testMessage, expectedReturnVal, testServiceResponse, mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.correct, mockTranslationData.text.noError);
+        adaptiveContentService.tests.translation.unitTests.translateText.constructResponse(testMessage, expectedReturnVal, testServiceResponse, mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.correct, mockTranslationData.text.noError);
     }
 );

@@ -32,6 +32,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex", {
         },
         checkSourceText: "adaptiveContentService.handlers.translation.yandex.checkSourceText",
         checkServiceKey: "adaptiveContentService.handlers.translation.yandex.checkServiceKey",
+        checkTranslationError: "adaptiveContentService.handlers.translation.yandex.checkTranslationError",
         serviceKey: {
             funcName: "adaptiveContentService.handlers.translation.yandex.serviceKey",
             args: ["{that}"]
@@ -94,6 +95,43 @@ adaptiveContentService.handlers.translation.yandex.checkServiceKey = function (s
     }
 };
 
+//function to catch the error content from the yandex service resopnse
+adaptiveContentService.handlers.translation.yandex.checkTranslationError = function (serviceResponse) {
+
+    //No error
+    if (serviceResponse.statusCode === 200) {
+        return false;
+    }
+    //invalid api key
+    else if (serviceResponse.statusCode === 401) {
+        return {
+            statusCode: 403,
+            errorMessage: "Authenticaion failed - " + serviceResponse.body.message
+        };
+    }
+    //daily limit exceeded
+    else if (serviceResponse.statusCode === 404) {
+        return {
+            statusCode: 429,
+            errorMessage: serviceResponse.body.message
+        };
+    }
+    //unsupported translation direction
+    else if (serviceResponse.statusCode === 501) {
+        return {
+            statusCode: 404,
+            errorMessage: serviceResponse.body.message + " - Please check the language codes"
+        };
+    }
+    //remaining errors
+    else {
+        return {
+            statusCode: serviceResponse.body.code,
+            errorMessage: serviceResponse.body.message
+        };
+    }
+};
+
 // return the service keys
 adaptiveContentService.handlers.translation.yandex.serviceKey = function (that) {
     var serviceKey = that.options.authenticationOptions.app_key;
@@ -114,7 +152,7 @@ adaptiveContentService.handlers.translation.yandex.requiredData = function (url,
         },
         function (error, response, body) {
             if (error) {
-                fluid.log("Error making request to the Yandex Service\n");
+                fluid.log("Error making request to the Yandex Service - " + error);
                 promise.resolve({
                     statusCode: 500,
                     body: {
@@ -143,7 +181,6 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText
     invokers: {
         translationHandlerImpl: "adaptiveContentService.handlers.translation.yandex.translateText.getTranslation",
         checkLanguageCodes: "adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes",
-        checkTranslationError: "adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError",
         preRequestErrorCheck: {
             funcName: "adaptiveContentService.handlers.translation.yandex.translateText.preRequestErrorCheck",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{that}"]
@@ -203,43 +240,6 @@ adaptiveContentService.handlers.translation.yandex.translateText.preRequestError
                 return false;
             }
         }
-    }
-};
-
-//function to catch the error content from the yandex service resopnse
-adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError = function (serviceResponse) {
-
-    //No error
-    if (serviceResponse.statusCode === 200) {
-        return false;
-    }
-    //invalid api key
-    else if (serviceResponse.statusCode === 401) {
-        return {
-            statusCode: 403,
-            errorMessage: "Authenticaion failed - " + serviceResponse.body.message
-        };
-    }
-    //daily limit exceeded
-    else if (serviceResponse.statusCode === 404) {
-        return {
-            statusCode: 429,
-            errorMessage: serviceResponse.body.message
-        };
-    }
-    //unsupported translation direction
-    else if (serviceResponse.statusCode === 501) {
-        return {
-            statusCode: 404,
-            errorMessage: serviceResponse.body.message + " - Please check the language codes"
-        };
-    }
-    //remaining errors
-    else {
-        return {
-            statusCode: serviceResponse.body.code,
-            errorMessage: serviceResponse.body.message
-        };
     }
 };
 
@@ -309,7 +309,6 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.langDetection
     characterLimit: 500,
     invokers: {
         translationHandlerImpl: "adaptiveContentService.handlers.translation.yandex.langDetection.getLang",
-        checkTranslationError: "adaptiveContentService.handlers.translation.yandex.langDetection.checkTranslationError",
         preRequestErrorCheck: {
             funcName: "adaptiveContentService.handlers.translation.yandex.langDetection.preRequestErrorCheck",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{that}"]
@@ -341,37 +340,7 @@ adaptiveContentService.handlers.translation.yandex.langDetection.preRequestError
     }
 };
 
-//function to catch the error content from the yandex service resopnse
-adaptiveContentService.handlers.translation.yandex.langDetection.checkTranslationError = function (serviceResponse) {
-
-    //No error
-    if (serviceResponse.statusCode === 200) {
-        return false;
-    }
-    //invalid api key
-    else if (serviceResponse.statusCode === 401) {
-        return {
-            statusCode: 403,
-            errorMessage: "Authenticaion failed - " + serviceResponse.body.message
-        };
-    }
-    //daily limit exceeded
-    else if (serviceResponse.statusCode === 404) {
-        return {
-            statusCode: 429,
-            errorMessage: serviceResponse.body.message
-        };
-    }
-    //remaining errors
-    else {
-        return {
-            statusCode: serviceResponse.body.code,
-            errorMessage: serviceResponse.body.message
-        };
-    }
-};
-
-// function to construct a response from the data provided by the Yandex service
+//function to construct a response from the data provided by the Yandex service
 adaptiveContentService.handlers.translation.yandex.langDetection.constructResponse = function (serviceResponse, sourceText) {
     return {
         sourceText: sourceText,
@@ -395,7 +364,7 @@ adaptiveContentService.handlers.translation.yandex.langDetection.getLang = funct
         }
         //No pre request errors
         else {
-            var url = that.options.urlBase + "detect?&key=" + serviceKey;
+            var url = that.options.urlBase + "detect?key=" + serviceKey;
 
             //making request to the service
             that.requiredData(url, text)

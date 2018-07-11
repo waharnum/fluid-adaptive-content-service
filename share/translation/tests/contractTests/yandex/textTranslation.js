@@ -48,13 +48,12 @@ adaptiveContentService.tests.translation.yandex.contractTests.translateText.getD
                 //check for the presence of response body
                 try {
                     jsonBody = JSON.parse(body);
+                    that.events.onDataReceive.fire(jsonBody);
                 }
                 catch (err) {
                     fluid.log("Error occured while parsing the response body; body should be JSON pareseable -  " + err);
                     jqunit.fail("Contract Test : For text translation failed due to error parsing with parsing response body into JSON");
                 }
-
-                that.events.onDataReceive.fire(jsonBody);
             }
         }
     );

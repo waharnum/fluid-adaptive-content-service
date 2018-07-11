@@ -88,25 +88,25 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     {
         event: "{emptyTextField}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : Text Translation test for request with no errors", 400, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : Text Translation test for request with empty text field", 400, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{absentTextField}.send",
-        args: { text: mockTranslationData.text.empty }
+        args: { text: mockTranslationData.text.absent }
     },
     {
         event: "{absentTextField}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : Text Translation test for request with no errors", 400, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : Text Translation test for request with absent text field", 400, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{unsupportedTranslationDirection}.send",
-        args: { text: mockTranslationData.text.absent }
+        args: { text: mockTranslationData.text.noError }
     },
     {
         event: "{unsupportedTranslationDirection}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : Text Translation test for request with no errors", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : Text Translation test for request with unsupported translation direction", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{invalidSourceLangCode}.send",
@@ -115,7 +115,7 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     {
         event: "{invalidSourceLangCode}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : Text Translation test for request with no errors", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : Text Translation test for request with invalid source language", 404, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{invalidTargetLangCode}.send",
@@ -124,7 +124,7 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     {
         event: "{invalidTargetLangCode}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : Text Translation test for request with no errors", 404, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : Text Translation test for request with invalid target language", 404, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];
