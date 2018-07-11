@@ -9,7 +9,7 @@ fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.chec
 require("../../../../../v1/translation/handlers");
 
 adaptiveContentService.tests.translation.unitTests.checkTranslationError = function (testMessage, expectedReturnVal, serviceResponse) {
-    var returnVal = adaptiveContentService.handlers.translation.yandex.translateText.checkTranslationError(serviceResponse);
+    var returnVal = adaptiveContentService.handlers.translation.yandex.checkTranslationError(serviceResponse);
 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);
 };

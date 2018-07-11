@@ -1,5 +1,7 @@
 "use strict";
 
+var kettle = require("kettle");
+
 module.exports = {
     // general data
     text: {
@@ -19,7 +21,7 @@ module.exports = {
         invalid: "german"
     },
     apiKey: {
-        correct: process.env.YANDEX_APP_KEY,
+        correct: kettle.resolvers.env("YANDEX_APP_KEY"),
         invalid: "randomstring",
         blocked: "blockedkey"
     },

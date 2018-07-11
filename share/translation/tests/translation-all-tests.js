@@ -11,7 +11,8 @@ var testIncludes = [
     "./unitTests/yandex/checkLanguageCodes.js",
     "./unitTests/yandex/checkTranslationError.js",
     "./unitTests/yandex/translationConstructResponse.js",
-    "./integrationTests/yandex/textTranslation.js"
+    "./integrationTests/yandex/textTranslation.js",
+    "./integrationTests/yandex/langDetection.js"
 ];
 
 fluid.each(testIncludes, function (path) {
