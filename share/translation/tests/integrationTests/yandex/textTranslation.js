@@ -19,11 +19,17 @@ kettle.loadTestingSupport();
 //mock data
 var mockTranslationData = require("../../mockData/yandex/translation");
 
-//TODO: figure how to test for large text
+/* testing grade for yandex text translation - to override 'characterLimit'
+ * configuration for the purpose of testing
+ */
+fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.translateText", {
+    gradeNames: "adaptiveContentService.handlers.translation.yandex.translateText",
+    characterLimit: 65
+});
 
 adaptiveContentService.tests.translation.yandex.translateText = [{
     name: "POST request for the Text Translation endpoint of Yandex Service",
-    expect: 6,
+    expect: 7,
     config: {
         configName: "translationServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/translation/config/"
@@ -44,6 +50,13 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
             }
         },
         absentTextField: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                method: "post"
+            }
+        },
+        longTextField: {
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
@@ -98,6 +111,15 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
         event: "{absentTextField}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Translation Tests : Text Translation test for request with absent text field", 400, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{longTextField}.send",
+        args: { text: mockTranslationData.text.tooLong }
+    },
+    {
+        event: "{longTextField}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : Text Translation test for request with too long text field", 413, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{unsupportedTranslationDirection}.send",

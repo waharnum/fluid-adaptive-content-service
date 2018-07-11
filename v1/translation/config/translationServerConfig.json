@@ -13,12 +13,12 @@
                             "options": {
                                 "requestHandlers": {
                                     "translateTextHandler": {
-                                        "type": "adaptiveContentService.handlers.translation.yandex.translateText",
+                                        "type": "adaptiveContentService.test.handlers.translation.yandex.translateText",
                                         "route": "/:version/translation/yandex/:sourceLang-:targetLang",
                                         "method": "post"
                                     },
                                     "langDetectionHandler": {
-                                        "type": "adaptiveContentService.handlers.translation.yandex.langDetection",
+                                        "type": "adaptiveContentService.test.handlers.translation.yandex.langDetection",
                                         "route": "/:version/translation/yandex/detect",
                                         "method": "post"
                                     }

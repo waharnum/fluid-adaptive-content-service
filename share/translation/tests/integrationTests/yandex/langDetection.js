@@ -19,11 +19,17 @@ kettle.loadTestingSupport();
 //mock data
 var mockLangDetectionData = require("../../mockData/yandex/langDetection");
 
-//TODO: figure how to test for large text
+/* testing grade for yandex text translation - to override 'characterLimit'
+ * configuration for the purpose of testing
+ */
+fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.langDetection", {
+    gradeNames: "adaptiveContentService.handlers.translation.yandex.langDetection",
+    characterLimit: 65
+});
 
 adaptiveContentService.tests.translation.yandex.langDetection = [{
     name: "POST request for the Language detection endpoint of Yandex Service",
-    expect: 3,
+    expect: 4,
     config: {
         configName: "translationServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/translation/config/"
@@ -44,6 +50,13 @@ adaptiveContentService.tests.translation.yandex.langDetection = [{
             }
         },
         absentTextField: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/detect",
+                method: "post"
+            }
+        },
+        longTextField: {
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/translation/yandex/detect",
@@ -76,7 +89,16 @@ adaptiveContentService.tests.translation.yandex.langDetection = [{
     {
         event: "{absentTextField}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : language detection test for request with absent text field", 400, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : language detection test for request with too long text field", 400, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{longTextField}.send",
+        args: { text: mockLangDetectionData.text.tooLong }
+    },
+    {
+        event: "{longTextField}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : language detection test for request with absent text field", 413, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];

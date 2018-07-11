@@ -8,6 +8,7 @@ module.exports = {
         noError: "This is the text to be translated",
         empty: "",
         absent: undefined,
+        tooLong: "This sentence will exceed the character limit because it is very long",
         limitExceeded: "This test will trigger limit exceeded endpoint"
     },
     sourceLang: {

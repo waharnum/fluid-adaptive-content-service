@@ -13,7 +13,7 @@
                             "options": {
                                 "requestHandlers": {
                                     "compromiseSentenceTaggingHandler": {
-                                          "type": "adaptiveContentService.handlers.nlp.compromise.sentenceTagging",
+                                          "type": "adaptiveContentService.test.handlers.nlp.compromise.sentenceTagging",
                                           "route": "/:version/nlp/compromise/tags/",
                                           "method": "post"
                                     }
@@ -26,4 +26,4 @@
         }
     },
     "require":"../handlers.js"
-  }
+}

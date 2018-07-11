@@ -18,14 +18,26 @@ var testRequestBody = {
     correctSentence: {
         sentence: "Hello world"
     },
-    emptySentence: {}
+    emptySentence: {},
+    longSentence: {
+        sentence: "This sentence exceeds the character limit"
+    }
 };
 
-//TODO: figure how to test for long sentences
+require("../../../../../v1/nlp/handlers");
+
+fluid.registerNamespace("adaptiveContentService.test.handlers.nlp.compromise.sentenceTagging");
+
+/* testing grade for compromise sentence tagging - to override 'characterLimit'   * configuration for the purpose of testing
+ */
+fluid.defaults("adaptiveContentService.test.handlers.nlp.compromise.sentenceTagging", {
+    gradeNames: "adaptiveContentService.handlers.nlp.compromise.sentenceTagging",
+    characterLimit: 20
+});
 
 adaptiveContentService.tests.nlp.compromise.sentenceTagging = [{
     name: "GET request for the Sentence Tagging NLP endpoint",
-    expect: 2,
+    expect: 3,
     config: {
         configName: "nlpServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/nlp/config/"
@@ -39,6 +51,13 @@ adaptiveContentService.tests.nlp.compromise.sentenceTagging = [{
             }
         },
         emptySentence: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/:version/nlp/compromise/tags/",
+                method: "post"
+            }
+        },
+        longSentence: {
             type: "kettle.test.request.http",
             options: {
                 path: "/:version/nlp/compromise/tags/",
@@ -64,6 +83,15 @@ adaptiveContentService.tests.nlp.compromise.sentenceTagging = [{
             event: "{emptySentence}.events.onComplete",
             listener: "adaptiveContentService.tests.utils.assertStatusCode",
             args: ["NLP Tests : Sentence Tagging test for empty sentence successful", 400, "{arguments}.1.nativeResponse.statusCode"]
+        },
+        {
+            func: "{longSentence}.send",
+            args: testRequestBody.longSentence
+        },
+        {
+            event: "{longSentence}.events.onComplete",
+            listener: "adaptiveContentService.tests.utils.assertStatusCode",
+            args: ["NLP Tests : Sentence Tagging test for long sentence successful", 413, "{arguments}.1.nativeResponse.statusCode"]
         }
     ]
 }];

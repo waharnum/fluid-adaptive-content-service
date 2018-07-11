@@ -2,8 +2,6 @@
 
 var nock = require("nock");
 
-//TODO: use kettle resolvers for environment variables
-//TODO: mention in README that any random string is enough to run mock server
 require("dotenv").config();//npm package to get variables from '.env' file
 
 var urlBase = "https://translate.yandex.net/api/v1.5/tr.json";
