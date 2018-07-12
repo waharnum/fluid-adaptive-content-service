@@ -113,11 +113,18 @@ Example endpoints:
 ### Translation Service
 - `http://localhost:8083/v1/translation/yandex/{source_lang}-{target_lang}`\
 **Method**: `POST`\
-**Request Body Format**: `{ text: "text_to_be_translated"}`\
+**Request Body Format**: `{ text: "text to be translated"}`\
+**Language Code**: ISO 639-1 (2-lettered language codes)
+
+- `http://localhost:8083/v1/translation/yandex/detect`\
+**Method**: `POST`\
+**Request Body Format**: `{ text: "text for which language is to be detected"}`\
 **Language Code**: ISO 639-1 (2-lettered language codes)
 
 Example endpoints:
 - `http://localhost:8083/v1/translation/yandex/en-de`\
+**Body** `{ text: "This is the text to be translated" }`
+- `http://localhost:8083/v1/translation/yandex/detect`\
 **Body** `{ text: "This is the text to be translated" }`
 
 ## Running Tests
