@@ -9,6 +9,7 @@ module.exports = {
         empty: "",
         absent: undefined,
         tooLong: "This sentence will exceed the character limit because it is very long",
+        numerical: "12345",
         limitExceeded: "This test will trigger limit exceeded endpoint"
     },
     sourceLang: {

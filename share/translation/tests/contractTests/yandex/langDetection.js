@@ -95,21 +95,19 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.la
 
 var langDetectionSchemas = require("./schemas/langDetectionSchemas"); //main schemas which will be compiled
 
-var text = "This is the text for which the language is to be detected";
+//mock data
+var mockLangDetectionData = require("../../mockData/yandex/langDetection");
 
 var successMessage = {
     noError: "Contract Test : For language detection with 'no error' response successful (Yandex Service)",
+    cannotDetect: "Contract Test : For language detection with 'unable to detect lang' response successful (Yandex Service)",
     wrongKey: "Contract Test : For language detection with wrong service api key successful (Yandex Service)"
 };
 
 var failureMessage = {
     noError: "Contract Test : For language detection with 'no error' response failed (Yandex Service)",
+    cannotDetect: "Contract Test : For language detection with 'unable to detect lang' response failed (Yandex Service)",
     wrongKey: "Contract Test : For language detection with wrong service api key failed (Yandex Service)"
-};
-
-var serviceKey = {
-    correct: adaptiveContentService.tests.utils.getYandexServiceKey(),
-    wrong: "randomstring"
 };
 
 //Test driver
@@ -119,23 +117,33 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.la
         name: "Contract Tests : For language detection (Yandex Service)",
         tests: [
             {
-                expect: 2,
+                expect: 3,
                 name: "Contract Tests : For language detection (Yandex Service)",
                 sequence: [
                     //for 'no error' response
                     {
                         func: "{testComponent}.requestForData",
-                        args: [text, serviceKey.correct]
+                        args: [mockLangDetectionData.text.noError, mockLangDetectionData.apiKey.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.translation.yandex.contractTests.langDetection.handler",
                         args: ["{arguments}.0", langDetectionSchemas.noError,  successMessage.noError, failureMessage.noError]
                     },
+                    //for 'unable to detect lang' response
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockLangDetectionData.text.numerical, mockLangDetectionData.apiKey.correct]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.translation.yandex.contractTests.langDetection.handler",
+                        args: ["{arguments}.0", langDetectionSchemas.cannotDetect,  successMessage.cannotDetect, failureMessage.cannotDetect]
+                    },
                     //for wrong service key
                     {
                         func: "{testComponent}.requestForData",
-                        args: [text, serviceKey.wrong]
+                        args: [mockLangDetectionData.text.noError, mockLangDetectionData.apiKey.invalid]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",

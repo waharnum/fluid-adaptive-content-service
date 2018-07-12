@@ -10,6 +10,7 @@ var urlBase = "https://translate.yandex.net/api/v1.5/tr.json";
 var mockLangDetectionData = require("../mockData/yandex/langDetection");
 
 nock(urlBase)
+//no error
 .post(
     "/detect?key=" + mockLangDetectionData.apiKey.correct,
     {
@@ -19,5 +20,16 @@ nock(urlBase)
 .reply(
     200,
     mockLangDetectionData.noError
+)
+//unable to detect lang
+.post(
+    "/detect?key=" + mockLangDetectionData.apiKey.correct,
+    {
+        text: mockLangDetectionData.text.numerical
+    }
+)
+.reply(
+    200,
+    mockLangDetectionData.cannotDetect
 )
 .persist();

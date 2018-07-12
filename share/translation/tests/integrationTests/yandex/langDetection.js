@@ -12,7 +12,7 @@ require("../../nock/mockYandexLangDetection"); // providing mock data as an alte
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.translation.yandex.langDetection");
 
-fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
+fluid.logObjectRenderChars = kettle.resolvers.env("CHAR_LIM");
 
 kettle.loadTestingSupport();
 
@@ -29,7 +29,7 @@ fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.langDete
 
 adaptiveContentService.tests.translation.yandex.langDetection = [{
     name: "POST request for the Language detection endpoint of Yandex Service",
-    expect: 4,
+    expect: 5,
     config: {
         configName: "translationServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/translation/config/"
@@ -57,6 +57,13 @@ adaptiveContentService.tests.translation.yandex.langDetection = [{
             }
         },
         longTextField: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/detect",
+                method: "post"
+            }
+        },
+        cannotDetectLang: {
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/translation/yandex/detect",
@@ -99,6 +106,15 @@ adaptiveContentService.tests.translation.yandex.langDetection = [{
         event: "{longTextField}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Translation Tests : language detection test for request with absent text field", 413, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{cannotDetectLang}.send",
+        args: { text: mockLangDetectionData.text.numerical }
+    },
+    {
+        event: "{cannotDetectLang}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : language detection test for 'unable to detect lang' response", 404, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];

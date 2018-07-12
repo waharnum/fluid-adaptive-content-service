@@ -313,6 +313,8 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.langDetection
             funcName: "adaptiveContentService.handlers.translation.yandex.langDetection.preRequestErrorCheck",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{that}"]
         },
+        checkLangDetectionError: "adaptiveContentService.handlers.translation.yandex.langDetection.checkLangDetectionError",
+        isLangResponseEmpty: "adaptiveContentService.handlers.translation.yandex.langDetection.isLangResponseEmpty",
         constructResponse: "adaptiveContentService.handlers.translation.yandex.langDetection.constructResponse"
     }
 });
@@ -337,6 +339,37 @@ adaptiveContentService.handlers.translation.yandex.langDetection.preRequestError
         else {
             return false;
         }
+    }
+};
+
+// check if language field is empty in the response body
+adaptiveContentService.handlers.translation.yandex.langDetection.isLangResponseEmpty = function (serviceResponse) {
+    if (!(serviceResponse.body.lang)) {
+        return {
+            statusCode: 404,
+            errorMessage: "Language could not be detected from the text provided"
+        };
+    }
+    else {
+        return false;
+    }
+};
+
+/* function to catch errors from the yandex service response,
+ * other than those already handled in checkTranslationError
+ */
+adaptiveContentService.handlers.translation.yandex.langDetection.checkLangDetectionError = function (serviceResponse, that) {
+    var emptyLangErrorContent = that.isLangResponseEmpty(serviceResponse);
+
+    //langDetection-specific errors
+    if (serviceResponse.statusCode === 200 && emptyLangErrorContent) {
+        return emptyLangErrorContent;
+    }
+    //general translation errors
+    else {
+        var errorContent = that.checkTranslationError(serviceResponse);
+
+        return errorContent;
     }
 };
 
@@ -371,7 +404,7 @@ adaptiveContentService.handlers.translation.yandex.langDetection.getLang = funct
                 .then(
                     function (result) {
                         var serviceResponse = result,
-                            errorContent = that.checkTranslationError(serviceResponse);
+                            errorContent = that.checkLangDetectionError(serviceResponse, that);
 
                         //Check for error responses
                         if (errorContent) {

@@ -11,5 +11,16 @@ module.exports = {
             "lang": { "type": "string" }
         }
     },
-    error: commonSchemas.error
+    error: commonSchemas.error,
+    cannotDetect: {
+        "type": "object",
+        "required": ["code", "lang"],
+        "properties": {
+            "code": { "type": "number" },
+            "lang": {
+                "type": "string",
+                "maxLength": 0
+            }
+        }
+    }
 };
