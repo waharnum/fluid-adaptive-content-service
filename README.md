@@ -9,12 +9,14 @@ Run
 npm install
 ```
 ### Step 3 - Setting API keys for services that require it
-Currently, only *Oxford* is the service being used that requires API keys. You can create an account on [their site](https://developer.oxforddictionaries.com/) and acquire your free *API ID* and *API KEY* from there.
-After acquiring the Id and Key, create a `.env` file looking like this
-```
-OXFORD_APP_ID=your_api_id_goes_here
-OXFORD_APP_KEY=your_api_key_goes_here
-```
+Third-party services that require API key -
+- [Oxford](https://developer.oxforddictionaries.com/)
+- [Yandex](https://tech.yandex.com/translate/)
+
+
+You can visit their respective websites and acquire their API keys to use the service.\
+After acquiring the API keys, you will have to add them to the environment variables by creating a `.env` file.\
+You can refer to the [.env.example](/.env.example) file in this repository to know how your `.env` file should look like.
 ### Step 4 - Start the service server
 - **All Services together**
 ```
@@ -42,7 +44,7 @@ This will run all the translation service server, at port 8083
 When the server starts, it is ready to accept requests at the available endpoints.
 
 ## Available Endpoints
-Currently available endpoints - 
+Currently available endpoints -
 ### Dictionary Service
 - `http://localhost:8081/v1/dictionary/{language_code}/definition/{word}`\
 **Method**: `GET`\
@@ -104,7 +106,7 @@ Example endpoints:
 ### NLP Service
 - `http://localhost:8082/v1/nlp/compromise/tags`\
 **Method**: `POST`\
-**Request Body Format**: `{ sentence: "{sentence_to_be_tagged}" }`
+**Request Body Format**: `{ sentence: "{sentence to be tagged}" }`
 
 Example endpoints:
 - `http://localhost:8082/v1/nlp/compromise/tags`\
