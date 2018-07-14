@@ -9,7 +9,7 @@ var testIncludes = [
     "./unitTests/yandex/checkSourceText.js",
     "./unitTests/yandex/checkServiceKey.js",
     "./unitTests/yandex/checkLanguageCodes.js",
-    "./unitTests/yandex/checkTranslationError.js",
+    "./unitTests/yandex/checkCommonYandexErrors.js",
     "./unitTests/yandex/translationConstructResponse.js",
     "./unitTests/yandex/isLangResponseEmpty.js",
     "./integrationTests/yandex/textTranslation.js",

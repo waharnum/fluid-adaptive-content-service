@@ -53,6 +53,7 @@ adaptiveContentService.tests.translation.yandex.contractTests.langDetection.getD
                 }
                 catch (err) {
                     fluid.log("Error occured while parsing the response body; body should be JSON pareseable -  " + err);
+                    fluid.log("Response body - \n" + body);
                     jqunit.fail("Contract Test : For language detection failed due to error parsing with parsing response body into JSON");
                 }
             }
@@ -156,4 +157,7 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.la
     }]
 });
 
-adaptiveContentService.tests.translation.yandex.contractTests.langDetection.testTree();
+var serviceKey = adaptiveContentService.tests.utils.getYandexServiceKey(),
+    testTree = adaptiveContentService.tests.translation.yandex.contractTests.langDetection.testTree;
+
+adaptiveContentService.tests.utils.checkYandexKeys(serviceKey, testTree, "Language Detection (Yandex) Contract test");

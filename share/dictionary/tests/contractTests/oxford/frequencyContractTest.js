@@ -150,4 +150,6 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
  * because the frequency is returned 0 for them
  */
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.frequency.testTree();
+var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.frequency.testTree;
+
+adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Frequency (Oxford) Contract test");

@@ -52,6 +52,7 @@ adaptiveContentService.tests.translation.yandex.contractTests.translateText.getD
                 }
                 catch (err) {
                     fluid.log("Error occured while parsing the response body; body should be JSON pareseable -  " + err);
+                    console.log("Response body - \n" + body);
                     jqunit.fail("Contract Test : For text translation failed due to error parsing with parsing response body into JSON");
                 }
             }
@@ -106,17 +107,8 @@ var failureMessage = {
     wrongKey: "Contract Test : For text translation with wrong service api key failed (Yandex Service)"
 };
 
-var sourceLang = {
-        correct: "en",
-        wrong: "eng" //but valid (less than or equal to 3 letters)
-    },
-    targetLang = "de",
-    text = "This is the text to be translated";
-
-var serviceKey = {
-    correct: adaptiveContentService.tests.utils.getYandexServiceKey(),
-    wrong: "randomstring"
-};
+//mock data
+var mockTranslationData = require("../../mockData/yandex/translation");
 
 //Test driver
 fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.translateText.tester", {
@@ -131,7 +123,7 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.tr
                     //for 'no error' response
                     {
                         func: "{testComponent}.requestForData",
-                        args: [sourceLang.correct, targetLang, text, serviceKey.correct]
+                        args: [mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.correct, mockTranslationData.text.noError, mockTranslationData.apiKey.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -141,7 +133,8 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.tr
                     //for unsupported translation direction
                     {
                         func: "{testComponent}.requestForData",
-                        args: [sourceLang.wrong, targetLang, text, serviceKey.correct]
+                        args: [mockTranslationData.sourceLang.wrong, mockTranslationData.
+                          targetLang.correct, mockTranslationData.text.noError, mockTranslationData.apiKey.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -151,7 +144,7 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.tr
                     //for wrong service key
                     {
                         func: "{testComponent}.requestForData",
-                        args: [sourceLang.correct, targetLang, text, serviceKey.wrong]
+                        args: [mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.correct, mockTranslationData.text.noError, mockTranslationData.apiKey.invalid]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -164,4 +157,7 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.tr
     }]
 });
 
-adaptiveContentService.tests.translation.yandex.contractTests.translateText.testTree();
+var serviceKey = adaptiveContentService.tests.utils.getYandexServiceKey(),
+    testTree = adaptiveContentService.tests.translation.yandex.contractTests.translateText.testTree;
+
+adaptiveContentService.tests.utils.checkYandexKeys(serviceKey, testTree, "Text Translation (Yandex) Contract test");

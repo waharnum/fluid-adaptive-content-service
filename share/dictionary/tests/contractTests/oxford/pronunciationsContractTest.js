@@ -159,4 +159,6 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
     }]
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.pronunciations.testTree();
+var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.pronunciations.testTree;
+
+adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Pronunciations (Oxford) Contract test");

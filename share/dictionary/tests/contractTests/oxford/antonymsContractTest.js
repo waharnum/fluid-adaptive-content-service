@@ -159,4 +159,6 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
     }]
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.testTree();
+var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.testTree;
+
+adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Antonyms (Oxford) Contract test");

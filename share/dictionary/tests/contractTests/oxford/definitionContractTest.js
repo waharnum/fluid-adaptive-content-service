@@ -158,4 +158,6 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.def
     }]
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.definition.testTree();
+var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.definition.testTree;
+
+adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Definition (Oxford) Contract test");

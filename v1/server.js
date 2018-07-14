@@ -139,11 +139,22 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                             }
                         }
                     }
+                },
+                events: {
+                    onListen: null
+                },
+                listeners: {
+                    onListen: "adaptiveContentService.serverConfig.checkServiceKeys"
                 }
             }
         }
     }
 });
+
+adaptiveContentService.serverConfig.checkServiceKeys = function () {
+    adaptiveContentService.handlerUtils.checkOxfordServiceKeys();
+    adaptiveContentService.handlerUtils.checkYandexServiceKeys();
+};
 
 require("./dictionary/handlers");
 require("./nlp/handlers");

@@ -25,7 +25,7 @@ module.exports = {
     apiKey: {
         correct: kettle.resolvers.env("YANDEX_APP_KEY"),
         invalid: "randomstring",
-        blocked: "blockedkey"
+        blocked: "blockedkey" //not actually blocked; used for mock response only
     },
     // responses
     noError: {

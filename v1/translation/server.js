@@ -30,6 +30,12 @@ fluid.defaults("adaptiveContentService.translation.serverConfig", {
                             }
                         }
                     }
+                },
+                events: {
+                    onListen: null
+                },
+                listeners: {
+                    onListen: "adaptiveContentService.handlerUtils.checkYandexServiceKeys"
                 }
             }
         }

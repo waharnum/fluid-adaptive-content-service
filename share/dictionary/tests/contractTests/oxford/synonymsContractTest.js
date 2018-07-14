@@ -159,4 +159,6 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.syn
     }]
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.synonyms.testTree();
+var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.synonyms.testTree;
+
+adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Synonyms (Oxford) Contract test");

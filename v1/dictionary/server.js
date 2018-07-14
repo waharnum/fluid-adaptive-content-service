@@ -110,6 +110,12 @@ fluid.defaults("adaptiveContentService.dictionary.serverConfig", {
                             }
                         }
                     }
+                },
+                events: {
+                    onListen: null
+                },
+                listeners: {
+                    onListen: "adaptiveContentService.handlerUtils.checkOxfordServiceKeys"
                 }
             }
         }

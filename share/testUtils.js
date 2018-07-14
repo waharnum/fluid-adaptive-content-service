@@ -5,7 +5,11 @@ var fluid = require("infusion"),
     Ajv = require("ajv"),//npm package for JSON scheme validation
     kettle = require("kettle");
 
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+require("../index");
+
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    ACS = fluid.registerNamespace("ACS");
+
 fluid.registerNamespace("adaptiveContentService.tests.utils");
 
 adaptiveContentService.tests.utils = {};
@@ -68,4 +72,48 @@ adaptiveContentService.tests.utils.getOxfordRequestHeaders = function () {
 //provide yandex authentication key for testing purpose
 adaptiveContentService.tests.utils.getYandexServiceKey = function () {
     return kettle.resolvers.env("YANDEX_APP_KEY");
+};
+
+//function to check for oxford api keys before starting contract test
+adaptiveContentService.tests.utils.checkOxfordKeys = function (keys, testTree, testName) {
+    var areKeysPresent = true;
+
+    if (!keys.app_id) {
+        areKeysPresent = false;
+        ACS.log("Oxford 'App ID' not found. Refer README for instructions to adding it.");
+    }
+
+    if (!keys.app_key) {
+        areKeysPresent = false;
+        ACS.log("Oxford 'App Key' not found. Refer README for instructions to adding it.");
+    }
+
+    if (areKeysPresent) {
+        //api keys present
+        //run contract tests
+
+        testTree();
+    }
+    else {
+        //api key(s) absent, terminate test
+
+        ACS.log("Terminating " + testName);
+    }
+};
+
+//function to check for yandex api key before starting contract test
+adaptiveContentService.tests.utils.checkYandexKeys = function (key, testTree, testName) {
+    if (!key) {
+        //api key absent
+        //terminate contract test
+
+        ACS.log("Yandex 'App Key' not found. Refer README for instructions to adding it.");
+        ACS.log("Terminating " + testName);
+    }
+    else {
+        //api keys present
+        //run contract tests
+
+        testTree();
+    }
 };
