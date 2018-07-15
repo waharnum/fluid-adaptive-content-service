@@ -2,11 +2,14 @@
 
 var fluid = require("infusion"),
     adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    ACS = fluid.registerNamespace("ACS"),
     makeRequest = require("request"),//npm package used to make requests to third-party services used
     cheerio = require("cheerio");//npm package used for scrapping html responses
 
 require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
+require("../../../index");
+
 
 //Specific grade for Oxford
 fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
@@ -92,7 +95,7 @@ adaptiveContentService.handlers.dictionary.oxford.requiredData = function (url, 
         },
         function (error, response, body) {
             if (error) {
-                fluid.log("Error making request to the Oxford Service\n");
+                ACS.log("Error making request to the Oxford Service (Definition Endpoint)");
                 promise.resolve({
                     statusCode: 500,
                     body: "Internal server error : Error with making request to the external service (Oxford) - " + error

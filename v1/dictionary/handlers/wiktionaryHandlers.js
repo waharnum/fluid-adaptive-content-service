@@ -38,6 +38,14 @@ adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = fun
             };
         }
 
+        //request failed
+        else if (serviceResponse.err == "a request has failed") {
+            return {
+                statusCode: 500,
+                errorMessage: "Failed to make request to the external service (Wiktionary)"
+            };
+        }
+
         //Default return object when error hasn"t been handled yet
         else {
             return {

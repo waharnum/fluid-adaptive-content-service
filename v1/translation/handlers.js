@@ -3,7 +3,8 @@
 var fluid = require("infusion"),
     makeRequest = require("request");//npm package used to make requests to third-party services used
 
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    ACS = fluid.registerNamespace("ACS");
 
 require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
@@ -184,7 +185,7 @@ adaptiveContentService.handlers.translation.yandex.requiredData = function (url,
         },
         function (error, response, body) {
             if (error) {
-                fluid.log("Error making request to the Yandex Service - " + error);
+                ACS.log("Error making request to the Yandex Service (Translation endpoint) - " + error);
                 promise.resolve({
                     statusCode: 500,
                     body: {
@@ -501,7 +502,7 @@ adaptiveContentService.handlers.translation.yandex.detectAndTranslate.langDetect
         },
         function (error, response, body) {
             if (error) {
-                fluid.log("Error making request to the Yandex Service - " + error);
+                ACS.log("Error making request to the Yandex Service (Language Detection endpoint) - " + error);
                 promise.resolve({
                     statusCode: 500,
                     body: {
@@ -537,7 +538,7 @@ adaptiveContentService.handlers.translation.yandex.detectAndTranslate.translatio
         },
         function (error, response, body) {
             if (error) {
-                fluid.log("Error making request to the Yandex Service - " + error);
+                ACS.log("Error making request to the Yandex Service (Detect-Translate endpoint) - " + error);
                 promise.resolve({
                     statusCode: 500,
                     body: {

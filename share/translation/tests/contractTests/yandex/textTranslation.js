@@ -11,7 +11,8 @@ require("../../../../testUtils");
 
 kettle.loadTestingSupport();
 
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    ACS = fluid.registerNamespace("ACS");
 fluid.registerNamespace("adaptiveContentService.tests.translation.yandex.contractTests.translateText");
 
 //grade getting us data from the yandex service
@@ -39,7 +40,7 @@ adaptiveContentService.tests.translation.yandex.contractTests.translateText.getD
         function (error, response, body) {
             //error making request to external service
             if (error) {
-                fluid.log("Error occured while making request to the external service - " + error);
+                ACS.log("Contract Test (Yandex - Translation) - Error occured while making request to the external service - " + error);
                 jqunit.fail("Contract Test : For text translation failed due to error making request to the external service (Yandex Service)");
             }
             else {
@@ -51,8 +52,8 @@ adaptiveContentService.tests.translation.yandex.contractTests.translateText.getD
                     that.events.onDataReceive.fire(jsonBody);
                 }
                 catch (err) {
-                    fluid.log("Error occured while parsing the response body; body should be JSON pareseable -  " + err);
-                    console.log("Response body - \n" + body);
+                    ACS.log("Contract Test (Yandex - Translation) - Error occured while parsing the response body; body should be JSON pareseable -  " + err);
+                    ACS.log("Contract Test (Yandex - Translation) - Response body - \n" + body);
                     jqunit.fail("Contract Test : For text translation failed due to error parsing with parsing response body into JSON");
                 }
             }

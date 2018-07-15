@@ -11,7 +11,8 @@ require("../../../../testUtils");
 
 kettle.loadTestingSupport();
 
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    ACS = fluid.registerNamespace("ACS");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms");
 
 //grade getting us data from the oxford service
@@ -37,7 +38,7 @@ adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.getData = 
         function (error, response, body) {
             //error making request to external service
             if (error) {
-                fluid.log("Error occured while making request to the external service - " + error);
+                ACS.log("Contract Test (Oxford - Antonyms) : Error occured while making request to the external service - " + error);
                 jqunit.fail("Contract Test : For antonyms failed due to error making request to the external service (Oxford Service)");
             }
             else {
@@ -61,7 +62,7 @@ adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.getData = 
                     that.events.onDataReceive.fire(data);
                 }
                 else {
-                    fluid.log("Response from the external service SHOULD have 'body' property");
+                    ACS.log("Contract Test (Oxford - Antonyms) : Response from the external service SHOULD have 'body' property");
                     jqunit.fail("Contract Test : For antonyms failed (Oxford Service)");
                 }
             }
