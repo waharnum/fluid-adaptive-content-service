@@ -135,6 +135,11 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                                     "type": "adaptiveContentService.handlers.translation.yandex.langDetection",
                                     "route": "/:version/translation/yandex/detect",
                                     "method": "post"
+                                },
+                                detectAndTranslateHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.yandex.detectAndTranslate",
+                                    "route": "/:version/translation/yandex/:targetLang",
+                                    "method": "post"
                                 }
                             }
                         }

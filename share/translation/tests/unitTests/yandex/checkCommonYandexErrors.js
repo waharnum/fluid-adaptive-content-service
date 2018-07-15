@@ -4,12 +4,12 @@ var fluid = require("infusion"),
     jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.checkTranslationError");
+fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.checkCommonYandexErrors");
 
 require("../../../../../v1/translation/handlers");
 
-adaptiveContentService.tests.translation.unitTests.checkTranslationError = function (testMessage, expectedReturnVal, serviceResponse) {
-    var returnVal = adaptiveContentService.handlers.translation.yandex.checkTranslationError(serviceResponse);
+adaptiveContentService.tests.translation.unitTests.checkCommonYandexErrors = function (testMessage, expectedReturnVal, serviceResponse) {
+    var returnVal = adaptiveContentService.handlers.translation.yandex.checkCommonYandexErrors(serviceResponse);
 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);
 };
@@ -61,30 +61,30 @@ var expectedReturnVal = {
 };
 
 var testMessage = {
-    noError: "Unit Test : For checkTranslationError function : Successful with 'no error' response",
-    keyInvalid: "Unit Test : For checkTranslationError function : Successful with 'invalid key' response",
-    limitExceeded: "Unit Test : For checkTranslationError function : Successful with 'limit exceeded' response",
-    unsupportedTranslation: "Unit Test : For checkTranslationError function : Successful with 'unsupported translation' response",
-    keyBlocked: "Unit Test : For checkTranslationError function : Successful with 'blocked key' response"
+    noError: "Unit Test : For checkCommonYandexErrors function : Successful with 'no error' response",
+    keyInvalid: "Unit Test : For checkCommonYandexErrors function : Successful with 'invalid key' response",
+    limitExceeded: "Unit Test : For checkCommonYandexErrors function : Successful with 'limit exceeded' response",
+    unsupportedTranslation: "Unit Test : For checkCommonYandexErrors function : Successful with 'unsupported translation' response",
+    keyBlocked: "Unit Test : For checkCommonYandexErrors function : Successful with 'blocked key' response"
 };
 
 jqunit.test(
-    "Unit Test : For checkTranslationError function (Translation Service)",
+    "Unit Test : For checkCommonYandexErrors function (Translation Service)",
     function () {
 
         // for 'no error' response
-        adaptiveContentService.tests.translation.unitTests.checkTranslationError(testMessage.noError, expectedReturnVal.noError, testSeviceResponse.noError);
+        adaptiveContentService.tests.translation.unitTests.checkCommonYandexErrors(testMessage.noError, expectedReturnVal.noError, testSeviceResponse.noError);
 
         // for 'invalid key' response
-        adaptiveContentService.tests.translation.unitTests.checkTranslationError(testMessage.keyInvalid, expectedReturnVal.keyInvalid, testSeviceResponse.keyInvalid);
+        adaptiveContentService.tests.translation.unitTests.checkCommonYandexErrors(testMessage.keyInvalid, expectedReturnVal.keyInvalid, testSeviceResponse.keyInvalid);
 
         // for 'limit exceeded' response
-        adaptiveContentService.tests.translation.unitTests.checkTranslationError(testMessage.limitExceeded, expectedReturnVal.limitExceeded, testSeviceResponse.limitExceeded);
+        adaptiveContentService.tests.translation.unitTests.checkCommonYandexErrors(testMessage.limitExceeded, expectedReturnVal.limitExceeded, testSeviceResponse.limitExceeded);
 
         // for 'unsupported translation' response
-        adaptiveContentService.tests.translation.unitTests.checkTranslationError(testMessage.unsupportedTranslation, expectedReturnVal.unsupportedTranslation, testSeviceResponse.unsupportedTranslation);
+        adaptiveContentService.tests.translation.unitTests.checkCommonYandexErrors(testMessage.unsupportedTranslation, expectedReturnVal.unsupportedTranslation, testSeviceResponse.unsupportedTranslation);
 
         // for 'blocked key' response
-        adaptiveContentService.tests.translation.unitTests.checkTranslationError(testMessage.keyBlocked, expectedReturnVal.keyBlocked, testSeviceResponse.keyBlocked);
+        adaptiveContentService.tests.translation.unitTests.checkCommonYandexErrors(testMessage.keyBlocked, expectedReturnVal.keyBlocked, testSeviceResponse.keyBlocked);
     }
 );

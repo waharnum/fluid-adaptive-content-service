@@ -32,12 +32,15 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex", {
         },
         checkSourceText: "adaptiveContentService.handlers.translation.yandex.checkSourceText",
         checkServiceKey: "adaptiveContentService.handlers.translation.yandex.checkServiceKey",
-        checkTranslationError: "adaptiveContentService.handlers.translation.yandex.checkTranslationError",
+        checkCommonYandexErrors: "adaptiveContentService.handlers.translation.yandex.checkCommonYandexErrors",
+        checkLangDetectionError: "adaptiveContentService.handlers.translation.yandex.checkLangDetectionError",
+        isLangResponseEmpty: "adaptiveContentService.handlers.translation.yandex.isLangResponseEmpty",
         serviceKey: {
             funcName: "adaptiveContentService.handlers.translation.yandex.serviceKey",
             args: ["{that}"]
         },
         requiredData: "adaptiveContentService.handlers.translation.yandex.requiredData",
+        commonHandlerBody: "adaptiveContentService.handlers.translation.yandex.commonHandlerBody",
         translationHandlerImpl: "fluid.notImplemented"
     }
 });
@@ -96,7 +99,7 @@ adaptiveContentService.handlers.translation.yandex.checkServiceKey = function (s
 };
 
 //function to catch the error content from the yandex service resopnse
-adaptiveContentService.handlers.translation.yandex.checkTranslationError = function (serviceResponse) {
+adaptiveContentService.handlers.translation.yandex.checkCommonYandexErrors = function (serviceResponse) {
 
     //No error
     if (serviceResponse.statusCode === 200) {
@@ -130,6 +133,35 @@ adaptiveContentService.handlers.translation.yandex.checkTranslationError = funct
             errorMessage: serviceResponse.body.message
         };
     }
+};
+
+// function to catch errors from the yandex service response,
+adaptiveContentService.handlers.translation.yandex.checkLangDetectionError = function (serviceResponse, that) {
+  var emptyLangErrorContent = that.isLangResponseEmpty(serviceResponse);
+
+  //langDetection-specific errors
+  if (serviceResponse.statusCode === 200 && emptyLangErrorContent) {
+      return emptyLangErrorContent;
+  }
+  //general translation errors
+  else {
+      var errorContent = that.checkCommonYandexErrors(serviceResponse);
+
+      return errorContent;
+  }
+};
+
+// check if language field is empty in the response body
+adaptiveContentService.handlers.translation.yandex.isLangResponseEmpty = function (serviceResponse) {
+  if (!(serviceResponse.body.lang)) {
+      return {
+          statusCode: 404,
+          errorMessage: "Language could not be detected from the text provided"
+      };
+  }
+  else {
+      return false;
+  }
 };
 
 // return the service keys
@@ -174,6 +206,11 @@ adaptiveContentService.handlers.translation.yandex.requiredData = function (url,
     return promise;
 };
 
+//common computation done in translation handlers
+adaptiveContentService.handlers.translation.yandex.commonHandlerBody = function (request, version, url, that) {
+
+};
+
 //Yandex translation grade
 fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex",
@@ -181,10 +218,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText
     invokers: {
         translationHandlerImpl: "adaptiveContentService.handlers.translation.yandex.translateText.getTranslation",
         checkLanguageCodes: "adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes",
-        preRequestErrorCheck: {
-            funcName: "adaptiveContentService.handlers.translation.yandex.translateText.preRequestErrorCheck",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{that}"]
-        },
+        preRequestErrorCheck: "adaptiveContentService.handlers.translation.yandex.translateText.preRequestErrorCheck",
         constructResponse: "adaptiveContentService.handlers.translation.yandex.translateText.constructResponse"
     }
 });
@@ -264,7 +298,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.getTranslation 
             serviceKey = that.serviceKey();
 
         //check for errors before making request to the service
-        var preRequestErrorContent = that.preRequestErrorCheck(characterLimit, serviceKey, sourceLang, targetLang, text);
+        var preRequestErrorContent = that.preRequestErrorCheck(characterLimit, serviceKey, sourceLang, targetLang, text, that);
 
         if (preRequestErrorContent) {
             that.sendErrorResponse(request, version, "Yandex", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
@@ -278,7 +312,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.getTranslation 
                 .then(
                     function (result) {
                         var serviceResponse = result,
-                            errorContent = that.checkTranslationError(serviceResponse);
+                            errorContent = that.checkCommonYandexErrors(serviceResponse);
 
                         //Check for error responses
                         if (errorContent) {
@@ -309,12 +343,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.langDetection
     characterLimit: 500,
     invokers: {
         translationHandlerImpl: "adaptiveContentService.handlers.translation.yandex.langDetection.getLang",
-        preRequestErrorCheck: {
-            funcName: "adaptiveContentService.handlers.translation.yandex.langDetection.preRequestErrorCheck",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{that}"]
-        },
-        checkLangDetectionError: "adaptiveContentService.handlers.translation.yandex.langDetection.checkLangDetectionError",
-        isLangResponseEmpty: "adaptiveContentService.handlers.translation.yandex.langDetection.isLangResponseEmpty",
+        preRequestErrorCheck: "adaptiveContentService.handlers.translation.yandex.langDetection.preRequestErrorCheck",
         constructResponse: "adaptiveContentService.handlers.translation.yandex.langDetection.constructResponse"
     }
 });
@@ -342,37 +371,6 @@ adaptiveContentService.handlers.translation.yandex.langDetection.preRequestError
     }
 };
 
-// check if language field is empty in the response body
-adaptiveContentService.handlers.translation.yandex.langDetection.isLangResponseEmpty = function (serviceResponse) {
-    if (!(serviceResponse.body.lang)) {
-        return {
-            statusCode: 404,
-            errorMessage: "Language could not be detected from the text provided"
-        };
-    }
-    else {
-        return false;
-    }
-};
-
-/* function to catch errors from the yandex service response,
- * other than those already handled in checkTranslationError
- */
-adaptiveContentService.handlers.translation.yandex.langDetection.checkLangDetectionError = function (serviceResponse, that) {
-    var emptyLangErrorContent = that.isLangResponseEmpty(serviceResponse);
-
-    //langDetection-specific errors
-    if (serviceResponse.statusCode === 200 && emptyLangErrorContent) {
-        return emptyLangErrorContent;
-    }
-    //general translation errors
-    else {
-        var errorContent = that.checkTranslationError(serviceResponse);
-
-        return errorContent;
-    }
-};
-
 //function to construct a response from the data provided by the Yandex service
 adaptiveContentService.handlers.translation.yandex.langDetection.constructResponse = function (serviceResponse, sourceText) {
     return {
@@ -390,7 +388,7 @@ adaptiveContentService.handlers.translation.yandex.langDetection.getLang = funct
             serviceKey = that.serviceKey();
 
         //check for errors before making request to the service
-        var preRequestErrorContent = that.preRequestErrorCheck(characterLimit, serviceKey, text);
+        var preRequestErrorContent = that.preRequestErrorCheck(characterLimit, serviceKey, text, that);
 
         if (preRequestErrorContent) {
             that.sendErrorResponse(request, version, "Yandex", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
@@ -428,3 +426,208 @@ adaptiveContentService.handlers.translation.yandex.langDetection.getLang = funct
         that.sendErrorResponse(request, version, "Yandex", 500, message);
     }
 };
+
+//Yandex translation (with only target language given) grade
+fluid.defaults("adaptiveContentService.handlers.translation.yandex.detectAndTranslate", {
+    gradeNames: "adaptiveContentService.handlers.translation.yandex",
+    characterLimit: 500,
+    invokers: {
+        translationHandlerImpl: "adaptiveContentService.handlers.translation.yandex.detectAndTranslate.getTranslation",
+        checkLanguageCodes: "adaptiveContentService.handlers.translation.yandex.detectAndTranslate.checkLanguageCodes",
+        preRequestErrorCheck: "adaptiveContentService.handlers.translation.yandex.detectAndTranslate.preRequestErrorCheck",
+        langDetectionData: "adaptiveContentService.handlers.translation.yandex.detectAndTranslate.langDetectionData",
+        translationData: "adaptiveContentService.handlers.translation.yandex.detectAndTranslate.translationData",
+        constructResponse: "adaptiveContentService.handlers.translation.yandex.detectAndTranslate.constructResponse"
+    }
+});
+
+//REFACTOR: check for errors with the language codes
+adaptiveContentService.handlers.translation.yandex.detectAndTranslate.checkLanguageCodes = function (targetLang) {
+    //target lang code has invalid length
+    if (targetLang.length > 3) {
+        return {
+            statusCode: 404,
+            errorMessage: "Invalid 'targetLang' parameter - Please check the language code"
+        };
+    }
+    else {
+        return false;
+    }
+};
+
+//REFACTOR: check for errors in the input data, before making the request to external service
+adaptiveContentService.handlers.translation.yandex.detectAndTranslate.preRequestErrorCheck = function (characterLimit, serviceKey, targetLang, text, that) {
+    //Error with the text in request body
+    var sourceTextErrorContent = that.checkSourceText(text, characterLimit);
+
+    if (sourceTextErrorContent) {
+        return sourceTextErrorContent;
+    }
+    //No error with the text in request body
+    else {
+        //Error with the service keys in the environment variables
+        var serviceKeyErrorContent = that.checkServiceKey(serviceKey);
+
+        if (serviceKeyErrorContent) {
+            return serviceKeyErrorContent;
+        }
+        //No error with the service keys
+        else {
+            //Error with the language codes provided
+            var langCodeErrorContent = that.checkLanguageCodes(targetLang);
+
+            if (langCodeErrorContent) {
+                return langCodeErrorContent;
+            }
+            //No pre request error found
+            else {
+                return false;
+            }
+        }
+    }
+};
+
+// function to get the required language detection data from yandex service
+adaptiveContentService.handlers.translation.yandex.detectAndTranslate.langDetectionData = function (serviceKey, text, that) {
+    var promise = fluid.promise();
+
+    var url = that.options.urlBase + "detect?key=" + serviceKey;
+    makeRequest.post(
+        {
+            url: url,
+            form: {
+                text: text
+            }
+        },
+        function (error, response, body) {
+            if (error) {
+                fluid.log("Error making request to the Yandex Service - " + error);
+                promise.resolve({
+                    statusCode: 500,
+                    body: {
+                        message: "Internal Server Error : Error with making request to the external service (Yandex) - " + error
+                    }
+                });
+            }
+            else {
+                var responseBody = JSON.parse(body);
+
+                promise.resolve({
+                    statusCode: responseBody.code,
+                    body: responseBody
+                });
+            }
+        }
+    );
+
+    return promise;
+};
+
+// function to get the required translation data from the yandex service
+adaptiveContentService.handlers.translation.yandex.detectAndTranslate.translationData = function (serviceKey, sourceLang, targetLang, text, that) {
+    var promise = fluid.promise();
+
+    var url = that.options.urlBase + "translate?key=" + serviceKey + "&lang=" + sourceLang + "-" + targetLang;
+    makeRequest.post(
+        {
+            url: url,
+            form: {
+                text: text
+            }
+        },
+        function (error, response, body) {
+            if (error) {
+                fluid.log("Error making request to the Yandex Service - " + error);
+                promise.resolve({
+                    statusCode: 500,
+                    body: {
+                        message: "Internal Server Error : Error with making request to the external service (Yandex) - " + error
+                    }
+                });
+            }
+            else {
+                var responseBody = JSON.parse(body);
+
+                promise.resolve({
+                    statusCode: responseBody.code,
+                    body: responseBody
+                });
+            }
+        }
+    );
+
+    return promise;
+}
+
+// function to construct a useful response from the service response
+adaptiveContentService.handlers.translation.yandex.detectAndTranslate.constructResponse = function (serviceResponse, sourceLang, targetLang, sourceText) {
+    return {
+        sourceLang: sourceLang,
+        targetLang: targetLang,
+        sourceText: sourceText,
+        translatedText: serviceResponse.body.text
+    };
+};
+
+//Yandlex translation (with target lang) handler
+adaptiveContentService.handlers.translation.yandex.detectAndTranslate.getTranslation = function (request, version, that) {
+    var targetLang = request.req.params.targetLang,
+        text = request.req.body.text;
+
+    try {
+        var characterLimit = that.options.characterLimit,
+            serviceKey = that.serviceKey();
+
+        //check for errors before making request to the service
+        var preRequestErrorContent = that.preRequestErrorCheck(characterLimit, serviceKey, targetLang, text, that);
+
+        if (preRequestErrorContent) {
+            that.sendErrorResponse(request, version, "Yandex", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
+        }
+        //No pre request errors
+        else {
+            //making request to the service for lang detection
+            that.langDetectionData(serviceKey, text, that)
+                .then(
+                    function (detectionResult) {
+                        var langDetectionErrorContent = that.checkLangDetectionError(detectionResult, that);
+
+                        //Check for lang detection errors
+                        if (langDetectionErrorContent) {
+                            that.sendErrorResponse(request, version, "Yandex", langDetectionErrorContent.statusCode, langDetectionErrorContent.errorMessage);
+                        }
+                        //No lang detection error
+                        else {
+                            var sourceLang = detectionResult.body.lang;
+
+                            //making request to the service for translation
+                            that.translationData(serviceKey, sourceLang, targetLang, text, that)
+                                .then(
+                                    function (translationResult) {
+                                        var translationErrorContent = that.checkCommonYandexErrors(translationResult);
+
+                                        //Check for translation errors
+                                        if (translationErrorContent) {
+                                            that.sendErrorResponse(request, version, "Yandex", translationErrorContent.statusCode, translationErrorContent.errorMessage);
+                                        }
+                                        //No translation error
+                                        else {
+                                            var message = "Translation Successful",
+                                                response = that.constructResponse(translationResult, sourceLang, targetLang, text);
+
+                                            that.sendSuccessResponse(request, version, "Yandex", translationResult.statusCode, message, response);
+                                        }
+                                    }
+                                )
+                        }
+                    }
+                );
+        }
+    }
+    //Error with the API code
+    catch (error) {
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Yandex", 500, message);
+    }
+}
