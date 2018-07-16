@@ -43,7 +43,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex", {
         },
         preRequestErrorCheck: "adaptiveContentService.handlers.translation.yandex.preRequestErrorCheck",
         requiredData: "adaptiveContentService.handlers.translation.yandex.requiredData",
-        translationConstructResponse: "adaptiveContentService.handlers.translation.yandex.constructResponse",
+        translationConstructResponse: "adaptiveContentService.handlers.translation.yandex.translationConstructResponse",
         translationHandlerImpl: "fluid.notImplemented"
     }
 });
@@ -266,7 +266,7 @@ adaptiveContentService.handlers.translation.yandex.requiredData = function (url,
 };
 
 // function to construct a response from the data provided by the Yandex service
-adaptiveContentService.handlers.translation.yandex.constructResponse = function (serviceResponse, sourceLang, targetLang, sourceText) {
+adaptiveContentService.handlers.translation.yandex.translationConstructResponse = function (serviceResponse, sourceLang, targetLang, sourceText) {
     return {
         sourceLang: sourceLang,
         targetLang: targetLang,

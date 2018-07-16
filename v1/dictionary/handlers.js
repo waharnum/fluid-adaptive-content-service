@@ -20,10 +20,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary", {
         },
         commonDictionaryDispatcher: "adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher",
         checkWordLength: "adaptiveContentService.handlers.dictionary.checkWordLength",
-        uriErrHandler: {
-            funcName: "adaptiveContentService.handlers.dictionary.uriErrHandler",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
-        },
+        checkUriError: "adaptiveContentService.handlers.dictionary.checkUriError",
         sendSuccessResponse: {
             funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Dictionary"]
@@ -54,7 +51,7 @@ adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function
     serviceSpecificImp(request, version, word, lang, that);
 };
 
-//Checks if the word exceeds character limit (returns false if it does and true if it doesn't)
+//detele TEST:Checks if the word exceeds character limit (returns false if it does and true if it doesn't)
 adaptiveContentService.handlers.dictionary.checkWordLength = function (word, characterLimit) {
     if (word.length > characterLimit) {
         return false;
@@ -64,15 +61,16 @@ adaptiveContentService.handlers.dictionary.checkWordLength = function (word, cha
     }
 };
 
-/* Common function for all the dictionary endpoints
+/* TEST:Common function for all the dictionary endpoints
  * to check for long uri
  */
-adaptiveContentService.handlers.dictionary.uriErrHandler = function (request, version, word, serviceName, that) {
-    if (!that.checkWordLength(word, that.options.wordCharacterLimit)) {
-        var message = "Request URI too long: \'word\' can have maximum 128 characters";
-        that.sendErrorResponse(request, version, serviceName, 414, message);
-
-        return true;
+adaptiveContentService.handlers.dictionary.checkUriError = function (word, that) {
+    var characterLimit = that.options.wordCharacterLimit;
+    if (word.length > characterLimit) {
+        return {
+            statusCode: 414,
+            errorMessage: "Request URI too long : 'word' can have maximum " + characterLimit + " characters"
+        };
     }
     else {
         return false;

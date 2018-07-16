@@ -23,11 +23,14 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
     },
     invokers: {
         dictionaryHandlerImpl: "fluid.notImplemented",
+        handlerCommonTasks: "adaptiveContentService.handlers.dictionary.oxford.handlerCommonTasks",
         requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.requiredData",
         serviceKeysImpl: {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.serviceKeys",
             args: ["{that}"]
         },
+        checkServiceKeys: "adaptiveContentService.handlers.dictionary.oxford.checkServiceKeys",
+        preRequestErrorCheck: "adaptiveContentService.handlers.dictionary.oxford.preRequestErrorCheck",
         checkDictionaryErrorImpl: "adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError",
         errorMsgScrape: "adaptiveContentService.handlers.dictionary.oxford.errorMsgScrape"
     }
@@ -43,7 +46,55 @@ adaptiveContentService.handlers.dictionary.oxford.serviceKeys = function (that) 
     return authHeaders;
 };
 
-//function  to catch the errors for oxford service
+//check for errors with the service keys
+adaptiveContentService.handlers.dictionary.oxford.checkServiceKeys = function (requestHeaders) {
+    var appId = requestHeaders.app_id,
+        appKey = requestHeaders.app_key;
+
+    if (!appId) {
+        //app id absent
+        return {
+            statusCode: 403,
+            errorMessage: "Authentication failed - 'App Id' not found. Please check your environment variables"
+        };
+    }
+    else if (!appKey) {
+        //app key absent
+        return {
+            statusCode: 403,
+            errorMessage: "Authentication failed - 'App Key' not found. Please check your environment variables"
+        };
+    }
+    else {
+        //both present
+        return false;
+    }
+};
+
+//function to catch the errors before making the request to the oxford service
+adaptiveContentService.handlers.dictionary.oxford.preRequestErrorCheck = function (word, requestHeaders, that) {
+    //Error with the word in uri
+    var uriErrorContent = that.checkUriError(word, that);
+
+    if (uriErrorContent) {
+        return uriErrorContent;
+    }
+    //No error with the word in uri
+    else {
+        //Error with the service keys in the environment variables
+        var serviceKeyErrorContent = that.checkServiceKeys(requestHeaders);
+
+        if (serviceKeyErrorContent) {
+            return serviceKeyErrorContent;
+        }
+        //No error with the service keys
+        else {
+            return false;
+        }
+    }
+};
+
+//function to catch the errors from oxford service response
 adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = function (serviceResponse) {
     var OXFORD_ERROR_CODES = [400, 403, 404, 500, 502, 503, 504];
 
@@ -113,27 +164,17 @@ adaptiveContentService.handlers.dictionary.oxford.requiredData = function (url, 
     return promise;
 };
 
-//Oxford definition grade
-fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
-    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
-    invokers: {
-        dictionaryHandlerImpl: {
-            funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
-        },
-        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse"
-    }
-});
-
-//Oxford definition handler
-adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = function (request, version, word, lang, that) {
+//function to run the common tasks of the handler function
+adaptiveContentService.handlers.dictionary.oxford.handlerCommonTasks = function (request, version, word, url, that) {
     try {
-        //Check for long URI
-        if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var requestHeaders = that.serviceKeysImpl(that),
-                urlBase = that.options.serviceConfig.urlBase,
-                url = urlBase + "entries/" + lang + "/" + word;
+        var requestHeaders = that.serviceKeysImpl(that);
 
+        var preRequestErrorContent = that.preRequestErrorCheck(word, requestHeaders, that);
+        //Check for long URI
+        if (preRequestErrorContent) {
+            that.sendErrorResponse(request, version, "Oxford", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
+        }
+        else {
             that.requiredDataImpl(url, requestHeaders)
                 .then(
                     function (result) {
@@ -167,6 +208,26 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
+}
+
+//Oxford definition grade
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
+    invokers: {
+        dictionaryHandlerImpl: {
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition",
+            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
+        },
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.definition.constructResponse"
+    }
+});
+
+//Oxford definition handler
+adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = function (request, version, word, lang, that) {
+    var urlBase = that.options.serviceConfig.urlBase,
+        url = urlBase + "entries/" + lang + "/" + word;
+
+    that.handlerCommonTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the data provided by the Oxford Service
@@ -221,51 +282,10 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.synonyms", {
 
 //Oxford synonyms handler
 adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = function (request, version, word, lang, that) {
-    try {
+    var urlBase = that.options.serviceConfig.urlBase,
+        url = urlBase + "entries/" + lang + "/" + word + "/synonyms";
 
-        //Check for long URI
-        if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse,
-                errorContent,
-                requestHeaders = that.serviceKeysImpl(that),
-                urlBase = that.options.serviceConfig.urlBase,
-                url = urlBase + "entries/" + lang + "/" + word + "/synonyms";
-
-            that.requiredDataImpl(url, requestHeaders)
-                .then(
-                    function (result) {
-                        serviceResponse = result;
-
-                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
-
-                        var message;
-
-                        //Error Responses
-                        if (errorContent) {
-                            message = errorContent.errorMessage;
-                            var statusCode = errorContent.statusCode;
-
-                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
-                        }
-                        //No error : Word found
-                        else {
-                            message = "Word Found";
-
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
-                                response = that.constructResponse(jsonServiceResponse);
-
-                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                        }
-                    }
-                );
-        }
-    }
-    //Error with the API code
-    catch (error) {
-        var message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Oxford", 500, message);
-    }
+    that.handlerCommonTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the synonyms data provided by the Oxford Service
@@ -344,51 +364,10 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.antonyms", {
 
 //Oxford antonyms handler
 adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = function (request, version, word, lang, that) {
-    try {
+    var urlBase = that.options.serviceConfig.urlBase,
+        url = urlBase + "entries/" + lang + "/" + word + "/antonyms";
 
-        //Check for long URI
-        if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse,
-                errorContent,
-                requestHeaders = that.serviceKeysImpl(that),
-                urlBase = that.options.serviceConfig.urlBase,
-                url = urlBase + "entries/" + lang + "/" + word + "/antonyms";
-
-            that.requiredDataImpl(url, requestHeaders)
-                .then(
-                    function (result) {
-                        serviceResponse = result;
-
-                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
-
-                        var message;
-
-                        //Error Responses
-                        if (errorContent) {
-                            message = errorContent.errorMessage;
-                            var statusCode = errorContent.statusCode;
-
-                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
-                        }
-                        //No error : Word found
-                        else {
-                            message = "Word Found";
-
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
-                                response = that.constructResponse(jsonServiceResponse);
-
-                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                        }
-                    }
-                );
-        }
-    }
-    //Error with the API code
-    catch (error) {
-        var message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Oxford", 500, message);
-    }
+    that.handlerCommonTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the antonyms data provided by the Oxford Service
@@ -467,57 +446,10 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.pronunciations
 
 //Oxford pronunciations handler
 adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciations = function (request, version, word, lang, that) {
-    try {
+    var urlBase = that.options.serviceConfig.urlBase,
+        url = urlBase + "entries/" + lang + "/" + word;
 
-        //Check for long URI
-        if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse,
-                errorContent,
-                requestHeaders = that.serviceKeysImpl(that),
-                urlBase = that.options.serviceConfig.urlBase,
-                url = urlBase + "entries/" + lang + "/" + word;
-
-            that.requiredDataImpl(url, requestHeaders)
-                .then(
-                    function (result) {
-                        serviceResponse = result;
-
-                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
-
-                        var message;
-
-                        //Error Responses
-                        if (errorContent) {
-                            message = errorContent.errorMessage;
-                            var statusCode = errorContent.statusCode;
-
-                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
-                        }
-                        //No error : Word found
-                        else {
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body);
-                            var response = that.constructResponse(jsonServiceResponse);
-
-                            if (response.entries.length === 0) {
-                                message = "No pronunciations found for the word \'" + word + "\'";
-                                that.sendErrorResponse(request, version, "Oxford", 404, message);
-                            }
-
-                            else {
-                                message = "Word Found";
-                                that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                            }
-                        }
-                    }
-                );
-        }
-    }
-    //Error with the API code
-    catch (error) {
-        var message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Oxford", 500, message);
-    }
+    that.handlerCommonTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the pronunciation data provided by the Oxford Service
@@ -595,59 +527,18 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.frequency", {
 
 //Oxford frquency handler
 adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = function (request, version, word, lang, that) {
-    try {
+    var lexicalCategory = request.req.params.lexicalCategory,
+        urlBase = that.options.serviceConfig.urlBase,
+        url;
 
-        //Check for long URI
-        if (!that.uriErrHandler(request, version, word, "Oxford")) {
-            var serviceResponse,
-                errorContent,
-                lexicalCategory = request.req.params.lexicalCategory,
-                requestHeaders = that.serviceKeysImpl(that),
-                urlBase = that.options.serviceConfig.urlBase,
-                url;
-
-            if (lexicalCategory) {
-                url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
-            }
-            else {
-                url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
-            }
-
-            that.requiredDataImpl(url, requestHeaders)
-                .then(
-                    function (result) {
-                        serviceResponse = result;
-
-                        errorContent = that.checkDictionaryErrorImpl(serviceResponse, that);
-
-                        var message;
-
-                        //Error Responses
-                        if (errorContent) {
-                            message = errorContent.errorMessage;
-                            var statusCode = errorContent.statusCode;
-
-                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
-                        }
-                        //No error : Word found
-                        else {
-                            message = "Word Found";
-
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
-                                response = that.constructResponse(jsonServiceResponse);
-
-                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                        }
-                    }
-                );
-        }
+    if (lexicalCategory) {
+      url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
     }
-    //Error with the API code
-    catch (error) {
-        var message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Oxford", 500, message);
+    else {
+      url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
     }
+
+    that.handlerCommonTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the frequency data provided by the Oxford Service
