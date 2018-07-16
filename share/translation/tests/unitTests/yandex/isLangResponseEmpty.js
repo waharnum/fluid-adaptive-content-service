@@ -4,12 +4,12 @@ var fluid = require("infusion"),
     jqunit = require("node-jqunit");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.langDetection.isLangResponseEmpty");
+fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.isLangResponseEmpty");
 
 require("../../../../../v1/translation/handlers");
 
-adaptiveContentService.tests.translation.unitTests.langDetection.isLangResponseEmpty = function (testMessage, expectedReturnVal, serviceResponse) {
-    var returnVal = adaptiveContentService.handlers.translation.yandex.langDetection.isLangResponseEmpty(serviceResponse);
+adaptiveContentService.tests.translation.unitTests.isLangResponseEmpty = function (testMessage, expectedReturnVal, serviceResponse) {
+    var returnVal = adaptiveContentService.handlers.translation.yandex.isLangResponseEmpty(serviceResponse);
 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);
 };
@@ -46,9 +46,9 @@ jqunit.test(
     function () {
 
         // for 'no error' response
-        adaptiveContentService.tests.translation.unitTests.langDetection.isLangResponseEmpty(testMessage.noError, expectedReturnVal.noError, testSeviceResponse.noError);
+        adaptiveContentService.tests.translation.unitTests.isLangResponseEmpty(testMessage.noError, expectedReturnVal.noError, testSeviceResponse.noError);
 
         // for 'unable to detect lang' response
-        adaptiveContentService.tests.translation.unitTests.langDetection.isLangResponseEmpty(testMessage.cannotDetect, expectedReturnVal.cannotDetect, testSeviceResponse.cannotDetect);
+        adaptiveContentService.tests.translation.unitTests.isLangResponseEmpty(testMessage.cannotDetect, expectedReturnVal.cannotDetect, testSeviceResponse.cannotDetect);
     }
 );

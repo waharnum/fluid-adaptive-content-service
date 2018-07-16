@@ -8,8 +8,8 @@ fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.chec
 
 require("../../../../../v1/translation/handlers");
 
-adaptiveContentService.tests.translation.unitTests.checkLanguageCodes = function (testMessage, expectedReturnVal, sourceLang, testTargetLang) {
-    var returnVal = adaptiveContentService.handlers.translation.yandex.translateText.checkLanguageCodes(sourceLang, testTargetLang);
+adaptiveContentService.tests.translation.unitTests.checkLanguageCodes = function (testMessage, expectedReturnVal, testLangObj) {
+    var returnVal = adaptiveContentService.handlers.translation.yandex.checkLanguageCodes(testLangObj);
 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);
 };
@@ -17,7 +17,34 @@ adaptiveContentService.tests.translation.unitTests.checkLanguageCodes = function
 //mock data
 var mockTranslationData = require("../../mockData/yandex/translation");
 
+var langObjs = {
+    absent: false,
+    sourceLangInvalid: {
+        source: {
+            name: "sourceLang",
+            value: mockTranslationData.sourceLang.invalid
+        }
+    },
+    targetLangInvalid: {
+        target: {
+            name: "targetLang",
+            value: mockTranslationData.targetLang.invalid
+        }
+    },
+    bothValid: {
+        source: {
+            name: "sourceLang",
+            value: mockTranslationData.sourceLang.correct
+        },
+        target: {
+            name: "targetLang",
+            value: mockTranslationData.targetLang.correct
+        }
+    }
+};
+
 var expectedReturnVal = {
+    langObjAbsent: false,
     sourceLangInvalid: {
         statusCode: 404,
         errorMessage: "Invalid 'sourceLang' parameter - Please check the language code"
@@ -30,6 +57,7 @@ var expectedReturnVal = {
 };
 
 var testMessage = {
+    langObjAbsent: "Unit Test : For checkLanguageCodes function : Successful with langObj absent",
     sourceLangInvalid: "Unit Test : For checkLanguageCodes function : Successful with invalid sourceLang",
     targetLangInvalid: "Unit Test : For checkLanguageCodes function : Successful with invalid targetLang",
     bothValid: "Unit Test : For checkLanguageCodes function : Successful with both sourceLang and targetLang valid"
@@ -39,13 +67,16 @@ jqunit.test(
     "Unit Test : For checkLanguageCodes function (Translation Service)",
     function () {
 
+        // for absent langObj
+        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.langObjAbsent, expectedReturnVal.langObjAbsent, langObjs.absent);
+
         // for invalid sourceLang
-        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.sourceLangInvalid, expectedReturnVal.sourceLangInvalid, mockTranslationData.sourceLang.invalid, mockTranslationData.targetLang.correct);
+        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.sourceLangInvalid, expectedReturnVal.sourceLangInvalid, langObjs.sourceLangInvalid);
 
         // for invalid targetLang
-        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.targetLangInvalid, expectedReturnVal.targetLangInvalid, mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.invalid);
+        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.targetLangInvalid, expectedReturnVal.targetLangInvalid, langObjs.targetLangInvalid);
 
         // for both sourceLang and targetLang valid
-        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.bothValid, expectedReturnVal.bothValid, mockTranslationData.sourceLang.correct, mockTranslationData.targetLang.correct);
+        adaptiveContentService.tests.translation.unitTests.checkLanguageCodes(testMessage.bothValid, expectedReturnVal.bothValid, langObjs.bothValid);
     }
 );
