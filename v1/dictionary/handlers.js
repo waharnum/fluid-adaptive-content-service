@@ -19,7 +19,6 @@ fluid.defaults("adaptiveContentService.handlers.dictionary", {
             args: ["{arguments}.0", "{that}.dictionaryHandlerImpl", "{that}"]
         },
         commonDictionaryDispatcher: "adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher",
-        checkWordLength: "adaptiveContentService.handlers.dictionary.checkWordLength",
         checkUriError: "adaptiveContentService.handlers.dictionary.checkUriError",
         sendSuccessResponse: {
             funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
@@ -51,21 +50,10 @@ adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function
     serviceSpecificImp(request, version, word, lang, that);
 };
 
-//detele TEST:Checks if the word exceeds character limit (returns false if it does and true if it doesn't)
-adaptiveContentService.handlers.dictionary.checkWordLength = function (word, characterLimit) {
-    if (word.length > characterLimit) {
-        return false;
-    }
-    else {
-        return true;
-    }
-};
-
-/* TEST:Common function for all the dictionary endpoints
+/* Common function for all the dictionary endpoints
  * to check for long uri
  */
-adaptiveContentService.handlers.dictionary.checkUriError = function (word, that) {
-    var characterLimit = that.options.wordCharacterLimit;
+adaptiveContentService.handlers.dictionary.checkUriError = function (word, characterLimit) {
     if (word.length > characterLimit) {
         return {
             statusCode: 414,

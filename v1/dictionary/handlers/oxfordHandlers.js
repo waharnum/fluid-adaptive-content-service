@@ -46,7 +46,7 @@ adaptiveContentService.handlers.dictionary.oxford.serviceKeys = function (that) 
     return authHeaders;
 };
 
-//check for errors with the service keys
+//TEST:check for errors with the service keys
 adaptiveContentService.handlers.dictionary.oxford.checkServiceKeys = function (requestHeaders) {
     var appId = requestHeaders.app_id,
         appKey = requestHeaders.app_key;
@@ -74,7 +74,7 @@ adaptiveContentService.handlers.dictionary.oxford.checkServiceKeys = function (r
 //function to catch the errors before making the request to the oxford service
 adaptiveContentService.handlers.dictionary.oxford.preRequestErrorCheck = function (word, requestHeaders, that) {
     //Error with the word in uri
-    var uriErrorContent = that.checkUriError(word, that);
+    var uriErrorContent = that.checkUriError(word, that.options.wordCharacterLimit);
 
     if (uriErrorContent) {
         return uriErrorContent;

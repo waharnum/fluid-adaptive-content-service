@@ -77,7 +77,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.definition
 //Wiktionary definition handler
 adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition = function (request, version, word, lang, that) {
     try {
-        var uriErrorContent = that.checkUriError(word, that);
+        var uriErrorContent = that.checkUriError(word, that.options.wordCharacterLimit);
 
         //Check for long URI
         if (uriErrorContent) {
