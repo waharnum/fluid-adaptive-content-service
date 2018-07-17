@@ -10,7 +10,7 @@ require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
 require("../handlerUtils");
 
-//Specific grade for Yandex
+// Specific grade for Yandex
 fluid.defaults("adaptiveContentService.handlers.translation.yandex", {
     gradeNames: "kettle.request.http",
     authenticationOptions: {
@@ -101,7 +101,7 @@ adaptiveContentService.handlers.translation.yandex.checkServiceKey = function (s
     }
 };
 
-//check for errors with the language codes
+// check for errors with the language codes
 adaptiveContentService.handlers.translation.yandex.checkLanguageCodes = function (langsObj) {
     if (!langsObj) {
         return false;
@@ -124,7 +124,7 @@ adaptiveContentService.handlers.translation.yandex.checkLanguageCodes = function
     }
 };
 
-//function to catch the error content from the yandex service resopnse
+// function to catch the error content from the yandex service resopnse
 adaptiveContentService.handlers.translation.yandex.checkCommonYandexErrors = function (serviceResponse) {
 
     //No error
@@ -230,7 +230,7 @@ adaptiveContentService.handlers.translation.yandex.serviceKey = function (that) 
     return serviceKey;
 };
 
-//function to get the required translation data from yandex
+// function to get the required translation data from yandex
 adaptiveContentService.handlers.translation.yandex.requiredData = function (url, text) {
     var promise = fluid.promise();
 
@@ -275,7 +275,7 @@ adaptiveContentService.handlers.translation.yandex.translationConstructResponse 
     };
 };
 
-//Yandex translation grade
+// Yandex translation grade
 fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex",
     characterLimit: 500,
@@ -284,7 +284,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.translateText
     }
 });
 
-//Yandex translate text handler
+// Yandex translate text handler
 adaptiveContentService.handlers.translation.yandex.translateText.getTranslation = function (request, version, that) {
     var sourceLang = request.req.params.sourceLang,
         targetLang = request.req.params.targetLang,
@@ -345,7 +345,7 @@ adaptiveContentService.handlers.translation.yandex.translateText.getTranslation 
     }
 };
 
-//Yandex language detection grade
+// Yandex language detection grade
 fluid.defaults("adaptiveContentService.handlers.translation.yandex.langDetection", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex",
     characterLimit: 500,
@@ -355,7 +355,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.langDetection
     }
 });
 
-//function to construct a response from the data provided by the Yandex service
+// function to construct a response from the data provided by the Yandex service
 adaptiveContentService.handlers.translation.yandex.langDetection.constructResponse = function (serviceResponse, sourceText) {
     return {
         sourceText: sourceText,
@@ -363,7 +363,7 @@ adaptiveContentService.handlers.translation.yandex.langDetection.constructRespon
     };
 };
 
-//Yandex language detection handler
+// Yandex language detection handler
 adaptiveContentService.handlers.translation.yandex.langDetection.getLang = function (request, version, that) {
     var text = request.req.body.text;
 
@@ -411,7 +411,7 @@ adaptiveContentService.handlers.translation.yandex.langDetection.getLang = funct
     }
 };
 
-//Yandex translation (with only target language given) grade
+// Yandex translation (with only target language given) grade
 fluid.defaults("adaptiveContentService.handlers.translation.yandex.detectAndTranslate", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex",
     characterLimit: 500,
@@ -436,6 +436,7 @@ adaptiveContentService.handlers.translation.yandex.detectAndTranslate.langDetect
         },
         function (error, response, body) {
             if (error) {
+                console.log(url);
                 ACS.log("Error making request to the Yandex Service (Language Detection endpoint) - " + error);
                 promise.resolve({
                     statusCode: 500,
@@ -463,6 +464,7 @@ adaptiveContentService.handlers.translation.yandex.detectAndTranslate.translatio
     var promise = fluid.promise();
 
     var url = that.options.urlBase + "translate?key=" + serviceKey + "&lang=" + sourceLang + "-" + targetLang;
+
     makeRequest.post(
         {
             url: url,

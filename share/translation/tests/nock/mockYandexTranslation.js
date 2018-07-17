@@ -24,7 +24,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + mockTranslationData.apiKey.invalid + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
-        text: mockTranslationData.text
+        text: mockTranslationData.text.noError
     }
 )
 .reply(
@@ -35,7 +35,7 @@ nock(urlBase)
 .post(
     "/translate?key=" + mockTranslationData.apiKey.blocked + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
-        text: mockTranslationData.text
+        text: mockTranslationData.text.noError
     }
 )
 .reply(
@@ -53,22 +53,33 @@ nock(urlBase)
     404,
     mockTranslationData.limitExceeded
 )
-//translation direction not supported
+//translation direction not supported (wrong source lang)
 .post(
     "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.wrong + "-" + mockTranslationData.targetLang.correct,
     {
-        text: mockTranslationData.text
+        text: mockTranslationData.text.noError
     }
 )
 .reply(
     501,
     mockTranslationData.unsupportedTranslation
 )
-//invalid lang code
+//translation direction not supported (wrong target lang)
+.post(
+    "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.wrong,
+    {
+        text: mockTranslationData.text.noError
+    }
+)
+.reply(
+    501,
+    mockTranslationData.unsupportedTranslation
+)
+//invalid source lang code
 .post(
     "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.invalid + "-" + mockTranslationData.targetLang.correct,
     {
-        text: mockTranslationData.text
+        text: mockTranslationData.text.noError
     }
 )
 .reply(
