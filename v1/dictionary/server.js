@@ -106,6 +106,11 @@ fluid.defaults("adaptiveContentService.dictionary.serverConfig", {
                                     "type": "adaptiveContentService.handlers.dictionary.oxford.frequency",
                                     "route": "/:version/dictionary/oxford/:language/frequency/:word/:lexicalCategory",
                                     "method": "get"
+                                },
+                                oxfordLanguagesHandler: {
+                                    "type": "adaptiveContentService.handlers.dictionary.oxford.languages",
+                                    "route": "/:version/dictionary/oxford/languages",
+                                    "method": "get"
                                 }
                             }
                         }

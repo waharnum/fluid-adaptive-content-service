@@ -27,7 +27,7 @@ var keyHeaders = {
         app_id: "randomstring",
         app_key: "randomstring"
     }
-}
+};
 
 var expectedReturnVal = {
     appIdAbsent: {

@@ -46,7 +46,7 @@ adaptiveContentService.handlers.dictionary.oxford.serviceKeys = function (that) 
     return authHeaders;
 };
 
-//TEST:check for errors with the service keys
+// check for errors with the service keys
 adaptiveContentService.handlers.dictionary.oxford.checkServiceKeys = function (requestHeaders) {
     var appId = requestHeaders.app_id,
         appKey = requestHeaders.app_key;
@@ -208,7 +208,7 @@ adaptiveContentService.handlers.dictionary.oxford.handlerCommonTasks = function 
 
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
-}
+};
 
 //Oxford definition grade
 fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.definition", {
@@ -532,10 +532,10 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
         url;
 
     if (lexicalCategory) {
-      url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
+        url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word + "&lexicalCategory=" + lexicalCategory;
     }
     else {
-      url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
+        url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
     }
 
     that.handlerCommonTasks(request, version, word, url, that);
@@ -553,4 +553,88 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse = 
     }
 
     return response;
+};
+
+// Oxford languages grade
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.languages", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
+    invokers: {
+        handleRequest: {
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.languages.getLanguages",
+            args: ["{arguments}.0", "{that}"]
+        },
+        dictionaryHandlerImpl: "", // overriding from parent grade, because not needed here
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.languages.constructResponse"
+    }
+});
+
+// function to construct a useful response from the data provided by the Oxford Service
+adaptiveContentService.handlers.dictionary.oxford.languages.constructResponse = function (jsonServiceResponse) {
+    var response = {
+        languages: []
+    };
+
+    var languagesPresent = []; // to keep track of languages already present
+
+    var results = jsonServiceResponse.results;
+    fluid.each(results, function (resultLang) {
+
+        if (resultLang.type === "monolingual") {
+            var langObj = {
+                code: resultLang.sourceLanguage.id,
+                language: resultLang.sourceLanguage.language
+            };
+
+            // check that language is not already present
+            if (languagesPresent.indexOf(langObj.code) < 0) {
+                response.languages.push(langObj);
+                languagesPresent.push(langObj.code);
+            }
+        }
+    });
+
+    return response;
+};
+
+// Oxford languages handler
+adaptiveContentService.handlers.dictionary.oxford.languages.getLanguages = function (request, that) {
+    var version = request.req.params.version,
+        urlBase = that.options.serviceConfig.urlBase,
+        url = urlBase + "languages";
+
+    var requestHeaders = that.serviceKeysImpl(that);
+
+    // Check for errors with the service keys
+    var serviceKeyErrorContent = that.checkServiceKeys(requestHeaders);
+
+    if (serviceKeyErrorContent) {
+        return serviceKeyErrorContent;
+    }
+    else {
+        that.requiredDataImpl(url, requestHeaders)
+            .then(
+                function (result) {
+                    var serviceResponse = result,
+                        errorContent = that.checkDictionaryErrorImpl(serviceResponse),
+                        message;
+
+                    //Error Responses
+                    if (errorContent) {
+                        message = that.errorMsgScrape(errorContent.responseBody);
+                        var statusCode = errorContent.statusCode;
+
+                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                    }
+                    //No error : Word found
+                    else {
+                        message = "Word Found";
+
+                        var jsonServiceResponse = JSON.parse(serviceResponse.body),
+                            response = that.constructResponse(jsonServiceResponse);
+
+                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                    }
+                }
+            );
+    }
 };
