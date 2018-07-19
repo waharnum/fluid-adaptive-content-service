@@ -33,6 +33,7 @@
     "cheerio": "^1.0.0-rc.2",
     "compromise": "^11.9.1",
     "dotenv": "^5.0.1",
+    "google-translate": "^2.2.0",
     "infusion": "3.0.0-dev.20171117T095227Z.67ff934",
     "kettle": "1.7.1",
     "nock": "^9.3.3",

@@ -71,7 +71,7 @@ adaptiveContentService.tests.utils.getOxfordRequestHeaders = function () {
 
 //provide yandex authentication key for testing purpose
 adaptiveContentService.tests.utils.getYandexServiceKey = function () {
-    return kettle.resolvers.env("YANDEX_APP_KEY");
+    return kettle.resolvers.env("YANDEX_API_KEY");
 };
 
 //function to check for oxford api keys before starting contract test
@@ -107,7 +107,7 @@ adaptiveContentService.tests.utils.checkYandexKeys = function (key, testTree, te
         //api key absent
         //terminate contract test
 
-        ACS.log("Yandex 'App Key' not found. Refer README for instructions to adding it.");
+        ACS.log("Yandex 'Api Key' not found. Refer README for instructions to adding it.");
         ACS.log("Terminating " + testName);
     }
     else {

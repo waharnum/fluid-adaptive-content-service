@@ -131,19 +131,24 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                         type: "kettle.app",
                         options: {
                             requestHandlers: {
-                                translateTextHandler: {
+                                yandexTranslateTextHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.translateText",
                                     "route": "/:version/translation/yandex/:sourceLang-:targetLang",
                                     "method": "post"
                                 },
-                                langDetectionHandler: {
+                                yandexLangDetectionHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.langDetection",
                                     "route": "/:version/translation/yandex/detect",
                                     "method": "post"
                                 },
-                                detectAndTranslateHandler: {
+                                yandexDetectAndTranslateHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.detectAndTranslate",
                                     "route": "/:version/translation/yandex/:targetLang",
+                                    "method": "post"
+                                },
+                                googleTranslateTextHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.google.translateText",
+                                    "route": "/:version/translation/google/:sourceLang-:targetLang",
                                     "method": "post"
                                 }
                             }
@@ -163,7 +168,7 @@ fluid.defaults("adaptiveContentService.serverConfig", {
 
 adaptiveContentService.serverConfig.checkServiceKeys = function () {
     adaptiveContentService.handlerUtils.checkOxfordServiceKeys();
-    adaptiveContentService.handlerUtils.checkYandexServiceKeys();
+    adaptiveContentService.handlerUtils.checkTranslationServiceKeys();
 };
 
 require("./dictionary/handlers");

@@ -17,19 +17,24 @@ fluid.defaults("adaptiveContentService.translation.serverConfig", {
                         type: "kettle.app",
                         options: {
                             requestHandlers: {
-                                translateTextHandler: {
+                                yandexTranslateTextHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.translateText",
                                     "route": "/:version/translation/yandex/:sourceLang-:targetLang",
                                     "method": "post"
                                 },
-                                langDetectionHandler: {
+                                yandexLangDetectionHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.langDetection",
                                     "route": "/:version/translation/yandex/detect",
                                     "method": "post"
                                 },
-                                detectAndTranslateHandler: {
+                                yandexDetectAndTranslateHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.detectAndTranslate",
                                     "route": "/:version/translation/yandex/:targetLang",
+                                    "method": "post"
+                                },
+                                googleDetectAndTranslateHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.google.detectAndTranslate",
+                                    "route": "/:version/translation/google/:targetLang",
                                     "method": "post"
                                 }
                             }
@@ -40,7 +45,7 @@ fluid.defaults("adaptiveContentService.translation.serverConfig", {
                     onListen: null
                 },
                 listeners: {
-                    onListen: "adaptiveContentService.handlerUtils.checkYandexServiceKeys"
+                    onListen: "adaptiveContentService.handlerUtils.checkTranslationServiceKeys"
                 }
             }
         }

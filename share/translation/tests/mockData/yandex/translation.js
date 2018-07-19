@@ -23,7 +23,7 @@ module.exports = {
         invalid: "german"
     },
     apiKey: {
-        correct: kettle.resolvers.env("YANDEX_APP_KEY"),
+        correct: kettle.resolvers.env("YANDEX_API_KEY"),
         invalid: "randomstring",
         blocked: "blockedkey" //not actually blocked; used for mock response only
     },

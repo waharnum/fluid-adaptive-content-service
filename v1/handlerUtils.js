@@ -53,11 +53,19 @@ adaptiveContentService.handlerUtils.checkOxfordServiceKeys = function () {
     }
 };
 
-// Check presence of Yandex API keys
-adaptiveContentService.handlerUtils.checkYandexServiceKeys = function () {
-    var yandexAppKey = kettle.resolvers.env("YANDEX_APP_KEY");
+// Check presence of API keys for all the services used for Translation endpoints
+adaptiveContentService.handlerUtils.checkTranslationServiceKeys = function () {
+    //YANDEX
+    var yandexApiKey = kettle.resolvers.env("YANDEX_API_KEY");
 
-    if (!yandexAppKey) {
-        ACS.log("WARNING! Yandex 'App Key' not found. Refer README for instructions to adding it.");
+    if (!yandexApiKey) {
+        ACS.log("WARNING! Yandex 'Api Key' not found. Refer README for instructions to adding it.");
+    }
+
+    //GOOGLE
+    var googleApiKey = kettle.resolvers.env("GOOGLE_API_KEY");
+
+    if (!googleApiKey) {
+        ACS.log("WARNING! Google 'Api Key' not found. Refer README for instructions to adding it.");
     }
 };
