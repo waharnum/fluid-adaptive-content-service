@@ -6,10 +6,14 @@ var fluid = require("infusion"),
 kettle.loadTestingSupport();
 
 var testIncludes = [
+    "./unitTests/common/checkLanguageCodes.js",
+    "./unitTests/common/checkServiceKey.js",
+    "./unitTests/common/checkSourceText.js",
+    "./unitTests/google/checkCommonGoogleErrors.js",
+    "./unitTests/google/translationConstructResponse.js",
+    "./unitTests/google/isLangUndefined.js",
+    "./unitTests/google/langDetectionConstructResponse.js",
     "./unitTests/yandex/checkCommonYandexErrors.js",
-    "./unitTests/yandex/checkLanguageCodes.js",
-    "./unitTests/yandex/checkServiceKey.js",
-    "./unitTests/yandex/checkSourceText.js",
     "./unitTests/yandex/isLangResponseEmpty.js",
     "./unitTests/yandex/langDetectionConstructResponse.js",
     "./unitTests/yandex/translationConstructResponse.js",

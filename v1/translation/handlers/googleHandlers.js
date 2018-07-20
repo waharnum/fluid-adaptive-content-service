@@ -25,7 +25,7 @@ fluid.defaults("adaptiveContentService.handlers.translation.google", {
     }
 });
 
-//TEST: function to catch the error content from the google service resopnse
+// function to catch the error content from the google service resopnse
 adaptiveContentService.handlers.translation.google.checkCommonGoogleErrors = function (serviceResponse) {
 
     // No error
@@ -109,7 +109,7 @@ adaptiveContentService.handlers.translation.google.detectAndTranslate.requiredDa
     return promise;
 };
 
-//TEST: function to construct a response from the data provided by the Google service
+// function to construct a response from the data provided by the Google service
 adaptiveContentService.handlers.translation.google.detectAndTranslate.constructResponse = function (serviceResponse, targetLang) {
     return {
         sourceLang: serviceResponse.body.detectedSourceLanguage,
@@ -219,7 +219,7 @@ adaptiveContentService.handlers.translation.google.langDetection.requiredData = 
     return promise;
 };
 
-// TEST: check if the detected language is undefined, i.e. language could not be detected
+// check if the detected language is undefined, i.e. language could not be detected
 adaptiveContentService.handlers.translation.google.langDetection.isLangUndefined = function (serviceResponse) {
     if (serviceResponse.body.language === "und") {
         return {
@@ -248,7 +248,7 @@ adaptiveContentService.handlers.translation.google.langDetection.checkLangDetect
     }
 };
 
-// TEST: function to construct a response from the data provided by the Google service
+// function to construct a response from the data provided by the Google service
 adaptiveContentService.handlers.translation.google.langDetection.constructResponse = function (serviceResponse) {
     return {
         sourceText: serviceResponse.body.originalText,

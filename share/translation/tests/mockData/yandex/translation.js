@@ -2,26 +2,13 @@
 
 var kettle = require("kettle");
 
+var commonMockTranslationData = require("../common/translation");
+
 module.exports = {
     // general data
-    text: {
-        noError: "This is the text to be translated",
-        empty: "",
-        absent: undefined,
-        tooLong: "This sentence will exceed the character limit because it is very long",
-        numerical: "12345",
-        limitExceeded: "This test will trigger limit exceeded endpoint"
-    },
-    sourceLang: {
-        correct: "en",
-        wrong: "eng",
-        invalid: "english"
-    },
-    targetLang: {
-        correct: "de",
-        wrong: "ger",
-        invalid: "german"
-    },
+    text: commonMockTranslationData.text,
+    sourceLang: commonMockTranslationData.sourceLang,
+    targetLang: commonMockTranslationData.targetLang,
     apiKey: {
         correct: kettle.resolvers.env("YANDEX_API_KEY"),
         invalid: "randomstring",
@@ -30,7 +17,7 @@ module.exports = {
     // responses
     noError: {
         "code": 200,
-        "lang": this.sourceLang + "-" + this.targetLang,
+        "lang": commonMockTranslationData.sourceLang.correct + "-" + commonMockTranslationData.targetLang.correct,
         "text": [ "Dies ist der text, der übersetzt werden" ]
     },
     keyInvalid: {
