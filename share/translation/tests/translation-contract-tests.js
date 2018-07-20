@@ -6,6 +6,8 @@ var fluid = require("infusion"),
 kettle.loadTestingSupport();
 
 var testIncludes = [
+    "./contractTests/google/detectAndTranslate.js",
+    "./contractTests/google/langDetection.js",
     "./contractTests/yandex/textTranslation.js",
     "./contractTests/yandex/langDetection.js"
 ];

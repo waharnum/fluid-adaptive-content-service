@@ -54,7 +54,7 @@ adaptiveContentService.tests.translation.yandex.contractTests.translateText.getD
                 catch (err) {
                     ACS.log("Contract Test (Yandex - Translation) - Error occured while parsing the response body; body should be JSON pareseable -  " + err);
                     ACS.log("Contract Test (Yandex - Translation) - Response body - \n" + body);
-                    jqunit.fail("Contract Test : For text translation failed due to error parsing with parsing response body into JSON");
+                    jqunit.fail("Contract Test : For text translation failed due to error parsing response body into JSON");
                 }
             }
         }

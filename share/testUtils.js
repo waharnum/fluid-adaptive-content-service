@@ -74,6 +74,11 @@ adaptiveContentService.tests.utils.getYandexServiceKey = function () {
     return kettle.resolvers.env("YANDEX_API_KEY");
 };
 
+//provide google authentication key for testing purpose
+adaptiveContentService.tests.utils.getGoogleServiceKey = function () {
+    return kettle.resolvers.env("GOOGLE_API_KEY");
+};
+
 //function to check for oxford api keys before starting contract test
 adaptiveContentService.tests.utils.checkOxfordKeys = function (keys, testTree, testName) {
     var areKeysPresent = true;
@@ -108,6 +113,23 @@ adaptiveContentService.tests.utils.checkYandexKeys = function (key, testTree, te
         //terminate contract test
 
         ACS.log("Yandex 'Api Key' not found. Refer README for instructions to adding it.");
+        ACS.log("Terminating " + testName);
+    }
+    else {
+        //api keys present
+        //run contract tests
+
+        testTree();
+    }
+};
+
+//function to check for google api key before starting contract test
+adaptiveContentService.tests.utils.checkGoogleKeys = function (key, testTree, testName) {
+    if (!key) {
+        //api key absent
+        //terminate contract test
+
+        ACS.log("Google 'Api Key' not found. Refer README for instructions to adding it.");
         ACS.log("Terminating " + testName);
     }
     else {

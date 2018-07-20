@@ -19,7 +19,7 @@ module.exports = {
     },
     targetLang: {
         correct: "de",
-        wrong: "ger",
+        wrong: "abc",
         invalid: "german"
     },
     // responses

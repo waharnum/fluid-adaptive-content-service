@@ -55,7 +55,7 @@ adaptiveContentService.tests.translation.yandex.contractTests.langDetection.getD
                 catch (err) {
                     ACS.log("Contract Test (Yandex - Language Detection) - Error occured while parsing the response body; body should be JSON pareseable -  " + err);
                     ACS.log("Contract Test (Yandex - Language Detection) - Response body - \n" + body);
-                    jqunit.fail("Contract Test : For language detection failed due to error parsing with parsing response body into JSON");
+                    jqunit.fail("Contract Test : For language detection failed due to error parsing response body into JSON");
                 }
             }
         }
