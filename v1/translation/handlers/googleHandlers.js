@@ -20,8 +20,6 @@ fluid.defaults("adaptiveContentService.handlers.translation.google", {
     },
     invokers: {
         checkCommonGoogleErrors: "adaptiveContentService.handlers.translation.google.checkCommonGoogleErrors",
-        // checkLangDetectionError: "adaptiveContentService.handlers.translation.google.checkLangDetectionError",
-        // isLangResponseEmpty: "adaptiveContentService.handlers.translation.google.isLangResponseEmpty",
         constructResponse: "fluid.notImplemented",
         translationHandlerImpl: "fluid.notImplemented"
     }
@@ -157,6 +155,137 @@ adaptiveContentService.handlers.translation.google.detectAndTranslate.getTransla
                         else {
                             var message = "Translation Successful",
                                 response = that.constructResponse(serviceResponse, targetLang);
+
+                            that.sendSuccessResponse(request, version, "Google", serviceResponse.statusCode, message, response);
+                        }
+                    }
+                );
+        }
+    }
+    // Error with the API code
+    catch (error) {
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Google", 500, message);
+    }
+};
+
+// Google language detection grade
+fluid.defaults("adaptiveContentService.handlers.translation.google.langDetection", {
+    gradeNames: "adaptiveContentService.handlers.translation.google",
+    invokers: {
+        requiredData: "adaptiveContentService.handlers.translation.google.langDetection.requiredData",
+        checkLangDetectionError: "adaptiveContentService.handlers.translation.google.langDetection.checkLangDetectionError",
+        isLangUndefined: "adaptiveContentService.handlers.translation.google.langDetection.isLangUndefined",
+        constructResponse: "adaptiveContentService.handlers.translation.google.langDetection.constructResponse",
+        translationHandlerImpl: "adaptiveContentService.handlers.translation.google.langDetection.getLang"
+    }
+});
+
+// function to get the required data from the google service
+adaptiveContentService.handlers.translation.google.langDetection.requiredData = function (text) {
+    var promise = fluid.promise();
+
+    googleTranslate.detectLanguage(text, function (err, detection) {
+        if (err) {
+
+            // error making request
+            if (err.body === undefined) {
+                ACS.log("Error making request to the Google Service (Detect-Translate endpoint)");
+                promise.resolve({
+                    statusCode: 500,
+                    body: {
+                        message: "Internal Server Error : Error with making request to the external service (Google)"
+                    }
+                });
+            }
+            else {
+                var errorBody = JSON.parse(err.body);
+
+                promise.resolve({
+                    statusCode: errorBody.error.code,
+                    body: errorBody
+                });
+            }
+        }
+        else {
+            promise.resolve({
+                statusCode: 200,
+                body: detection
+            });
+        }
+    });
+
+    return promise;
+};
+
+// TEST: check if the detected language is undefined, i.e. language could not be detected
+adaptiveContentService.handlers.translation.google.langDetection.isLangUndefined = function (serviceResponse) {
+    if (serviceResponse.body.language === "und") {
+        return {
+            statusCode: 404,
+            errorMessage: "Language could not be detected from the text provided"
+        };
+    }
+    else {
+        return false;
+    }
+};
+
+// function to catch the error content from the Google service resopnse
+adaptiveContentService.handlers.translation.google.langDetection.checkLangDetectionError = function (serviceResponse, that) {
+    var undefinedLangErrorContent = that.isLangUndefined(serviceResponse);
+
+    // langDetection-specific errors
+    if (serviceResponse.statusCode === 200 && undefinedLangErrorContent) {
+        return undefinedLangErrorContent;
+    }
+    // general translation errors
+    else {
+        var errorContent = that.checkCommonGoogleErrors(serviceResponse);
+
+        return errorContent;
+    }
+};
+
+// TEST: function to construct a response from the data provided by the Google service
+adaptiveContentService.handlers.translation.google.langDetection.constructResponse = function (serviceResponse) {
+    return {
+        sourceText: serviceResponse.body.originalText,
+        langCode: serviceResponse.body.language
+    };
+};
+
+// Google language detection handler
+adaptiveContentService.handlers.translation.google.langDetection.getLang = function (request, version, that) {
+    var text = request.req.body.text;
+
+    try {
+        var characterLimit = that.options.characterLimit;
+
+        var langsObj = false;
+
+        // check for errors before making request to the service
+        var preRequestErrorContent = that.preRequestErrorCheck(characterLimit, googleApiKey, langsObj, text, that);
+
+        if (preRequestErrorContent) {
+            that.sendErrorResponse(request, version, "Google", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
+        }
+        else {
+            that.requiredData(text)
+                .then(
+                    function (result) {
+                        var serviceResponse = result,
+                            errorContent = that.checkLangDetectionError(serviceResponse, that);
+
+                        // Check for error responses
+                        if (errorContent) {
+                            that.sendErrorResponse(request, version, "Google", errorContent.statusCode, errorContent.errorMessage);
+                        }
+                        // No error response
+                        else {
+                            var message = "Language Detection Successful",
+                                response = that.constructResponse(serviceResponse);
 
                             that.sendSuccessResponse(request, version, "Google", serviceResponse.statusCode, message, response);
                         }
