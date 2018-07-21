@@ -300,3 +300,98 @@ adaptiveContentService.handlers.translation.google.langDetection.getLang = funct
         that.sendErrorResponse(request, version, "Google", 500, message);
     }
 };
+
+// Google language detection grade
+fluid.defaults("adaptiveContentService.handlers.translation.google.listLanguages", {
+    gradeNames: "adaptiveContentService.handlers.translation.google",
+    invokers: {
+        requiredData: "adaptiveContentService.handlers.translation.google.listLanguages.requiredData",
+        constructResponse: "adaptiveContentService.handlers.translation.google.listLanguages.constructResponse",
+        translationHandlerImpl: "adaptiveContentService.handlers.translation.google.listLanguages.getLangList"
+    }
+});
+
+// function to get the required data from the google service
+adaptiveContentService.handlers.translation.google.listLanguages.requiredData = function () {
+    var promise = fluid.promise();
+
+    googleTranslate.getSupportedLanguages(function (err, languageCodes) {
+        if (err) {
+
+            // error making request
+            if (err.body === undefined) {
+                ACS.log("Error making request to the Google Service (Detect-Translate endpoint)");
+                promise.resolve({
+                    statusCode: 500,
+                    body: {
+                        message: "Internal Server Error : Error with making request to the external service (Google)"
+                    }
+                });
+            }
+            else {
+                var errorBody = JSON.parse(err.body);
+
+                promise.resolve({
+                    statusCode: errorBody.error.code,
+                    body: errorBody
+                });
+            }
+        }
+        else {
+            promise.resolve({
+                statusCode: 200,
+                body: languageCodes
+            });
+        }
+    });
+
+    return promise;
+};
+
+// function to construct a response from the data provided by the Google service
+adaptiveContentService.handlers.translation.google.listLanguages.constructResponse = function (serviceResponse) {
+    return {
+        languagesCodes: serviceResponse.body
+    };
+};
+
+// google get all supported languages handler
+adaptiveContentService.handlers.translation.google.listLanguages.getLangList = function (request, version, that) {
+    try {
+
+        // check for errors before making request to the service
+        var serviceKeyErrorContent = that.checkServiceKey(googleApiKey);
+
+        // error with the service key
+        if (serviceKeyErrorContent) {
+            that.sendErrorResponse(request, version, "Google", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
+        }
+        else {
+            that.requiredData()
+                .then (
+                    function (result) {
+                        var serviceResponse = result,
+                            errorContent = that.checkCommonGoogleErrors(serviceResponse, that);
+
+                        // Check for error responses
+                        if (errorContent) {
+                            that.sendErrorResponse(request, version, "Google", errorContent.statusCode, errorContent.errorMessage);
+                        }
+                        // No error response
+                        else {
+                            var message = "Available languages fetched successfully",
+                                response = that.constructResponse(serviceResponse);
+
+                            that.sendSuccessResponse(request, version, "Google", serviceResponse.statusCode, message, response);
+                        }
+                    }
+                );
+        }
+    }
+    // error with the API code
+    catch (error) {
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Google", 500, message);
+    }
+};
