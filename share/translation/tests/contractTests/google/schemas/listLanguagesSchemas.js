@@ -8,4 +8,4 @@ module.exports = {
         "items": { "type": "string" }
     },
     authError: commonSchemas.authError,
-}
+};

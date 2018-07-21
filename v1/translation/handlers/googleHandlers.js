@@ -320,7 +320,7 @@ adaptiveContentService.handlers.translation.google.listLanguages.requiredData = 
 
             // error making request
             if (err.body === undefined) {
-                ACS.log("Error making request to the Google Service (Detect-Translate endpoint)");
+                ACS.log("Error making request to the Google Service (List Supported Languages endpoint)");
                 promise.resolve({
                     statusCode: 500,
                     body: {

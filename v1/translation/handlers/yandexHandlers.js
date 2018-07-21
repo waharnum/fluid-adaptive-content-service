@@ -431,3 +431,105 @@ adaptiveContentService.handlers.translation.yandex.detectAndTranslate.getTransla
         that.sendErrorResponse(request, version, "Yandex", 500, message);
     }
 };
+
+// Yandex language detection grade
+fluid.defaults("adaptiveContentService.handlers.translation.yandex.listLanguages", {
+    gradeNames: "adaptiveContentService.handlers.translation.yandex",
+    invokers: {
+        requiredData: "adaptiveContentService.handlers.translation.yandex.listLanguages.requiredData",
+        constructResponse: "adaptiveContentService.handlers.translation.yandex.listLanguages.constructResponse",
+        translationHandlerImpl: "adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList"
+    }
+});
+
+// function to get the required data from the Yandex service
+adaptiveContentService.handlers.translation.yandex.listLanguages.requiredData = function (serviceKey, that) {
+    var promise = fluid.promise();
+
+    var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=en";
+
+    makeRequest.post(
+        {
+            url: url
+        },
+        function (error, response, body) {
+            if (error) {
+                ACS.log("Error making request to the Yandex Service (List Supported Languages endpoint) - " + error);
+                promise.resolve({
+                    statusCode: 500,
+                    body: {
+                        message: "Internal Server Error : Error with making request to the external service (Yandex) - " + error
+                    }
+                });
+            }
+            else {
+                var responseBody = JSON.parse(body);
+
+                promise.resolve({
+                    statusCode: 200,
+                    body: responseBody
+                });
+            }
+        }
+    );
+
+    return promise;
+};
+
+// function to construct a response from the data provided by the Yandex service
+adaptiveContentService.handlers.translation.yandex.listLanguages.constructResponse = function (serviceResponse) {
+    var languagesObj = serviceResponse.body.langs,
+        response = [];
+
+    fluid.each(languagesObj, function (langName, langCode) {
+        response.push({
+            languageName: langName,
+            languageCode: langCode
+        });
+    });
+
+    return response;
+};
+
+// Yandex get all supported languages handler
+adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList = function (request, version, that) {
+    try {
+
+        var serviceKey = that.serviceKey(that);
+
+        // check for errors before making request to the service
+        var serviceKeyErrorContent = that.checkServiceKey(serviceKey);
+
+        // error with the service key
+        if (serviceKeyErrorContent) {
+            that.sendErrorResponse(request, version, "Yandex", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
+        }
+        else {
+            that.requiredData(serviceKey, that)
+                .then(
+                    function (result) {
+                        var serviceResponse = result,
+                            errorContent = that.checkCommonYandexErrors(serviceResponse);
+
+                        // Check for error responses
+                        if (errorContent) {
+                            that.sendErrorResponse(request, version, "Yandex", errorContent.statusCode, errorContent.errorMessage);
+                        }
+                        // No error response
+                        else {
+                            var message = "Available languages fetched successfully",
+                                response = that.constructResponse(serviceResponse);
+
+                            that.sendSuccessResponse(request, version, "Yandex", serviceResponse.statusCode, message, response);
+                        }
+                    }
+                );
+        }
+    }
+    // error with the API code
+    catch (error) {
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Yandex", 500, message);
+    }
+};

@@ -50,7 +50,7 @@ adaptiveContentService.tests.translation.google.contractTests.listLanguages.getD
                 catch (e) {
                     ACS.log("Contract Test (Google - List Supported Languages) - Error occured while parsing the error response body; body should be JSON pareseable -  " + e);
                     ACS.log("Contract Test (Google - List Supported Languages) - Error Response body - \n" + err.body);
-                    jqunit.fail("Contract Test : For listing supported languages failed due to error parsing response body into JSON");
+                    jqunit.fail("Contract Test : For listing supported languages failed due to error parsing error response body into JSON");
                 }
             }
         }

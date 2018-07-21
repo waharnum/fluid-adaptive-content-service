@@ -17,6 +17,7 @@ var testIncludes = [
     "./unitTests/yandex/checkCommonYandexErrors.js",
     "./unitTests/yandex/isLangResponseEmpty.js",
     "./unitTests/yandex/langDetectionConstructResponse.js",
+    "./unitTests/yandex/listLanguagesConstructResponse.js",
     "./unitTests/yandex/translationConstructResponse.js",
     "./integrationTests/yandex/detectAndTranslate.js",
     "./integrationTests/yandex/langDetection.js",
