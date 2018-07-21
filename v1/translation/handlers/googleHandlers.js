@@ -351,7 +351,7 @@ adaptiveContentService.handlers.translation.google.listLanguages.requiredData = 
 // function to construct a response from the data provided by the Google service
 adaptiveContentService.handlers.translation.google.listLanguages.constructResponse = function (serviceResponse) {
     return {
-        languagesCodes: serviceResponse.body
+        languageCodes: serviceResponse.body
     };
 };
 

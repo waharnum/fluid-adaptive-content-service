@@ -7,7 +7,7 @@ require("dotenv").config();//npm package to get variables from '.env' file
 var urlBase = "https://translate.yandex.net/api/v1.5/tr.json";
 
 // mock data
-var mockTranslationData = require("../mockData/yandex/translation");
+var mockTranslationData = require("../../mockData/yandex/translation");
 
 nock(urlBase)
 .post(
