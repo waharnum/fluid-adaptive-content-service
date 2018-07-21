@@ -12,6 +12,7 @@ npm install
 Third-party services that require API key -
 - [Oxford](https://developer.oxforddictionaries.com/)
 - [Yandex](https://tech.yandex.com/translate/)
+- [Google](https://cloud.google.com/translate/docs/)
 
 
 You can visit their respective websites and acquire their API keys to use the service.\
@@ -113,7 +114,7 @@ Example endpoints:
 **Body** `{ sentence: "Hello world! This is a test sentence" }`
 
 ### Translation Service
-- `http://localhost:8083/v1/translation/yandex/{source_lang}-{target_lang}`\
+- `http://localhost:8083/v1/translation/yandex/translate/{source_lang}-{target_lang}`\
 **Method**: `POST`\
 **Request Body Format**: `{ text: "text to be translated"}`\
 **Language Code**: ISO 639-1 (2-lettered language codes)
@@ -123,11 +124,42 @@ Example endpoints:
 **Request Body Format**: `{ text: "text for which language is to be detected"}`\
 **Language Code**: ISO 639-1 (2-lettered language codes)
 
+- `http://localhost:8083/v1/translation/yandex/translate/{target_lang}`\
+**Method**: `POST`\
+**Request Body Format**: `{ text: "text to be translated"}`\
+**Language Code**: ISO 639-1 (2-lettered language codes)
+
+- `http://localhost:8083/v1/translation/yandex/languages`\
+**Method**: `GET`\
+**Language Code**: ISO 639-1 (2-lettered language codes)
+
+- `http://localhost:8083/v1/translation/google/translate/{target_lang}`\
+**Method**: `POST`\
+**Request Body Format**: `{ text: "text to be translated"}`\
+**Language Code**: ISO 639-1 (2-lettered language codes), ISO 639-2 (3-lettered language code)
+
+- `http://localhost:8083/v1/translation/google/detect`\
+**Method**: `POST`\
+**Request Body Format**: `{ text: "text for which language is to be detected"}`\
+**Language Code**: ISO 639-1 (2-lettered language codes), ISO 639-2 (3-lettered language code)
+
+- `http://localhost:8083/v1/translation/google/languages`\
+**Method**: `GET`\
+**Language Code**: ISO 639-1 (2-lettered language codes), ISO 639-2 (3-lettered language code)
+
 Example endpoints:
-- `http://localhost:8083/v1/translation/yandex/en-de`\
+- `http://localhost:8083/v1/translation/yandex/translate/en-de`\
 **Body** `{ text: "This is the text to be translated" }`
 - `http://localhost:8083/v1/translation/yandex/detect`\
+**Body** `{ text: "This is the text for which the language is to be detected" }`
+- `http://localhost:8083/v1/translation/yandex/translate/de`\
 **Body** `{ text: "This is the text to be translated" }`
+- `http://localhost:8083/v1/translation/yandex/languages`\
+- `http://localhost:8083/v1/translation/google/translate/en`\
+**Body** `{ text: "This is the text to be translated" }`
+- `http://localhost:8083/v1/translation/google/detect`\
+**Body** `{ text: "This is the text for which the language is to be detected" }`
+- `http://localhost:8083/v1/translation/google/languages`\
 
 ## Running Tests
 
@@ -142,7 +174,7 @@ There are 3 kinds of tests for each service -
 - **Integration Tests** - Testing the overall functioning of the endpoint (using mock test servers)
 - **Contract Tests** - Testing if the external service provides data with the expected structure
 
-There are several ways of running the tests - 
+There are several ways of running the tests -
 - Running all `Unit` and `Integration` tests of all services togther
 ```
 npm test

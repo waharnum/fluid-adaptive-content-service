@@ -19,7 +19,7 @@ fluid.defaults("adaptiveContentService.translation.serverConfig", {
                             requestHandlers: {
                                 yandexTranslateTextHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.translateText",
-                                    "route": "/:version/translation/yandex/:sourceLang-:targetLang",
+                                    "route": "/:version/translation/yandex/translate/:sourceLang-:targetLang",
                                     "method": "post"
                                 },
                                 yandexLangDetectionHandler: {
@@ -29,7 +29,17 @@ fluid.defaults("adaptiveContentService.translation.serverConfig", {
                                 },
                                 yandexDetectAndTranslateHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.detectAndTranslate",
-                                    "route": "/:version/translation/yandex/:targetLang",
+                                    "route": "/:version/translation/yandex/translate/:targetLang",
+                                    "method": "post"
+                                },
+                                yandexListLanguagesHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.yandex.listLanguages",
+                                    "route": "/:version/translation/yandex/languages",
+                                    "method": "get"
+                                },
+                                googleDetectAndTranslateHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.google.detectAndTranslate",
+                                    "route": "/:version/translation/google/translate/:targetLang",
                                     "method": "post"
                                 },
                                 googleLangDetectionHandler: {
@@ -41,11 +51,6 @@ fluid.defaults("adaptiveContentService.translation.serverConfig", {
                                     "type": "adaptiveContentService.handlers.translation.google.listLanguages",
                                     "route": "/:version/translation/google/languages",
                                     "method": "get"
-                                },
-                                googleDetectAndTranslateHandler: {
-                                    "type": "adaptiveContentService.handlers.translation.google.detectAndTranslate",
-                                    "route": "/:version/translation/google/:targetLang",
-                                    "method": "post"
                                 }
                             }
                         }
