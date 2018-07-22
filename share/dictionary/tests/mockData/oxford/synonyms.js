@@ -1,7 +1,12 @@
 "use strict";
 
+var commonOxfordMockData = require("./commonMockData");
+
 module.exports = function (correctWord, wrongWord) {
     return {
+        // general data
+        apiKeys: commonOxfordMockData.apiKeys,
+        // responses
         correctWord:
         {
             results: [
@@ -59,6 +64,7 @@ module.exports = function (correctWord, wrongWord) {
             ]
         },
         wrongWord: "<title>404 Not Found</title><h1>Not Found</h1><p>No entry available for '" + wrongWord + "' in 'en'</p>",
-        wrongLang: "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in en, es, gu, hi, lv, sw, ta</p>"
+        wrongLang: "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in en, es, gu, hi, lv, sw, ta</p>",
+        authError: "Authentication failed"
     };
 };

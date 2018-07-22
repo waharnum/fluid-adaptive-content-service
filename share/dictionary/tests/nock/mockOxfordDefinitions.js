@@ -9,20 +9,37 @@ var correctWord = "word",
     wrongLang = "wrong",
     urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 
-nock(urlBase)
+// for requests with headers having correct authentication keys
+nock(urlBase, {
+    reqheaders: mockDefinitionsData.apiKeys.correct
+})
+// no error
 .get("/entries/" + correctLang + "/" + correctWord)
 .reply(
     200,
     mockDefinitionsData.correctWord
 )
+// wrong word
 .get("/entries/" + correctLang + "/" + wrongWord)
 .reply(
     404,
     mockDefinitionsData.wrongWord
 )
+// wrong language
 .get("/entries/" + wrongLang + "/" + correctWord)
 .reply(
     404,
     mockDefinitionsData.wrongLang
+)
+.persist();
+
+// for requests with headers having wrong authentication keys
+nock(urlBase, {
+  reqheaders: mockAntonymsData.apiKeys.wrong
+})
+.get("/entries/" + correctLang + "/" + correctWord + "/antonyms")
+.reply(
+  403,
+  mockAntonymsData.authError
 )
 .persist();

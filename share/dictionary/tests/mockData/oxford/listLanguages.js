@@ -1,6 +1,11 @@
 "use strict";
 
+var commonOxfordMockData = require("./commonMockData");
+
 module.exports = {
+    // general data
+    apiKeys: commonOxfordMockData.apiKeys,
+    // responses
     noError: {
         results: [
             {
@@ -29,5 +34,6 @@ module.exports = {
                 type: "monolingual"
             }
         ]
-    }
+    },
+    authError: "Authentication failed"
 };
