@@ -1,0 +1,40 @@
+"use strict";
+
+var fluid = require("infusion"),
+    jqunit = require("node-jqunit");
+
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+
+require("../../../../../v1/dictionary/handlers/oxfordHandlers");
+require("../../../../testUtils");
+
+var testWord = "word",
+    testMessage = "Unit Test : For constructResponse function of list supported languages endpoint : Successful (Oxford Service)",
+    constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.listLanguages.constructResponse; //from oxfordHandlers.js
+
+// mock service data
+var mockListLanguagesData = require("../../mockData/oxford/listLanguages"),// file holding object with mock data
+    jsonServiceData = mockListLanguagesData.noError;
+
+// expected return value from the function being tested
+var expectedReturnVal = {
+    languages: [
+        {
+            code: "en",
+            language: "English"
+        },
+        {
+            code: "de",
+            language: "German"
+        }
+    ]
+};
+
+var testFunction = adaptiveContentService.tests.utils.unitTestsDictionaryConstructResponse; //from testUtils.js
+
+jqunit.test(
+    "Unit Test : For constructResponse function of pronunciations endpoint (Oxford Service)",
+    function () {
+        testFunction(constructResponseFunction, jsonServiceData, expectedReturnVal, testMessage);
+    }
+);

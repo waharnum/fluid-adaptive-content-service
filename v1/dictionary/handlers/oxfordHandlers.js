@@ -556,20 +556,20 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse = 
 };
 
 // Oxford languages grade
-fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.languages", {
+fluid.defaults("adaptiveContentService.handlers.dictionary.oxford.listLanguages", {
     gradeNames: "adaptiveContentService.handlers.dictionary.oxford",
     invokers: {
         handleRequest: {
-            funcName: "adaptiveContentService.handlers.dictionary.oxford.languages.getLanguages",
+            funcName: "adaptiveContentService.handlers.dictionary.oxford.listLanguages.getLangList",
             args: ["{arguments}.0", "{that}"]
         },
         dictionaryHandlerImpl: "", // overriding from parent grade, because not needed here
-        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.languages.constructResponse"
+        constructResponse: "adaptiveContentService.handlers.dictionary.oxford.listLanguages.constructResponse"
     }
 });
 
 // function to construct a useful response from the data provided by the Oxford Service
-adaptiveContentService.handlers.dictionary.oxford.languages.constructResponse = function (jsonServiceResponse) {
+adaptiveContentService.handlers.dictionary.oxford.listLanguages.constructResponse = function (jsonServiceResponse) {
     var response = {
         languages: []
     };
@@ -597,7 +597,7 @@ adaptiveContentService.handlers.dictionary.oxford.languages.constructResponse = 
 };
 
 // Oxford languages handler
-adaptiveContentService.handlers.dictionary.oxford.languages.getLanguages = function (request, that) {
+adaptiveContentService.handlers.dictionary.oxford.listLanguages.getLangList = function (request, that) {
     var version = request.req.params.version,
         urlBase = that.options.serviceConfig.urlBase,
         url = urlBase + "languages";
@@ -625,9 +625,9 @@ adaptiveContentService.handlers.dictionary.oxford.languages.getLanguages = funct
 
                         that.sendErrorResponse(request, version, "Oxford", statusCode, message);
                     }
-                    //No error : Word found
+                    //No error response
                     else {
-                        message = "Word Found";
+                        message = "Available languages fetched successfully";
 
                         var jsonServiceResponse = JSON.parse(serviceResponse.body),
                             response = that.constructResponse(jsonServiceResponse);

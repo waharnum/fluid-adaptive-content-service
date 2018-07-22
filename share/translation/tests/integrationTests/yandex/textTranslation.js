@@ -7,7 +7,7 @@ require("dotenv").config();
 require("../../../../../index.js");
 require("../../../../testUtils");
 
-require("../../nock/mockYandexTranslation"); // providing mock data as an alternative to actual Yandex response
+require("../../nock/yandex/mockYandexTranslation"); // providing mock data as an alternative to actual Yandex response
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.translation.yandex.translateText");

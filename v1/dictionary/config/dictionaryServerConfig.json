@@ -101,6 +101,11 @@
                                       "type":"adaptiveContentService.handlers.dictionary.oxford.frequency",
                                       "route":"/:version/dictionary/oxford/:language/frequency/:word/:lexicalCategory",
                                       "method":"get"
+                                  },
+                                  "oxfordListLanguagesHandler":{
+                                      "type":"adaptiveContentService.handlers.dictionary.oxford.listLanguages",
+                                      "route":"/:version/dictionary/oxford/languages",
+                                      "method":"get"
                                   }
                               }
                           }

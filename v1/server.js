@@ -108,7 +108,7 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                                     "method": "get"
                                 },
                                 oxfordLanguagesHandler: {
-                                    "type": "adaptiveContentService.handlers.dictionary.oxford.languages",
+                                    "type": "adaptiveContentService.handlers.dictionary.oxford.listLanguages",
                                     "route": "/:version/dictionary/oxford/languages",
                                     "method": "get"
                                 }
