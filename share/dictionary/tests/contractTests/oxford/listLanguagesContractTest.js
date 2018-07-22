@@ -29,11 +29,11 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.lis
     }
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.listLanguages.getData = function (requestHeaders, that) {
+adaptiveContentService.tests.dictionary.oxford.contractTests.listLanguages.getData = function (apiKeys, that) {
     makeRequest(
         {
             url: "https://od-api.oxforddictionaries.com/api/v1/languages",
-            headers: requestHeaders
+            headers: apiKeys
         },
         function (error, response, body) {
             //error making request to external service
@@ -84,6 +84,9 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.lis
     }
 });
 
+// mock data
+var mockListLanguagesData = require("../../mockData/oxford/listLanguages");
+
 var listLanguagesSchemas = require("./schemas/listLanguagesSchemas"), //main schemas which will be compiled
     commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
 
@@ -100,8 +103,6 @@ var failureMessage = {
     noError: "Contract Test : For list languages with 'no error' response failed (Oxford Service)"
 };
 
-var requestHeaders = adaptiveContentService.tests.utils.getOxfordRequestHeaders();
-
 //Test driver
 fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.listLanguages.tester", {
     gradeNames: ["fluid.test.testCaseHolder"],
@@ -115,7 +116,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.lis
                     //for no error
                     {
                         func: "{testComponent}.requestForData",
-                        args: [requestHeaders]
+                        args: [mockListLanguagesData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -130,4 +131,4 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.lis
 
 var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.listLanguages.testTree;
 
-adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "List Languages (Oxford) Contract test");
+adaptiveContentService.tests.utils.checkOxfordKeys(mockListLanguagesData.apiKeys.correct, testTree, "List Languages (Oxford) Contract test");

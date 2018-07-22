@@ -2,19 +2,21 @@
 
 var commonOxfordMockData = require("./commonMockData");
 
-module.exports = function (correctWord, frequency) {
-    return {
-        // general data
-        apiKeys: commonOxfordMockData.apiKeys,
-        // responses
-        correctWord:
-        {
-            result: {
-                frequency: frequency,
-                lemma: correctWord
-            }
-        },
-        wrongLang: "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in zu, ro, ta, sw, de, tn, lv, id, ur, en, nso, ms, gu, pt, hi, es</p>",
-        authError: "Authentication failed"
-    };
+var frequency = 10;
+
+module.exports = {
+    // general data
+    word: commonOxfordMockData.word,
+    lang: commonOxfordMockData.lang,
+    apiKeys: commonOxfordMockData.apiKeys,
+    // responses
+    correctWord:
+    {
+        result: {
+            frequency: frequency,
+            lemma: commonOxfordMockData.word.correct
+        }
+    },
+    wrongLang: "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in zu, ro, ta, sw, de, tn, lv, id, ur, en, nso, ms, gu, pt, hi, es</p>",
+    authError: "Authentication failed"
 };

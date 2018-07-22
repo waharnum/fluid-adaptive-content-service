@@ -29,11 +29,11 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
     }
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.pronunciations.getData = function (word, lang, requestHeaders, that) {
+adaptiveContentService.tests.dictionary.oxford.contractTests.pronunciations.getData = function (word, lang, apiKeys, that) {
     makeRequest(
         {
             url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word,
-            headers: requestHeaders
+            headers: apiKeys
         },
         function (error, response, body) {
             //error making request to external service
@@ -84,10 +84,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
     }
 });
 
-var correctWord = "bath",
-    correctLang = "en",
-    wrongWord = "wrongWord",
-    wrongLang = "wrongLang";
+var mockPronunciationData = require("../../mockData/oxford/pronunciations");
 
 var pronunciationSchemas = require("./schemas/pronunciationSchemas"), //main schemas which will be compiled
     commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
@@ -112,8 +109,6 @@ var failureMessage = {
     wrongLang: "Contract Test : For pronunciations with wrong language failed (Oxford Service)"
 };
 
-var requestHeaders = adaptiveContentService.tests.utils.getOxfordRequestHeaders();
-
 //Test driver
 fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pronunciations.tester", {
     gradeNames: ["fluid.test.testCaseHolder"],
@@ -127,7 +122,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
                     //for correct word
                     {
                         func: "{testComponent}.requestForData",
-                        args: [correctWord, correctLang, requestHeaders]
+                        args: [mockPronunciationData.word.correct, mockPronunciationData.lang.correct, mockPronunciationData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -137,7 +132,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
                     //for wrong word
                     {
                         func: "{testComponent}.requestForData",
-                        args: [wrongWord, correctLang, requestHeaders]
+                        args: [mockPronunciationData.word.wrong, mockPronunciationData.lang.correct, mockPronunciationData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -147,7 +142,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
                     //for wrong language
                     {
                         func: "{testComponent}.requestForData",
-                        args: [correctWord, wrongLang, requestHeaders]
+                        args: [mockPronunciationData.word.correct, mockPronunciationData.lang.wrong, mockPronunciationData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -162,4 +157,4 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
 
 var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.pronunciations.testTree;
 
-adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Pronunciations (Oxford) Contract test");
+adaptiveContentService.tests.utils.checkOxfordKeys(mockPronunciationData.apiKeys.correct, testTree, "Pronunciations (Oxford) Contract test");

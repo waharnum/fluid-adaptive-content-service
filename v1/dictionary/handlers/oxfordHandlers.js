@@ -109,7 +109,7 @@ adaptiveContentService.handlers.dictionary.oxford.checkDictionaryError = functio
             };
         }
 
-        //Default return object when error hasn"t been handled yet
+        //Default return object when error hasn't been handled yet
         else {
             return {
                 statusCode: 501,

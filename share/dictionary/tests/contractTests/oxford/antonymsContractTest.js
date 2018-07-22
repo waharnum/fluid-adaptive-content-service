@@ -29,11 +29,11 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
     }
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.getData = function (word, lang, requestHeaders, that) {
+adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.getData = function (word, lang, apiKeys, that) {
     makeRequest(
         {
             url: "https://od-api.oxforddictionaries.com/api/v1/entries/" + lang + "/" + word + "/antonyms",
-            headers: requestHeaders
+            headers: apiKeys
         },
         function (error, response, body) {
             //error making request to external service
@@ -84,10 +84,8 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
     }
 });
 
-var correctWord = "happy",
-    correctLang = "en",
-    wrongWord = "wrongWord",
-    wrongLang = "wrongLang";
+// mock data
+var mockAntonymsData = require("../../mockData/oxford/antonyms");
 
 var antonymSchemas = require("./schemas/antonymSchemas"), //main schemas which will be compiled
     commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
@@ -112,8 +110,6 @@ var failureMessage = {
     wrongLang: "Contract Test : For antonyms with wrong language failed (Oxford Service)"
 };
 
-var requestHeaders = adaptiveContentService.tests.utils.getOxfordRequestHeaders();
-
 //Test driver
 fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.tester", {
     gradeNames: ["fluid.test.testCaseHolder"],
@@ -127,7 +123,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
                     //for correct word
                     {
                         func: "{testComponent}.requestForData",
-                        args: [correctWord, correctLang, requestHeaders]
+                        args: [mockAntonymsData.word.correct, mockAntonymsData.lang.correct, mockAntonymsData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -137,7 +133,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
                     //for wrong word
                     {
                         func: "{testComponent}.requestForData",
-                        args: [wrongWord, correctLang, requestHeaders]
+                        args: [mockAntonymsData.word.wrong, mockAntonymsData.lang.correct, mockAntonymsData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -147,7 +143,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
                     //for wrong language
                     {
                         func: "{testComponent}.requestForData",
-                        args: [correctWord, wrongLang, requestHeaders]
+                        args: [mockAntonymsData.word.correct, mockAntonymsData.lang.wrong, mockAntonymsData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -162,4 +158,4 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
 
 var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.antonyms.testTree;
 
-adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Antonyms (Oxford) Contract test");
+adaptiveContentService.tests.utils.checkOxfordKeys(mockAntonymsData.apiKeys.correct, testTree, "Antonyms (Oxford) Contract test");

@@ -29,11 +29,11 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
     }
 });
 
-adaptiveContentService.tests.dictionary.oxford.contractTests.frequency.getData = function (word, lang, requestHeaders, that) {
+adaptiveContentService.tests.dictionary.oxford.contractTests.frequency.getData = function (word, lang, apiKeys, that) {
     makeRequest(
         {
             url: "https://od-api.oxforddictionaries.com/api/v1/stats/frequency/word/" + lang + "/?lemma=" + word,
-            headers: requestHeaders
+            headers: apiKeys
         },
         function (error, response, body) {
             //error making request to external service
@@ -84,9 +84,8 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
     }
 });
 
-var correctWord = "happy",
-    correctLang = "en",
-    wrongLang = "wrongLang";
+// mock data
+var mockFrequencyData = require("../../mockData/oxford/frequency");
 
 var frequencySchemas = require("./schemas/frequencySchemas"), //main schemas which will be compiled
     commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
@@ -108,8 +107,6 @@ var failureMessage = {
     wrongLang: "Contract Test : For frequency with wrong language failed (Oxford Service)"
 };
 
-var requestHeaders = adaptiveContentService.tests.utils.getOxfordRequestHeaders();
-
 //Test driver
 fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.frequency.tester", {
     gradeNames: ["fluid.test.testCaseHolder"],
@@ -123,7 +120,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
                     //for correct word
                     {
                         func: "{testComponent}.requestForData",
-                        args: [correctWord, correctLang, requestHeaders]
+                        args: [mockFrequencyData.word.correct, mockFrequencyData.lang.correct, mockFrequencyData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -133,7 +130,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
                     //for wrong language
                     {
                         func: "{testComponent}.requestForData",
-                        args: [correctWord, wrongLang, requestHeaders]
+                        args: [mockFrequencyData.word.correct, mockFrequencyData.lang.wrong, mockFrequencyData.apiKeys.correct]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -153,4 +150,4 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
 
 var testTree = adaptiveContentService.tests.dictionary.oxford.contractTests.frequency.testTree;
 
-adaptiveContentService.tests.utils.checkOxfordKeys(requestHeaders, testTree, "Frequency (Oxford) Contract test");
+adaptiveContentService.tests.utils.checkOxfordKeys(mockFrequencyData.apiKeys.correct, testTree, "Frequency (Oxford) Contract test");
