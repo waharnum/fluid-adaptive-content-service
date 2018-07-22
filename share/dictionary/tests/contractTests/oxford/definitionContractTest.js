@@ -63,7 +63,7 @@ adaptiveContentService.tests.dictionary.oxford.contractTests.definition.getData 
                 }
                 else {
                     ACS.log("Contract Test (Oxford - Definitions) : Response from the external service SHOULD have 'body' property");
-                    jqunit.fail("Contract Test : For synonyms failed (Oxford Service)");
+                    jqunit.fail("Contract Test : For definitions failed (Oxford Service)");
                 }
             }
         }

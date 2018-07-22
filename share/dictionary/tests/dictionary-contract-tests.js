@@ -10,6 +10,7 @@ var testIncludes = [
     "./contractTests/oxford/definitionContractTest.js",
     "./contractTests/oxford/extendedFrequencyContractTest.js",
     "./contractTests/oxford/frequencyContractTest.js",
+    "./contractTests/oxford/listLanguagesContractTest.js",
     "./contractTests/oxford/pronunciationsContractTest.js",
     "./contractTests/oxford/synonymsContractTest.js",
     "./contractTests/wiktionary/definitionContractTest.js"

@@ -1,7 +1,5 @@
 "use strict";
 
-var kettle = require("kettle");
-
 module.exports = {
     // general data
     text: {
@@ -26,4 +24,4 @@ module.exports = {
     requestError: {
         body: undefined
     }
-}
+};

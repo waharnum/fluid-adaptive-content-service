@@ -19,7 +19,7 @@ var mockListLangData = require("../../mockData/yandex/listLanguages");
 
 var testServiceResponse = {
     body: {
-      langs: mockListLangData.languageObj
+        langs: mockListLangData.languageObj
     }
 };
 

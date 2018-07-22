@@ -18,11 +18,11 @@ nock(urlBase, {
 
 // for requests with headers having wrong authentication keys
 nock(urlBase, {
-  reqheaders: mockAntonymsData.apiKeys.wrong
+    reqheaders: mockListLanguagesData.apiKeys.wrong
 })
-.get("/entries/" + correctLang + "/" + correctWord + "/antonyms")
+.get("/languages")
 .reply(
-  403,
-  mockAntonymsData.authError
+    403,
+    mockListLanguagesData.authError
 )
 .persist();

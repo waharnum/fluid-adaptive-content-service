@@ -8,8 +8,7 @@ var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 require("../../../../testUtils");
 
-var testWord = "word",
-    testMessage = "Unit Test : For constructResponse function of list supported languages endpoint : Successful (Oxford Service)",
+var testMessage = "Unit Test : For constructResponse function of list supported languages endpoint : Successful (Oxford Service)",
     constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.listLanguages.constructResponse; //from oxfordHandlers.js
 
 // mock service data

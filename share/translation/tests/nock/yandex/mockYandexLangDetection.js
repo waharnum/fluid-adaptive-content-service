@@ -32,4 +32,37 @@ nock(urlBase)
     200,
     mockLangDetectionData.cannotDetect
 )
+// Invalid api key
+.post(
+    "/detect?key=" + mockLangDetectionData.apiKey.invalid,
+    {
+        text: mockLangDetectionData.text.noError
+    }
+)
+.reply(
+    401,
+    mockLangDetectionData.keyInvalid
+)
+// Blocked api key
+.post(
+    "/detect?key=" + mockLangDetectionData.apiKey.blocked,
+    {
+        text: mockLangDetectionData.text.noError
+    }
+)
+.reply(
+    402,
+    mockLangDetectionData.keyBlocked
+)
+// Exceeding daily limit
+.post(
+    "/detect?key=" + mockLangDetectionData.apiKey.correct,
+    {
+        text: mockLangDetectionData.limitExceedTriggerText
+    }
+)
+.reply(
+    404,
+    mockLangDetectionData.limitExceeded
+)
 .persist();

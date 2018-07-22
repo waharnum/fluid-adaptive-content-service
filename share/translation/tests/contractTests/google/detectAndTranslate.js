@@ -33,26 +33,26 @@ adaptiveContentService.tests.translation.google.contractTests.detectAndTranslate
     googleTranslate.translate(text, targetLang, function (err, translation) {
         if (err) {
 
-          // error making request
-          if (err.body === undefined) {
-              ACS.log("Contract Test (Google - Detect and Translate) - Error occured while making request to the external service");
-              jqunit.fail("Contract Test : For 'detect and translate' failed due to error making request to the external service (Google Service)");
-          }
-          // request successful, but other errors catched
-          else {
-              var jsonBody;
+            // error making request
+            if (err.body === undefined) {
+                ACS.log("Contract Test (Google - Detect and Translate) - Error occured while making request to the external service");
+                jqunit.fail("Contract Test : For 'detect and translate' failed due to error making request to the external service (Google Service)");
+            }
+            // request successful, but other errors catched
+            else {
+                var jsonBody;
 
-              // is error body json parseable
-              try {
-                  jsonBody = JSON.parse(err.body);
-                  that.events.onDataReceive.fire(jsonBody);
-              }
-              catch (e) {
-                  ACS.log("Contract Test (Google - Detect and Translate) - Error occured while parsing the error response body; body should be JSON pareseable -  " + e);
-                  ACS.log("Contract Test (Google - Detect and Translate) - Error Response body - \n" + err.body);
-                  jqunit.fail("Contract Test : For 'detect and translate' failed due to error parsing response body into JSON");
-              }
-          }
+                // is error body json parseable
+                try {
+                    jsonBody = JSON.parse(err.body);
+                    that.events.onDataReceive.fire(jsonBody);
+                }
+                catch (e) {
+                    ACS.log("Contract Test (Google - Detect and Translate) - Error occured while parsing the error response body; body should be JSON pareseable -  " + e);
+                    ACS.log("Contract Test (Google - Detect and Translate) - Error Response body - \n" + err.body);
+                    jqunit.fail("Contract Test : For 'detect and translate' failed due to error parsing response body into JSON");
+                }
+            }
         }
         // No errors
         else {

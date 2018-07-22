@@ -11,5 +11,5 @@ module.exports = {
             }
         }
     },
-    error: commonSchemas.error,
+    error: commonSchemas.error
 };

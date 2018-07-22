@@ -7,5 +7,5 @@ module.exports = {
         "type": "array",
         "items": { "type": "string" }
     },
-    authError: commonSchemas.authError,
+    authError: commonSchemas.authError
 };
