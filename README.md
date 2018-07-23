@@ -1,6 +1,17 @@
 # fluid-adaptive-content-service
 Repo for GSOC Project Described at https://wiki.fluidproject.org/display/fluid/Google+Summer+of+Code+2018+with+the+Fluid+Project#GoogleSummerofCode2018withtheFluidProject-Buildaserviceforadaptivecontentandlearningsupports
 
+## Table of Contents
+
+- [Instructions to run the service locally](#instructions-to-run-the-service-locally)
+- [Available Endpoints](#available-endpoints)
+  - [Dictionary Service](#dictionary-service)
+  - [NLP Service](#nlp-service)
+  - [Translation Service](#translation-service)
+- [Running Tests](#running-tests)
+- [Documentation](#documentation)
+- [Notes for use of third-party services](#notes-for-use-of-third-party-services)
+
 ## Instructions to run the service locally
 ### Step 1 - Clone the Repository
 ### Step 2 - Install the required node modules
