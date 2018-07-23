@@ -21,6 +21,7 @@ var testIncludes = [
     "./unitTests/yandex/translationConstructResponse.js",
     "./integrationTests/yandex/detectAndTranslate.js",
     "./integrationTests/yandex/langDetection.js",
+    "./integrationTests/yandex/listLanguages.js",
     "./integrationTests/yandex/textTranslation.js"
 ];
 

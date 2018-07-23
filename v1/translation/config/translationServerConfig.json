@@ -26,6 +26,11 @@
                                         "type": "adaptiveContentService.test.handlers.translation.yandex.detectAndTranslate",
                                         "route": "/:version/translation/yandex/:targetLang",
                                         "method": "post"
+                                    },
+                                    "yandexListLanguagesHandler": {
+                                        "type": "adaptiveContentService.handlers.translation.yandex.listLanguages",
+                                        "route": "/:version/translation/yandex/languages",
+                                        "method": "get"
                                     }
                                 }
                             }

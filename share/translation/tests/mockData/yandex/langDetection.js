@@ -1,16 +1,13 @@
 "use strict";
 
-var mockTranslationData = require("./translation"),
+var commonMockYandexData = require("../yandex/commonMockData"),
     detectedLang = "en";
 
 module.exports = {
     //general data
-    text: mockTranslationData.text,
+    text: commonMockYandexData.text,
     detectedLang: detectedLang,
-    apiKey: mockTranslationData.apiKey,
-    keyInvalid: mockTranslationData.keyInvalid,
-    keyBlocked: mockTranslationData.keyBlocked,
-    limitExceeded: mockTranslationData.limitExceeded,
+    apiKey: commonMockYandexData.apiKey,
     //responses
     noError: {
         "code": 200,
@@ -19,5 +16,8 @@ module.exports = {
     cannotDetect: {
         "code": 200,
         "lang": ""
-    }
+    },
+    keyInvalid: commonMockYandexData.keyInvalid,
+    keyBlocked: commonMockYandexData.keyBlocked,
+    limitExceeded: commonMockYandexData.limitExceeded
 };

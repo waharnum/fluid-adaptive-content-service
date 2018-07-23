@@ -2,13 +2,13 @@
 
 var kettle = require("kettle");
 
-var commonMockTranslationData = require("../common/translation");
+var commonMockYandexData = require("../yandex/commonMockData");
 
 module.exports = {
     // general data
-    text: commonMockTranslationData.text,
-    sourceLang: commonMockTranslationData.sourceLang,
-    targetLang: commonMockTranslationData.targetLang,
+    text: commonMockYandexData.text,
+    sourceLang: commonMockYandexData.sourceLang,
+    targetLang: commonMockYandexData.targetLang,
     apiKey: {
         correct: kettle.resolvers.env("YANDEX_API_KEY"),
         invalid: "randomstring",
@@ -17,27 +17,12 @@ module.exports = {
     // responses
     noError: {
         "code": 200,
-        "lang": commonMockTranslationData.sourceLang.correct + "-" + commonMockTranslationData.targetLang.correct,
+        "lang": commonMockYandexData.sourceLang.correct + "-" + commonMockYandexData.targetLang.correct,
         "text": [ "Dies ist der text, der übersetzt werden" ]
     },
-    keyInvalid: {
-        "code": 401,
-        "message": "API key is invalid"
-    },
-    keyBlocked: {
-        "code": 402,
-        "message": "API key is blocked"
-    },
-    limitExceeded: {
-        "code": 404,
-        "message": "Exceeded the daily limit on the amount of translated text"
-    },
-    unsupportedTranslation: {
-        "code": 501,
-        "message": "The specified translation direction is not supported"
-    },
-    invalidLangCode: {
-        "code": 502,
-        "message": "Invalid 'lang' parameter"
-    }
+    keyInvalid: commonMockYandexData.keyInvalid,
+    keyBlocked: commonMockYandexData.keyBlocked,
+    limitExceeded: commonMockYandexData.limitExceeded,
+    unsupportedTranslation: commonMockYandexData.unsupportedTranslation,
+    invalidLangCode: commonMockYandexData.invalidLangCode
 };
