@@ -1,5 +1,7 @@
 "use strict";
 
+var commonOxfordSchemas = require("./commonSchemas");
+
 module.exports = {
     correctWord: {
         "$patch": {
@@ -17,9 +19,7 @@ module.exports = {
             ]
         }
     },
-    wrongLang: {
-        "$ref": "/schemas/commonOxfordErrorSchema.json"
-    }
+    wrongLang: commonOxfordSchemas.errorSchema
 };
 
 /*

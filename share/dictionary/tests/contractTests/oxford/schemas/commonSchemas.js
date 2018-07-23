@@ -72,7 +72,7 @@ module.exports = {
             }
         }
     },
-    commonOxfordErrorSchema: {
+    errorSchema: {
         "$id": "/schemas/commonOxfordErrorSchema.json",
         "type": "object",
         "required": ["response", "body"],

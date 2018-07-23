@@ -92,8 +92,8 @@ var definitionSchemas = require("./schemas/definitionSchemas"), //main schemas w
 //array of all the schemas that are needed (other than the main schema)
 var allNeededSchemas = {
     correctWord: [commonSchemas.definitions, commonSchemas.oxfordResponseProperty, commonSchemas.commonOxford],
-    wrongWord: [commonSchemas.oxfordResponseProperty, commonSchemas.commonOxfordErrorSchema],
-    wrongLang: [commonSchemas.oxfordResponseProperty, commonSchemas.commonOxfordErrorSchema]
+    wrongWord: [commonSchemas.oxfordResponseProperty],
+    wrongLang: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {

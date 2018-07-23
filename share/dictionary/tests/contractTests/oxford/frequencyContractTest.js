@@ -94,7 +94,7 @@ var frequencySchemas = require("./schemas/frequencySchemas"), //main schemas whi
 //array of all the schemas that are needed (other than the main schema)
 var allNeededSchemas = {
     correctWord: [commonSchemas.oxfordResponseProperty],
-    wrongLang: [commonSchemas.oxfordResponseProperty, commonSchemas.commonOxfordErrorSchema]
+    wrongLang: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {

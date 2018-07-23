@@ -95,7 +95,7 @@ var extendedFrequencySchemas = require("./schemas/extendedFrequencySchemas"), //
 //array of all the schemas that are needed (other than the main schema)
 var allNeededSchemas = {
     correctWord: [commonSchemas.oxfordResponseProperty, frequencySchemas.correctWord],
-    wrongLang: [commonSchemas.oxfordResponseProperty, commonSchemas.commonOxfordErrorSchema]
+    wrongLang: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {

@@ -1,5 +1,7 @@
 "use strict";
 
+var commonOxfordSchemas = require("./commonSchemas");
+
 module.exports = {
     correctWord: {
         "$id": "/schemas/frequencyCorrectWord.json",
@@ -26,9 +28,7 @@ module.exports = {
             }
         }
     },
-    wrongLang: {
-        "$ref": "/schemas/commonOxfordErrorSchema.json"
-    }
+    wrongLang: commonOxfordSchemas.errorSchema
 };
 
 /*
