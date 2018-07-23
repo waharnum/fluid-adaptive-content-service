@@ -1,32 +1,28 @@
 "use strict";
 
 var nock = require("nock"),
-    mockPronunciationsData = require("../mockData/oxford/pronunciations")(correctWord, wrongWord);// file holding object with mock data
+    mockPronunciationsData = require("../mockData/oxford/pronunciations");// file holding object with mock data
 
-var correctWord = "bath",
-    wrongWord = "wrongword",
-    correctLang = "en",
-    wrongLang = "wrong",
-    urlBase = "https://od-api.oxforddictionaries.com/api/v1";
+var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 
 // for requests with headers having correct authentication keys
 nock(urlBase, {
     reqheaders: mockPronunciationsData.apiKeys.correct
 })
 // no error
-.get("/entries/" + correctLang + "/" + correctWord)
+.get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.correct)
 .reply(
     200,
     mockPronunciationsData.correctWord
 )
 // wrong word
-.get("/entries/" + correctLang + "/" + wrongWord)
+.get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.wrong)
 .reply(
     404,
     mockPronunciationsData.wrongWord
 )
 // wrong language
-.get("/entries/" + wrongLang + "/" + correctWord)
+.get("/entries/" + mockPronunciationsData.lang.wrong + "/" + mockPronunciationsData.word.correct)
 .reply(
     404,
     mockPronunciationsData.wrongLang
@@ -37,7 +33,7 @@ nock(urlBase, {
 nock(urlBase, {
     reqheaders: mockPronunciationsData.apiKeys.wrong
 })
-.get("/entries/" + correctLang + "/" + correctWord + "/antonyms")
+.get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.correct + "/antonyms")
 .reply(
     403,
     mockPronunciationsData.authError

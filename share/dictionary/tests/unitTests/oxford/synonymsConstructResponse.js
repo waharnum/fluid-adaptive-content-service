@@ -8,17 +8,16 @@ var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 require("../../../../testUtils");
 
-var testWord = "word",
-    testMessage = "Unit Test : For constructResponse function of synonyms endpoint : Successful (Oxford Service)",
+var testMessage = "Unit Test : For constructResponse function of synonyms endpoint : Successful (Oxford Service)",
     constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.synonyms.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var mockSynonymsData = require("../../mockData/oxford/synonyms")(testWord, null),// file holding object with mock data
+var mockSynonymsData = require("../../mockData/oxford/synonyms"),// file holding object with mock data
     jsonServiceData = mockSynonymsData.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {
-    word: testWord,
+    word: mockSynonymsData.word.correct,
     entries: [
         {
             category: "Noun",

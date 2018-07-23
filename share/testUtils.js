@@ -18,8 +18,8 @@ adaptiveContentService.tests.utils.assertStatusCode = function (message, expecte
     jqunit.assertEquals(message, expectedStatusCode, responseStatusCode);
 };
 
-adaptiveContentService.tests.utils.unitTestsDictionaryConstructResponse = function (functionToTested, testData, expectedReturnVal, message) {
-    var returnVal = functionToTested(testData);
+adaptiveContentService.tests.utils.unitTestsDictionaryConstructResponse = function (functionToTest, testData, expectedReturnVal, message) {
+    var returnVal = functionToTest(testData);
 
     jqunit.assertDeepEq(message, expectedReturnVal, returnVal);
 };

@@ -8,18 +8,15 @@ var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 require("../../../../testUtils");
 
-var testWord = "play",
-    testFrequency = 123,
-    testLexicalCategory = "noun",
-    testMessage = {
+var testMessage = {
         frequency: "Unit Test : For constructResponse function of frequency endpoint : Successful (Oxford Service)",
         extendedFrequency: "Unit Test : For constructResponse function of extended frequency endpoint : Successful (Oxford Service)"
     },
     constructResponseFunction = adaptiveContentService.handlers.dictionary.oxford.frequency.constructResponse; //from oxfordHandlers.js
 
 // mock service data
-var mockFrequencyData = require("../../mockData/oxford/frequency")(testWord, testFrequency), //file holding object with mock data (frequency)
-    mockExtendedFrequencyData = require("../../mockData/oxford/extendedFrequency")(testWord, testFrequency, testLexicalCategory),// file holding object with mock data
+var mockFrequencyData = require("../../mockData/oxford/frequency"), //file holding object with mock data (frequency)
+    mockExtendedFrequencyData = require("../../mockData/oxford/extendedFrequency"),// file holding object with mock data
     jsonServiceData = {
         frequency: mockFrequencyData.correctWord,
         extendedFrequency: mockExtendedFrequencyData.correctWord
@@ -28,13 +25,13 @@ var mockFrequencyData = require("../../mockData/oxford/frequency")(testWord, tes
 // expected return value from the function being tested
 var expectedReturnVal = {
     frequency: {
-        word: testWord,
-        frequency: testFrequency
+        word: mockFrequencyData.word.correct,
+        frequency: mockFrequencyData.frequency
     },
     extendedFrequency: {
-        word: testWord,
-        frequency: testFrequency,
-        lexicalCategory: testLexicalCategory
+        word: mockExtendedFrequencyData.word.correct,
+        frequency: mockExtendedFrequencyData.frequency,
+        lexicalCategory: mockExtendedFrequencyData.lexicalCategory
     }
 };
 

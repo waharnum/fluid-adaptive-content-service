@@ -9,7 +9,7 @@ fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.unitTest
 require("../../../../../v1/dictionary/handlers/oxfordHandlers");
 
 //mock data
-var mockData = require("../../mockData/oxford/definitions")(null, "wrongword");
+var mockData = require("../../mockData/oxford/definitions");
 
 var serviceResponse = {
     noError: {
@@ -17,7 +17,7 @@ var serviceResponse = {
     },
     authFail: {
         statusCode: 403,
-        body: "Authentication failed"
+        body: mockData.authError
     },
     wrongWord: {
         statusCode: 404,

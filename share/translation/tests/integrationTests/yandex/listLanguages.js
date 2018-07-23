@@ -16,9 +16,6 @@ fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
-//mock data
-var mockListLanguagesData = require("../../mockData/yandex/listLanguages");
-
 adaptiveContentService.tests.translation.yandex.listLanguages = [{
     name: "GET request for the List Languages endpoint of Yandex Service",
     expect: 1,
@@ -36,7 +33,7 @@ adaptiveContentService.tests.translation.yandex.listLanguages = [{
         }
     },
     sequence: [{
-        func: "{noError}.send",
+        func: "{noError}.send"
     },
     {
         event: "{noError}.events.onComplete",

@@ -9,10 +9,8 @@ require("../../../../testUtils");
 
 require("../../nock/mockOxfordPronunciations"); // providing mock data as an alternative to actual Oxford response
 
-var correctWord = "bath",
-    wrongWord = "wrongword",
-    correctLang = "en",
-    wrongLang = "wrong";
+// mock data
+var mockPronunciationsData = require("../../mockData/oxford/pronunciations");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.pronunciations");
@@ -32,28 +30,28 @@ adaptiveContentService.tests.dictionary.general.pronunciations = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/pronunciations/" + correctWord,
+                path: "/v1/dictionary/" + mockPronunciationsData.lang.correct + "/pronunciations/" + mockPronunciationsData.word.correct,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/pronunciations/" + wrongWord,
+                path: "/v1/dictionary/" + mockPronunciationsData.lang.correct + "/pronunciations/" + mockPronunciationsData.word.wrong,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + wrongLang + "/pronunciations/" + correctWord,
+                path: "/v1/dictionary/" + mockPronunciationsData.lang.wrong + "/pronunciations/" + mockPronunciationsData.word.correct,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/pronunciations/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + mockPronunciationsData.lang.correct + "/pronunciations/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

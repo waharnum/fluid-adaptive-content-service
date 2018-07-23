@@ -9,10 +9,8 @@ require("../../../../testUtils");
 
 require("../../nock/mockOxfordDefinitions"); // providing mock data as an alternative to actual Oxford response
 
-var correctWord = "word",
-    wrongWord = "wrongword",
-    correctLang = "en",
-    wrongLang = "wrong";
+// mock data
+var mockDefinitionData = require("../../mockData/oxford/definitions");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.definition");
@@ -32,28 +30,28 @@ adaptiveContentService.tests.dictionary.oxford.definition = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/definition/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockDefinitionData.lang.correct + "/definition/" + mockDefinitionData.word.correct,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/definition/" + wrongWord,
+                path: "/v1/dictionary/oxford/" + mockDefinitionData.lang.correct + "/definition/" + mockDefinitionData.word.wrong,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/definition/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockDefinitionData.lang.wrong + "/definition/" + mockDefinitionData.word.correct,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + mockDefinitionData.lang.correct + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

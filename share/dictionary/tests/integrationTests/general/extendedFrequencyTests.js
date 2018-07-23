@@ -9,10 +9,8 @@ require("../../../../testUtils");
 
 require("../../nock/mockOxfordExtendedFrequency"); // providing mock data as an alternative to actual Oxford response
 
-var correctWord = "play",
-    correctLang = "en",
-    wrongLang = "wrong",
-    lexicalCategory = "noun";
+// mock data
+var mockExtendedFrequencyData = require("../../mockData/oxford/extendedFrequency");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.extendedFrequency");
@@ -32,21 +30,21 @@ adaptiveContentService.tests.dictionary.general.extendedFrequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/frequency/" + correctWord + "/" + lexicalCategory,
+                path: "/v1/dictionary/" + mockExtendedFrequencyData.lang.correct + "/frequency/" + mockExtendedFrequencyData.word.correct + "/" + mockExtendedFrequencyData.lexicalCategory,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + wrongLang + "/frequency/" + correctWord + "/" + lexicalCategory,
+                path: "/v1/dictionary/" + mockExtendedFrequencyData.lang.wrong + "/frequency/" + mockExtendedFrequencyData.word.correct + "/" + mockExtendedFrequencyData.lexicalCategory,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/" + lexicalCategory,
+                path: "/v1/dictionary/" + mockExtendedFrequencyData.lang.correct + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii/" + mockExtendedFrequencyData.lexicalCategory,
                 method: "get"
             }
         }

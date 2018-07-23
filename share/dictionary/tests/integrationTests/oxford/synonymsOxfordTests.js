@@ -9,10 +9,8 @@ require("../../../../testUtils");
 
 require("../../nock/mockOxfordSynonyms"); // providing mock data as an alternative to actual Oxford response
 
-var correctWord = "play",
-    wrongWord = "wrongword",
-    correctLang = "en",
-    wrongLang = "wrong";
+// mock data
+var mockSynonymsData = require("../../mockData/oxford/synonyms");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.synonyms");
@@ -32,28 +30,28 @@ adaptiveContentService.tests.dictionary.oxford.synonyms = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockSynonymsData.lang.correct + "/synonyms/" + mockSynonymsData.word.correct,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/" + wrongWord,
+                path: "/v1/dictionary/oxford/" + mockSynonymsData.lang.correct + "/synonyms/" + mockSynonymsData.word.wrong,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/synonyms/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockSynonymsData.lang.wrong + "/synonyms/" + mockSynonymsData.word.correct,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/synonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + mockSynonymsData.lang.correct + "/synonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

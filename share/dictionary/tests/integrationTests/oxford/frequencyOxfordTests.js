@@ -9,9 +9,8 @@ require("../../../../testUtils");
 
 require("../../nock/mockOxfordFrequency"); // providing mock data as an alternative to actual Oxford response
 
-var correctWord = "play",
-    correctLang = "en",
-    wrongLang = "wrong";
+// mock data
+var mockFrequencyData = require("../../mockData/oxford/frequency");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.frequency");
@@ -31,21 +30,21 @@ adaptiveContentService.tests.dictionary.oxford.frequency = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockFrequencyData.lang.correct + "/frequency/" + mockFrequencyData.word.correct,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/frequency/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockFrequencyData.lang.wrong + "/frequency/" + mockFrequencyData.word.correct,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + mockFrequencyData.lang.correct + "/frequency/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

@@ -1,27 +1,22 @@
 "use strict";
 
 var nock = require("nock"),
-    mockExtendedFrequencyData = require("../mockData/oxford/extendedFrequency")(correctWord, frequency, lexicalCategory);// file holding object with mock data
+    mockExtendedFrequencyData = require("../mockData/oxford/extendedFrequency");// file holding object with mock data
 
-var correctWord = "play",
-    correctLang = "en",
-    wrongLang = "wrong",
-    frequency = 123,
-    lexicalCategory = "noun",
-    urlBase = "https://od-api.oxforddictionaries.com/api/v1";
+var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 
 // for requests with headers having correct authentication keys
 nock(urlBase, {
     reqheaders: mockExtendedFrequencyData.apiKeys.correct
 })
 // no error
-.get("/stats/frequency/word/" + correctLang + "/?lemma=" + correctWord + "&lexicalCategory=" + lexicalCategory)
+.get("/stats/frequency/word/" + mockExtendedFrequencyData.lang.correct + "/?lemma=" + mockExtendedFrequencyData.word.correct + "&lexicalCategory=" + mockExtendedFrequencyData.lexicalCategory)
 .reply(
     200,
     mockExtendedFrequencyData.correctWord
 )
 // wrong language
-.get("/stats/frequency/word/" + wrongLang + "/?lemma=" + correctWord + "&lexicalCategory=" + lexicalCategory)
+.get("/stats/frequency/word/" + mockExtendedFrequencyData.lang.wrong + "/?lemma=" + mockExtendedFrequencyData.word.correct + "&lexicalCategory=" + mockExtendedFrequencyData.lexicalCategory)
 .reply(
     404,
     mockExtendedFrequencyData.wrongLang
@@ -32,7 +27,7 @@ nock(urlBase, {
 nock(urlBase, {
     reqheaders: mockExtendedFrequencyData.apiKeys.wrong
 })
-.get("/entries/" + correctLang + "/" + correctWord + "/antonyms")
+.get("/entries/" + mockExtendedFrequencyData.lang.correct + "/" + mockExtendedFrequencyData.word.correct + "/antonyms")
 .reply(
     403,
     mockExtendedFrequencyData.authError

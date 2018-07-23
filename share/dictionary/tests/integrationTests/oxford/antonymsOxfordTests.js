@@ -9,10 +9,8 @@ require("../../../../testUtils");
 
 require("../../nock/mockOxfordAntonyms"); // providing mock data as an alternative to actual Oxford response
 
-var correctWord = "play",
-    wrongWord = "wrongword",
-    correctLang = "en",
-    wrongLang = "wrong";
+// mock data
+var mockAntonymsData = require("../../mockData/oxford/antonyms");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.antonyms");
@@ -32,28 +30,28 @@ adaptiveContentService.tests.dictionary.oxford.antonyms = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockAntonymsData.lang.correct + "/antonyms/" + mockAntonymsData.word.correct,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/" + wrongWord,
+                path: "/v1/dictionary/oxford/" + mockAntonymsData.lang.correct + "/antonyms/" + mockAntonymsData.word.wrong,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + wrongLang + "/antonyms/" + correctWord,
+                path: "/v1/dictionary/oxford/" + mockAntonymsData.lang.wrong + "/antonyms/" + mockAntonymsData.word.correct,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/oxford/" + correctLang + "/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/oxford/" + mockAntonymsData.lang.correct + "/antonyms/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
