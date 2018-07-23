@@ -9,6 +9,7 @@ require("../../../../testUtils");
 
 require("../../nock/mockOxfordListLanguages"); // providing mock data as an alternative to actual Oxford response
 
+// mock data
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.oxford.listLanguages");
 

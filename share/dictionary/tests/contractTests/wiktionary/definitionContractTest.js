@@ -1,12 +1,9 @@
 "use strict";
 
 var fluid = require("infusion"),
-    kettle = require("kettle"),
     wd = require("word-definition");
 
 require("../../../../testUtils");
-
-kettle.loadTestingSupport();
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.contractTests.definition");

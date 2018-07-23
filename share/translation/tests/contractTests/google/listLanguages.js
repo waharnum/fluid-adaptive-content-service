@@ -1,13 +1,10 @@
 "use strict";
 
 var fluid = require("infusion"),
-    kettle = require("kettle"),
     jqunit = require("node-jqunit");
 require("dotenv").config(); // npm package to get variables from '.env' file
 
 require("../../../../testUtils");
-
-kettle.loadTestingSupport();
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
     ACS = fluid.registerNamespace("ACS");
