@@ -38,35 +38,35 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
         noError: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         emptyTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         absentTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         longTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         unsupportedTranslationDirection: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex" + mockTranslationData.sourceLang.wrong + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.wrong + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },

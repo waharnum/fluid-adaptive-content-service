@@ -303,7 +303,6 @@ adaptiveContentService.handlers.translation.yandex.detectAndTranslate.langDetect
         },
         function (error, response, body) {
             if (error) {
-                console.log(url);
                 ACS.log("Error making request to the Yandex Service (Language Detection endpoint) - " + error);
                 promise.resolve({
                     statusCode: 500,

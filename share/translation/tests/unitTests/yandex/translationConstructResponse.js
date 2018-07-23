@@ -9,7 +9,6 @@ fluid.registerNamespace("adaptiveContentService.tests.translation.unitTests.yand
 require("../../../../../v1/translation/handlers");
 
 adaptiveContentService.tests.translation.unitTests.yandex.translationConstructResponse = function (testMessage, expectedReturnVal, serviceResponse, sourceLang, targetLang, sourceText) {
-    console.log(sourceLang, targetLang, sourceText);
     var returnVal = adaptiveContentService.handlers.translation.yandex.translationConstructResponse(serviceResponse, sourceLang, targetLang, sourceText);
 
     jqunit.assertDeepEq(testMessage, expectedReturnVal, returnVal);

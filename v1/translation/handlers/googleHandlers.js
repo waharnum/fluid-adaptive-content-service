@@ -368,7 +368,7 @@ adaptiveContentService.handlers.translation.google.listLanguages.getLangList = f
         }
         else {
             that.requiredData()
-                .then (
+                .then(
                     function (result) {
                         var serviceResponse = result,
                             errorContent = that.checkCommonGoogleErrors(serviceResponse, that);

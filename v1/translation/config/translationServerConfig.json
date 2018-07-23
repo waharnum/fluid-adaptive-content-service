@@ -14,7 +14,7 @@
                                 "requestHandlers": {
                                     "translateTextHandler": {
                                         "type": "adaptiveContentService.test.handlers.translation.yandex.translateText",
-                                        "route": "/:version/translation/yandex/:sourceLang-:targetLang",
+                                        "route": "/:version/translation/yandex/translate/:sourceLang-:targetLang",
                                         "method": "post"
                                     },
                                     "langDetectionHandler": {
@@ -24,12 +24,27 @@
                                     },
                                     "detectAndTranslateHandler": {
                                         "type": "adaptiveContentService.test.handlers.translation.yandex.detectAndTranslate",
-                                        "route": "/:version/translation/yandex/:targetLang",
+                                        "route": "/:version/translation/yandex/translate/:targetLang",
                                         "method": "post"
                                     },
                                     "yandexListLanguagesHandler": {
                                         "type": "adaptiveContentService.handlers.translation.yandex.listLanguages",
                                         "route": "/:version/translation/yandex/languages",
+                                        "method": "get"
+                                    },
+                                    "googleDetectAndTranslateHandler": {
+                                        "type": "adaptiveContentService.test.handlers.translation.google.detectAndTranslate",
+                                        "route": "/:version/translation/google/translate/:targetLang",
+                                        "method": "post"
+                                    },
+                                    "googleLangDetectionHandler": {
+                                        "type": "adaptiveContentService.test.handlers.translation.google.langDetection",
+                                        "route": "/:version/translation/google/detect",
+                                        "method": "post"
+                                    },
+                                    "googleListLanguagesHandler": {
+                                        "type": "adaptiveContentService.test.handlers.translation.google.listLanguages",
+                                        "route": "/:version/translation/google/languages",
                                         "method": "get"
                                     }
                                 }
