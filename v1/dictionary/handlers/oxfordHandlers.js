@@ -598,11 +598,11 @@ adaptiveContentService.handlers.dictionary.oxford.listLanguages.constructRespons
 
 // Oxford languages handler
 adaptiveContentService.handlers.dictionary.oxford.listLanguages.getLangList = function (request, that) {
-    try {
-        var version = request.req.params.version,
-            urlBase = that.options.serviceConfig.urlBase,
-            url = urlBase + "languages";
+    var version = request.req.params.version,
+        urlBase = that.options.serviceConfig.urlBase,
+        url = urlBase + "languages";
 
+    try {
         var requestHeaders = that.serviceKeysImpl(that);
 
         // Check for errors with the service keys

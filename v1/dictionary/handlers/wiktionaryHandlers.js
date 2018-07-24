@@ -74,6 +74,30 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.definition
     }
 });
 
+//function to get definition from the wiktionary service
+adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData = function (lang, word) {
+    var promise = fluid.promise();
+    wd.getDef(word, lang, null, function (data) {
+        promise.resolve(data);
+    });
+    return promise;
+};
+
+//function to construct a useful response from the data provided by the word-definition (Wiktionary) service
+adaptiveContentService.handlers.dictionary.wiktionary.definition.constructResponse = function (jsonServiceResponse) {
+    var response = {
+        word: jsonServiceResponse.word,
+        entries: [
+            {
+                category: jsonServiceResponse.category,
+                definitions: [jsonServiceResponse.definition]
+            }
+        ]
+    };
+
+    return response;
+};
+
 //Wiktionary definition handler
 adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition = function (request, version, word, lang, that) {
     try {
@@ -121,31 +145,6 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition =
     }
 };
 
-//function to get definition from the wiktionary service
-adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData = function (lang, word) {
-    var promise = fluid.promise();
-    wd.getDef(word, lang, null, function (data) {
-        promise.resolve(data);
-    });
-    return promise;
-};
-
-//function to construct a useful response from the data provided by the word-definition (Wiktionary) service
-adaptiveContentService.handlers.dictionary.wiktionary.definition.constructResponse = function (jsonServiceResponse) {
-    var response = {
-        word: jsonServiceResponse.word,
-        entries: [
-            {
-                category: jsonServiceResponse.category,
-                definitions: [jsonServiceResponse.definition]
-            }
-        ]
-    };
-
-    return response;
-};
-
-
 // Wiktionary languages grade
 fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.listLanguages", {
     gradeNames: ["adaptiveContentService.handlers.dictionary.wiktionary"],
@@ -187,18 +186,20 @@ adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.requiredData
 
 // Wiktionary languages handler
 adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.handlerImpl = function (request, that) {
-    try {
-        var version = request.req.params.version;
+    var version = request.req.params.version,
+        message;
 
+    try {
         var response = that.requiredDataImpl().body,
-            statusCode = that.requiredDataImpl().statusCode,
-            message = "Available languages fetched successfully"
+            statusCode = that.requiredDataImpl().statusCode;
+
+        message = "Available languages fetched successfully";
 
         that.sendSuccessResponse(request, version, "Wiktionary", statusCode, message, response);
     }
     //Error with the API code
     catch (error) {
-        var message = "Internal Server Error: " + error;
+        message = "Internal Server Error: " + error;
 
         that.sendErrorResponse(request, version, "Wiktionary", 500, message);
     }

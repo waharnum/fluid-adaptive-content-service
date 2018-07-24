@@ -13,7 +13,7 @@
                           "options":{
                               "requestHandlers":{
                                   "generalDefinitionHandler":{
-                                      "type":"adaptiveContentService.handlers.dictionary.wiktionary.definition",
+                                      "type":"adaptiveContentService.test.handlers.dictionary.general.definition",
                                       "route":"/:version/dictionary/:language/definition/:word",
                                       "method":"get"
                                   },
@@ -43,7 +43,7 @@
                                       "method":"get"
                                   },
                                   "wikiDefinitionHandler":{
-                                      "type":"adaptiveContentService.handlers.dictionary.wiktionary.definition",
+                                      "type":"adaptiveContentService.test.handlers.dictionary.wiktionary.definition",
                                       "route":"/:version/dictionary/wiktionary/:language/definition/:word",
                                       "method":"get"
                                   },

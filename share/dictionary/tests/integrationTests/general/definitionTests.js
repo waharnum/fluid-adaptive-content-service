@@ -7,17 +7,49 @@ require("dotenv").config();
 require("../../../../../index.js");
 require("../../../../testUtils");
 
-var correctWord = "word",
-    wrongWord = "wrongword",
-    correctLang = "en",
-    wrongLang = "wrong";
-
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 fluid.registerNamespace("adaptiveContentService.tests.dictionary.general.definition");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
+
+// mock data
+var mockDefinitionData = require("../../mockData/wiktionary/definitions");
+
+/* testing grade for general definition - to override 'requiredData' function
+ * for the purpose of testing
+ */
+fluid.defaults("adaptiveContentService.test.handlers.dictionary.general.definition", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.wiktionary.definition",
+    invokers: {
+        requiredDataImpl: "adaptiveContentService.test.handlers.dictionary.general.definition.requiredData"
+    }
+});
+
+// function providing the required mock data (over-riding the actual function)
+adaptiveContentService.test.handlers.dictionary.general.definition.requiredData = function (lang, word) {
+    var promise = fluid.promise(),
+        jsonMockResponse;
+
+    // wrong word response
+    if (word === mockDefinitionData.word.wrong) {
+        jsonMockResponse = mockDefinitionData.wrongWord;
+        promise.resolve(jsonMockResponse);
+    }
+    // wrong lang response
+    else if (lang === mockDefinitionData.lang.wrong) {
+        jsonMockResponse = mockDefinitionData.wrongWord;
+        promise.resolve(jsonMockResponse);
+    }
+    // no Error response
+    else {
+        jsonMockResponse = mockDefinitionData.word.correct;
+        promise.resolve(mockDefinitionData.correctWord);
+    }
+
+    return promise;
+};
 
 adaptiveContentService.tests.dictionary.general.definition = [{
     name: "GET request for the definition dictionary endpoint",
@@ -30,28 +62,28 @@ adaptiveContentService.tests.dictionary.general.definition = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/definition/" + correctWord,
+                path: "/v1/dictionary/" + mockDefinitionData.lang.correct + "/definition/" + mockDefinitionData.word.correct,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/definition/" + wrongWord,
+                path: "/v1/dictionary/" + mockDefinitionData.lang.correct + "/definition/" + mockDefinitionData.word.wrong,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary" + wrongLang + "/definition/" + correctWord,
+                path: "/v1/dictionary/" + mockDefinitionData.lang.wrong + "/definition/" + mockDefinitionData.word.correct,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/" + correctLang + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/" + mockDefinitionData.lang.correct + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }

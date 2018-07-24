@@ -14,6 +14,43 @@ fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
 kettle.loadTestingSupport();
 
+// mock data
+var mockDefinitionData = require("../../mockData/wiktionary/definitions");
+
+/* testing grade for wiktionary definition - to override 'requiredData' function
+ * for the purpose of testing
+ */
+fluid.defaults("adaptiveContentService.test.handlers.dictionary.wiktionary.definition", {
+    gradeNames: "adaptiveContentService.handlers.dictionary.wiktionary.definition",
+    invokers: {
+        requiredDataImpl: "adaptiveContentService.test.handlers.dictionary.wiktionary.definition.requiredData"
+    }
+});
+
+// function providing the required mock data (over-riding the actual function)
+adaptiveContentService.test.handlers.dictionary.wiktionary.definition.requiredData = function (lang, word) {
+    var promise = fluid.promise(),
+        jsonMockResponse;
+
+    // wrong word response
+    if (word === mockDefinitionData.word.wrong) {
+        jsonMockResponse = mockDefinitionData.wrongWord;
+        promise.resolve(jsonMockResponse);
+    }
+    // wrong lang response
+    else if (lang === mockDefinitionData.lang.wrong) {
+        jsonMockResponse = mockDefinitionData.wrongWord;
+        promise.resolve(jsonMockResponse);
+    }
+    // no Error response
+    else {
+        jsonMockResponse = mockDefinitionData.word.correct;
+        promise.resolve(mockDefinitionData.correctWord);
+    }
+
+    return promise;
+};
+
 adaptiveContentService.tests.dictionary.wiktionary.definition = [{
     name: "GET request for the definition dictionary endpoint",
     expect: 4,
@@ -25,28 +62,28 @@ adaptiveContentService.tests.dictionary.wiktionary.definition = [{
         correctWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wiktionary/en/definition/word",
+                path: "/v1/dictionary/wiktionary/" + mockDefinitionData.lang.correct + "/definition/" + mockDefinitionData.word.correct,
                 method: "get"
             }
         },
         wrongWordTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wiktionary/en/definition/wrongword",
+                path: "/v1/dictionary/wiktionary/" + mockDefinitionData.lang.correct + "/definition/" + mockDefinitionData.word.wrong,
                 method: "get"
             }
         },
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wiktionary/wrong/definition/word",
+                path: "/v1/dictionary/wiktionary/" + mockDefinitionData.lang.wrong + "/definition/" + mockDefinitionData.word.correct,
                 method: "get"
             }
         },
         longUriTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary/wiktionary/en/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+                path: "/v1/dictionary/wiktionary/" + mockDefinitionData.lang.correct + "/definition/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
                 method: "get"
             }
         }
