@@ -598,43 +598,51 @@ adaptiveContentService.handlers.dictionary.oxford.listLanguages.constructRespons
 
 // Oxford languages handler
 adaptiveContentService.handlers.dictionary.oxford.listLanguages.getLangList = function (request, that) {
-    var version = request.req.params.version,
-        urlBase = that.options.serviceConfig.urlBase,
-        url = urlBase + "languages";
+    try {
+        var version = request.req.params.version,
+            urlBase = that.options.serviceConfig.urlBase,
+            url = urlBase + "languages";
 
-    var requestHeaders = that.serviceKeysImpl(that);
+        var requestHeaders = that.serviceKeysImpl(that);
 
-    // Check for errors with the service keys
-    var serviceKeyErrorContent = that.checkServiceKeys(requestHeaders);
+        // Check for errors with the service keys
+        var serviceKeyErrorContent = that.checkServiceKeys(requestHeaders);
 
-    if (serviceKeyErrorContent) {
-        return serviceKeyErrorContent;
+        if (serviceKeyErrorContent) {
+            return serviceKeyErrorContent;
+        }
+        else {
+            that.requiredDataImpl(url, requestHeaders)
+                .then(
+                    function (result) {
+                        var serviceResponse = result,
+                            errorContent = that.checkDictionaryErrorImpl(serviceResponse),
+                            message;
+
+                        //Error Responses
+                        if (errorContent) {
+                            message = that.errorMsgScrape(errorContent.responseBody);
+                            var statusCode = errorContent.statusCode;
+
+                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                        }
+                        //No error response
+                        else {
+                            message = "Available languages fetched successfully";
+
+                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
+                                response = that.constructResponse(jsonServiceResponse);
+
+                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        }
+                    }
+                );
+        }
     }
-    else {
-        that.requiredDataImpl(url, requestHeaders)
-            .then(
-                function (result) {
-                    var serviceResponse = result,
-                        errorContent = that.checkDictionaryErrorImpl(serviceResponse),
-                        message;
+    //Error with the API code
+    catch (error) {
+        var message = "Internal Server Error: " + error;
 
-                    //Error Responses
-                    if (errorContent) {
-                        message = that.errorMsgScrape(errorContent.responseBody);
-                        var statusCode = errorContent.statusCode;
-
-                        that.sendErrorResponse(request, version, "Oxford", statusCode, message);
-                    }
-                    //No error response
-                    else {
-                        message = "Available languages fetched successfully";
-
-                        var jsonServiceResponse = JSON.parse(serviceResponse.body),
-                            response = that.constructResponse(jsonServiceResponse);
-
-                        that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
-                    }
-                }
-            );
+        that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
 };

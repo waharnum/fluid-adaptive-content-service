@@ -77,6 +77,11 @@ fluid.defaults("adaptiveContentService.dictionary.serverConfig", {
                                     "route":  "/:version/dictionary/wiktionary/:language/frequency/:word/:lexicalCategory",
                                     "method": "get"
                                 },
+                                wikiLanguagesHandler: {
+                                    "type": "adaptiveContentService.handlers.dictionary.wiktionary.listLanguages",
+                                    "route": "/:version/dictionary/wiktionary/languages",
+                                    "method": "get"
+                                },
                                 oxfordDefinitionHandler: {
                                     "type": "adaptiveContentService.handlers.dictionary.oxford.definition",
                                     "route": "/:version/dictionary/oxford/:language/definition/:word",

@@ -86,34 +86,39 @@ Currently available endpoints -
 
 - #### Wiktionary Endpoints
 
-  - `http://localhost:8081/v1/dictionary/wiktionary/{language_code}/definition/{word}` (Wiktionary-specific)\
+  - `http://localhost:8081/v1/dictionary/wiktionary/{language_code}/definition/{word}`\
   **Method**: `GET`\
   **Language Code**: English (en), French (fr) and German (de)
 
+  - `http://localhost:8081/v1/dictionary/wiktionary/languages`\
+  **Method**: `GET`\
+
 - #### Oxford Endpoints
 
-  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/definition/{word}` (Oxford-specific)\
+  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/definition/{word}`\
   **Method**: `GET`\
   **Language Code**: IANA standards
 
-  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/synonyms/{word}` (Oxford-specific)\
+  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/synonyms/{word}`\
   **Method**: `GET`\
   **Language Code**: IANA standards
 
-  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/antonyms/{word}` (Oxford-specific)\
+  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/antonyms/{word}`\
   **Method**: `GET`\
   **Language Code**: IANA standards
 
-  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/pronunciations/{word}` (Oxford-specific)\
+  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/pronunciations/{word}`\
   **Method**: `GET`\
   **Language Code**: IANA standards
 
-  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/frequency/{word}` (Oxford-specific)\
+  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/frequency/{word}`\
   **Method**: `GET`\
   **Language Code**: IANA standards
-  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/frequency/{word}/{lexicalCategory}` (Oxford-specific)\
+  - `http://localhost:8081/v1/dictionary/oxford/{language_code}/frequency/{word}/{lexicalCategory}`\
   **Method**: `GET`\
   **Language Code**: IANA standards
+  - `http://localhost:8081/v1/dictionary/oxford/languages`\
+  **Method**: `GET`\
 
 Example endpoints:
 - `http://localhost:8081/v1/dictionary/en/definition/horse`

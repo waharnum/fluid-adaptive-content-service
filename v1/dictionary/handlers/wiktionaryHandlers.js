@@ -145,7 +145,66 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.constructRespon
     return response;
 };
 
-//Wiktionary "Service not provided" grade
+
+// Wiktionary languages grade
+fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.listLanguages", {
+    gradeNames: ["adaptiveContentService.handlers.dictionary.wiktionary"],
+    invokers: {
+        handleRequest: {
+            funcName: "adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.handlerImpl",
+            args: ["{arguments}.0", "{that}"]
+        },
+        dictionaryHandlerImpl: "",
+        requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.requiredData"
+    }
+});
+
+// function to get the required data
+adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.requiredData = function () {
+    /* hard coded data is used here becauce 'word-definition'
+     * doesn't provide any way to get the supported languages
+     * and only 3 languages are supported
+     */
+
+    return {
+        statusCode: 200,
+        body: [
+            {
+                code: "en",
+                language: "English"
+            },
+            {
+                code: "fr",
+                language: "French"
+            },
+            {
+                code: "de",
+                language: "German"
+            }
+        ]
+    };
+};
+
+// Wiktionary languages handler
+adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.handlerImpl = function (request, that) {
+    try {
+        var version = request.req.params.version;
+
+        var response = that.requiredDataImpl().body,
+            statusCode = that.requiredDataImpl().statusCode,
+            message = "Available languages fetched successfully"
+
+        that.sendSuccessResponse(request, version, "Wiktionary", statusCode, message, response);
+    }
+    //Error with the API code
+    catch (error) {
+        var message = "Internal Server Error: " + error;
+
+        that.sendErrorResponse(request, version, "Wiktionary", 500, message);
+    }
+};
+
+// Wiktionary "Service not provided" grade
 fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided", {
     gradeNames: ["adaptiveContentService.handlers.dictionary.wiktionary"],
     invokers: {
@@ -154,7 +213,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.serviceNot
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
         getEndpointName: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.getEndpointName",
-        requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.requiredData"
+        requiredDataImpl: "" // no data required because service not provided
     }
 });
 
@@ -172,11 +231,4 @@ adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.getEndp
         match = endpointNameRegex.exec(url);
 
     return match[1];
-};
-
-adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.requiredData = function () {
-    /*
-     * Service doesn't provide synonyms
-     * So no data required
-     */
 };
