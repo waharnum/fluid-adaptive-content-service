@@ -170,6 +170,11 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                                     "type": "adaptiveContentService.handlers.translation.google.listLanguages",
                                     "route": "/:version/translation/google/languages",
                                     "method": "get"
+                                },
+                                googleExtendedLanguagesHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.google.listLanguages",
+                                    "route": "/:version/translation/google/languages/:lang",
+                                    "method": "get"
                                 }
                             }
                         }

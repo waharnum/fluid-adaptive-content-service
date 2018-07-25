@@ -312,10 +312,20 @@ fluid.defaults("adaptiveContentService.handlers.translation.google.listLanguages
 });
 
 // function to get the required data from the google service
-adaptiveContentService.handlers.translation.google.listLanguages.requiredData = function () {
-    var promise = fluid.promise();
+adaptiveContentService.handlers.translation.google.listLanguages.requiredData = function (langParam) {
+    var promise = fluid.promise(),
+        listInLang;
 
-    googleTranslate.getSupportedLanguages(function (err, languageCodes) {
+    // if the lang parameter is present
+    if (langParam) {
+        listInLang = langParam;
+    }
+    // default lang
+    else {
+        listInLang = "en";
+    }
+
+    googleTranslate.getSupportedLanguages(listInLang, function (err, languageCodes) {
         if (err) {
 
             // error making request
@@ -350,14 +360,26 @@ adaptiveContentService.handlers.translation.google.listLanguages.requiredData = 
 
 // function to construct a response from the data provided by the Google service
 adaptiveContentService.handlers.translation.google.listLanguages.constructResponse = function (serviceResponse) {
-    return {
-        languageCodes: serviceResponse.body
+    var response = {
+        languages: []
     };
+
+    var languages = serviceResponse.body;
+
+    fluid.each(languages, function (langObj) {
+        response.languages.push({
+            code: langObj.language,
+            name: langObj.name
+        });
+    });
+
+    return response;
 };
 
 // google get all supported languages handler
 adaptiveContentService.handlers.translation.google.listLanguages.getLangList = function (request, version, that) {
     try {
+        var langParam = request.req.params.lang;
 
         // check for errors before making request to the service
         var serviceKeyErrorContent = that.checkServiceKey(googleApiKey);
@@ -367,7 +389,7 @@ adaptiveContentService.handlers.translation.google.listLanguages.getLangList = f
             that.sendErrorResponse(request, version, "Google", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
         }
         else {
-            that.requiredData()
+            that.requiredData(langParam)
                 .then(
                     function (result) {
                         var serviceResponse = result,

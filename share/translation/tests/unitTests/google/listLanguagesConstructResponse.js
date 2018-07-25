@@ -18,11 +18,20 @@ adaptiveContentService.tests.translation.unitTests.google.listLanguagesConstruct
 var mockListLangData = require("../../mockData/google/listLanguages");
 
 var testServiceResponse = {
-    body: mockListLangData.languageArray
+    body: mockListLangData.languageArray.english
 };
 
 var expectedReturnVal = {
-    languageCodes: mockListLangData.languageArray
+    languages: [
+        {
+            code: "en",
+            name: "English"
+        },
+        {
+            code: "de",
+            name: "German"
+        }
+    ]
 };
 
 var testMessage = "Unit Test : For list supported languages constructResponse function : Successful";

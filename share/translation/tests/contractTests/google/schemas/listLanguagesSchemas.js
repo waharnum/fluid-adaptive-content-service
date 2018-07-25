@@ -5,7 +5,14 @@ var commonSchemas = require("./commonSchemas");
 module.exports = {
     noError: {
         "type": "array",
-        "items": { "type": "string" }
+        "items": {
+            "type": "object",
+            "required": ["language", "name"],
+            "properties": {
+                "language": { "type": "string" },
+                "name": { "type": "string" }
+            }
+        }
     },
     authError: commonSchemas.authError
 };

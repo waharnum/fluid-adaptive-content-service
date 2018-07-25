@@ -1,3 +1,8 @@
+/* Contract tests (Google) for both
+ * List languages - /languages
+ * Extended list languages - /languages/:lang
+ */
+
 "use strict";
 
 var fluid = require("infusion"),
@@ -19,15 +24,15 @@ fluid.defaults("adaptiveContentService.tests.translation.google.contractTests.li
     invokers: {
         requestForData: {
             funcName: "adaptiveContentService.tests.translation.google.contractTests.listLanguages.getData",
-            args: ["{arguments}.0", "{that}"]
+            args: ["{arguments}.0", "{arguments}.1", "{that}"]
         }
     }
 });
 
-adaptiveContentService.tests.translation.google.contractTests.listLanguages.getData = function (serviceKey, that) {
+adaptiveContentService.tests.translation.google.contractTests.listLanguages.getData = function (serviceKey, lang, that) {
     var googleTranslate = require("google-translate")(serviceKey); // package for convenient usage of google translation service
 
-    googleTranslate.getSupportedLanguages(function (err, languageCodes) {
+    googleTranslate.getSupportedLanguages(lang, function (err, languageCodes) {
         if (err) {
 
             // error making request
@@ -119,7 +124,7 @@ fluid.defaults("adaptiveContentService.tests.translation.google.contractTests.li
                     //for 'no error' response
                     {
                         func: "{testComponent}.requestForData",
-                        args: [mockListLanguages.apiKey.correct]
+                        args: [mockListLanguages.apiKey.correct, mockListLanguages.langParam]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
@@ -129,7 +134,7 @@ fluid.defaults("adaptiveContentService.tests.translation.google.contractTests.li
                     //for wrong service key
                     {
                         func: "{testComponent}.requestForData",
-                        args: [mockListLanguages.apiKey.invalid]
+                        args: [mockListLanguages.apiKey.invalid, mockListLanguages.langParam]
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
