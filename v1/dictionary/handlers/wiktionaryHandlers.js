@@ -170,15 +170,15 @@ adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.requiredData
         body: [
             {
                 code: "en",
-                language: "English"
+                name: "English"
             },
             {
                 code: "fr",
-                language: "French"
+                name: "French"
             },
             {
                 code: "de",
-                language: "German"
+                name: "German"
             }
         ]
     };

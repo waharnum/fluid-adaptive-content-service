@@ -25,12 +25,12 @@ var testServiceResponse = {
 
 var expectedReturnVal = [
     {
-        languageName: mockListLangData.languageObj.en,
-        languageCode: "en"
+        name: mockListLangData.languageObj.en,
+        code: "en"
     },
     {
-        languageName: mockListLangData.languageObj.de,
-        languageCode: "de"
+        name: mockListLangData.languageObj.de,
+        code: "de"
     }
 ];
 

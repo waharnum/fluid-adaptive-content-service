@@ -20,11 +20,11 @@ var expectedReturnVal = {
     languages: [
         {
             code: "en",
-            language: "English"
+            name: "English"
         },
         {
             code: "de",
-            language: "German"
+            name: "German"
         }
     ]
 };

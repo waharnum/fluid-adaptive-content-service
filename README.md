@@ -173,6 +173,10 @@ Example endpoints:
   **Method**: `GET`\
   **Language Code**: ISO 639-1 (2-lettered language codes), ISO 639-2 (3-lettered language code)
 
+  - `http://localhost:8083/v1/translation/google/languages/{lang}`\
+  **Method**: `GET`\
+  **Language Code**: ISO 639-1 (2-lettered language codes), ISO 639-2 (3-lettered language code)
+
 Example endpoints:
 - `http://localhost:8083/v1/translation/yandex/translate/en-de`\
 **Body** `{ text: "This is the text to be translated" }`
@@ -186,6 +190,7 @@ Example endpoints:
 - `http://localhost:8083/v1/translation/google/detect`\
 **Body** `{ text: "This is the text for which the language is to be detected" }`
 - `http://localhost:8083/v1/translation/google/languages`\
+- `http://localhost:8083/v1/translation/google/languages/fr`\
 
 ## Running Tests
 

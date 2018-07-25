@@ -582,7 +582,7 @@ adaptiveContentService.handlers.dictionary.oxford.listLanguages.constructRespons
         if (resultLang.type === "monolingual") {
             var langObj = {
                 code: resultLang.sourceLanguage.id,
-                language: resultLang.sourceLanguage.language
+                name: resultLang.sourceLanguage.language
             };
 
             // check that language is not already present

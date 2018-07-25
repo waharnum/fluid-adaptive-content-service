@@ -482,8 +482,8 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.constructRespon
 
     fluid.each(languagesObj, function (langName, langCode) {
         response.push({
-            languageName: langName,
-            languageCode: langCode
+            code: langCode,
+            name: langName
         });
     });
 
