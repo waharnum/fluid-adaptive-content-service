@@ -38,11 +38,11 @@ adaptiveContentService.test.handlers.translation.google.listLanguages.requiredDa
 
     // lang parameter present
     if (lang) {
-        langArray = mockListLanguagesData.languageArray.french
+        langArray = mockListLanguagesData.languageArray.french;
     }
     // lang parameter absent
     else {
-        langArray = mockListLanguagesData.languageArray.english
+        langArray = mockListLanguagesData.languageArray.english;
     }
 
     promise.resolve({
@@ -91,7 +91,7 @@ adaptiveContentService.tests.translation.google.listLanguages = [{
         event: "{extendedListLanguagesNoError}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Translation Tests : Extended List languages test for request with no errors", 200, "{arguments}.1.nativeResponse.statusCode"]
-    },
+    }
     ]
 }];
 

@@ -446,14 +446,14 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.requiredData = 
     var promise = fluid.promise(),
         listInLang;
 
-      // if the lang parameter is present
-      if (langParam) {
-          listInLang = langParam;
-      }
-      // default lang
-      else {
-          listInLang = "en";
-      }
+    // if the lang parameter is present
+    if (langParam) {
+        listInLang = langParam;
+    }
+    // default lang
+    else {
+        listInLang = "en";
+    }
 
     var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=" + listInLang;
 

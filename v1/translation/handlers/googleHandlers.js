@@ -80,7 +80,7 @@ adaptiveContentService.handlers.translation.google.detectAndTranslate.requiredDa
         if (err) {
 
             // error making request
-            if (err.body === undefined) {
+            if (err.error.code === "EAI_AGAIN") {
                 ACS.log("Error making request to the Google Service (Detect-Translate endpoint)");
                 promise.resolve({
                     statusCode: 500,
@@ -190,8 +190,8 @@ adaptiveContentService.handlers.translation.google.langDetection.requiredData = 
         if (err) {
 
             // error making request
-            if (err.body === undefined) {
-                ACS.log("Error making request to the Google Service (Detect-Translate endpoint)");
+            if (err.error.code === "EAI_AGAIN") {
+                ACS.log("Error making request to the Google Service (Detect endpoint)");
                 promise.resolve({
                     statusCode: 500,
                     body: {
@@ -329,7 +329,7 @@ adaptiveContentService.handlers.translation.google.listLanguages.requiredData = 
         if (err) {
 
             // error making request
-            if (err.body === undefined) {
+            if (err.error.code === "EAI_AGAIN") {
                 ACS.log("Error making request to the Google Service (List Supported Languages endpoint)");
                 promise.resolve({
                     statusCode: 500,
