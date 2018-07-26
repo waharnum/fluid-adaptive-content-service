@@ -12,17 +12,32 @@
                             "type": "kettle.app",
                             "options": {
                                 "requestHandlers": {
-                                    "translateTextHandler": {
+                                    "generalTranslateTextHandler": {
+                                        "type": "adaptiveContentService.test.handlers.translation.general.translateText",
+                                        "route": "/:version/translation/translate/:sourceLang-:targetLang",
+                                        "method": "post"
+                                    },
+                                    "generalDetectAndTranslateHandler": {
+                                        "type": "adaptiveContentService.test.handlers.translation.general.detectAndTranslate",
+                                        "route": "/:version/translation/translate/:targetLang",
+                                        "method": "post"
+                                    },
+                                    "generalLangDetectionHandler": {
+                                        "type": "adaptiveContentService.test.handlers.translation.general.langDetection",
+                                        "route": "/:version/translation/detect",
+                                        "method": "post"
+                                    },
+                                    "yandexTranslateTextHandler": {
                                         "type": "adaptiveContentService.test.handlers.translation.yandex.translateText",
                                         "route": "/:version/translation/yandex/translate/:sourceLang-:targetLang",
                                         "method": "post"
                                     },
-                                    "langDetectionHandler": {
+                                    "yandexLangDetectionHandler": {
                                         "type": "adaptiveContentService.test.handlers.translation.yandex.langDetection",
                                         "route": "/:version/translation/yandex/detect",
                                         "method": "post"
                                     },
-                                    "detectAndTranslateHandler": {
+                                    "yandexDetectAndTranslateHandler": {
                                         "type": "adaptiveContentService.test.handlers.translation.yandex.detectAndTranslate",
                                         "route": "/:version/translation/yandex/translate/:targetLang",
                                         "method": "post"
@@ -53,7 +68,7 @@
                                         "method": "get"
                                     },
                                     "googleExtendedLanguagesHandler": {
-                                        "type": "adaptiveContentService.handlers.translation.google.listLanguages",
+                                        "type": "adaptiveContentService.test.handlers.translation.google.listLanguages",
                                         "route": "/:version/translation/google/languages/:lang",
                                         "method": "get"
                                     }

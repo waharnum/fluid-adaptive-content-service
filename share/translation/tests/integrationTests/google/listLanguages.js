@@ -38,11 +38,11 @@ adaptiveContentService.test.handlers.translation.google.listLanguages.requiredDa
 
     // lang parameter present
     if (lang) {
-        langArray = mockListLanguagesData.noError.french
+        langArray = mockListLanguagesData.languageArray.french
     }
     // lang parameter absent
     else {
-        langArray = mockListLanguagesData.noError.english
+        langArray = mockListLanguagesData.languageArray.english
     }
 
     promise.resolve({

@@ -10,7 +10,7 @@ require("../../../../testUtils");
 require("../../nock/yandex/mockYandexTranslation"); // providing mock data as an alternative to actual Yandex response
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.translation.yandex.translateText");
+fluid.registerNamespace("adaptiveContentService.tests.translation.general.translateText");
 
 fluid.logObjectRenderChars = "@expand:kettle.resolvers.env(CHAR_LIM)";
 
@@ -19,16 +19,16 @@ kettle.loadTestingSupport();
 //mock data
 var mockTranslationData = require("../../mockData/yandex/translation");
 
-/* testing grade for yandex text translation - to override 'characterLimit'
+/* testing grade for text translation - to override 'characterLimit'
  * configuration for the purpose of testing
  */
-fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.translateText", {
+fluid.defaults("adaptiveContentService.test.handlers.translation.general.translateText", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex.translateText",
     characterLimit: 65
 });
 
-adaptiveContentService.tests.translation.yandex.translateText = [{
-    name: "POST request for the Text Translation endpoint of Yandex Service",
+adaptiveContentService.tests.translation.general.translateText = [{
+    name: "POST request for the Text Translation endpoint",
     expect: 7,
     config: {
         configName: "translationServerConfig",
@@ -38,49 +38,49 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
         noError: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         emptyTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         absentTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         longTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         unsupportedTranslationDirection: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.wrong + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.sourceLang.wrong + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         invalidSourceLangCode: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.invalid + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/" + mockTranslationData.sourceLang.invalid + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         invalidTargetLangCode: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.invalid,
+                path: "/v1/translation/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.invalid,
                 method: "post"
             }
         }
@@ -151,4 +151,4 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.translation.yandex.translateText);
+kettle.test.bootstrapServer(adaptiveContentService.tests.translation.general.translateText);

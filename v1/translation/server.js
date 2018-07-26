@@ -17,6 +17,21 @@ fluid.defaults("adaptiveContentService.translation.serverConfig", {
                         type: "kettle.app",
                         options: {
                             requestHandlers: {
+                                generalTranslateTextHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.yandex.translateText",
+                                    "route": "/:version/translation/translate/:sourceLang-:targetLang",
+                                    "method": "post"
+                                },
+                                generalDetectAndTranslateHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.google.detectAndTranslate",
+                                    "route": "/:version/translation/translate/:targetLang",
+                                    "method": "post"
+                                },
+                                generalLangDetectionHandler: {
+                                    "type": "adaptiveContentService.handlers.translation.google.langDetection",
+                                    "route": "/:version/translation/detect",
+                                    "method": "post"
+                                },
                                 yandexTranslateTextHandler: {
                                     "type": "adaptiveContentService.handlers.translation.yandex.translateText",
                                     "route": "/:version/translation/yandex/translate/:sourceLang-:targetLang",

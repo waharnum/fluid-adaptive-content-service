@@ -8,7 +8,7 @@ require("../../../../../index.js");
 require("../../../../testUtils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
-fluid.registerNamespace("adaptiveContentService.tests.translation.google.detectAndTranslate");
+fluid.registerNamespace("adaptiveContentService.tests.translation.general.detectAndTranslate");
 
 fluid.logObjectRenderChars = kettle.resolvers.env("CHAR_LIM");
 
@@ -17,20 +17,20 @@ kettle.loadTestingSupport();
 // mock data
 var mockTranslationData = require("../../mockData/google/translation");
 
-/* testing grade for google detect and translate text - to override 'characterLimit' configuration
+/* testing grade for detect and translate text - to override 'characterLimit' configuration
  * and 'requiredData' function
  * for the purpose of testing
  */
-fluid.defaults("adaptiveContentService.test.handlers.translation.google.detectAndTranslate", {
+fluid.defaults("adaptiveContentService.test.handlers.translation.general.detectAndTranslate", {
     gradeNames: "adaptiveContentService.handlers.translation.google.detectAndTranslate",
     characterLimit: 65,
     invokers: {
-        requiredData: "adaptiveContentService.test.handlers.translation.google.detectAndTranslate.requiredData"
+        requiredData: "adaptiveContentService.test.handlers.translation.general.detectAndTranslate.requiredData"
     }
 });
 
 // function providing the required mock data (over-riding the actual function)
-adaptiveContentService.test.handlers.translation.google.detectAndTranslate.requiredData = function (targetLang) {
+adaptiveContentService.test.handlers.translation.general.detectAndTranslate.requiredData = function (targetLang) {
     var promise = fluid.promise(),
         jsonMockResponse;
 
@@ -54,8 +54,8 @@ adaptiveContentService.test.handlers.translation.google.detectAndTranslate.requi
     return promise;
 };
 
-adaptiveContentService.tests.translation.google.detectAndTranslate = [{
-    name: "POST request for the translation endpoint (with only target language given) of Google Service",
+adaptiveContentService.tests.translation.general.detectAndTranslate = [{
+    name: "POST request for the translation endpoint (with only target language given)",
     expect: 6,
     config: {
         configName: "translationServerConfig",
@@ -65,42 +65,42 @@ adaptiveContentService.tests.translation.google.detectAndTranslate = [{
         noError: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/google/translate/" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         emptyTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/google/translate/" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         absentTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/google/translate/" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         longTextField: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/google/translate/" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/translate/" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         wrongTargetLang: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/google/translate/" + mockTranslationData.targetLang.wrong,
+                path: "/v1/translation/translate/" + mockTranslationData.targetLang.wrong,
                 method: "post"
             }
         },
         invalidTargetLangCode: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/google/translate/" + mockTranslationData.targetLang.invalid,
+                path: "/v1/translation/translate/" + mockTranslationData.targetLang.invalid,
                 method: "post"
             }
         }
@@ -162,4 +162,4 @@ adaptiveContentService.tests.translation.google.detectAndTranslate = [{
     ]
 }];
 
-kettle.test.bootstrapServer(adaptiveContentService.tests.translation.google.detectAndTranslate);
+kettle.test.bootstrapServer(adaptiveContentService.tests.translation.general.detectAndTranslate);
