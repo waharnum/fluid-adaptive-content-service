@@ -442,10 +442,20 @@ fluid.defaults("adaptiveContentService.handlers.translation.yandex.listLanguages
 });
 
 // function to get the required data from the Yandex service
-adaptiveContentService.handlers.translation.yandex.listLanguages.requiredData = function (serviceKey, that) {
-    var promise = fluid.promise();
+adaptiveContentService.handlers.translation.yandex.listLanguages.requiredData = function (serviceKey, langParam, that) {
+    var promise = fluid.promise(),
+        listInLang;
 
-    var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=en";
+      // if the lang parameter is present
+      if (langParam) {
+          listInLang = langParam;
+      }
+      // default lang
+      else {
+          listInLang = "en";
+      }
+
+    var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=" + listInLang;
 
     makeRequest.post(
         {
@@ -493,6 +503,7 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.constructRespon
 // Yandex get all supported languages handler
 adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList = function (request, version, that) {
     try {
+        var langParam = request.req.params.lang;
 
         var serviceKey = that.serviceKey(that);
 
@@ -504,7 +515,7 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList = f
             that.sendErrorResponse(request, version, "Yandex", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
         }
         else {
-            that.requiredData(serviceKey, that)
+            that.requiredData(serviceKey, langParam, that)
                 .then(
                     function (result) {
                         var serviceResponse = result,
