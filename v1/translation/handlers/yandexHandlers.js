@@ -124,8 +124,10 @@ adaptiveContentService.handlers.translation.yandex.requiredData = function (url,
             else {
                 var responseBody = JSON.parse(body);
 
+                var statusCode = ( responseBody.code ) ? responseBody.code : 200;
+
                 promise.resolve({
-                    statusCode: responseBody.code,
+                    statusCode: statusCode,
                     body: responseBody
                 });
             }
@@ -435,55 +437,10 @@ adaptiveContentService.handlers.translation.yandex.detectAndTranslate.getTransla
 fluid.defaults("adaptiveContentService.handlers.translation.yandex.listLanguages", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex",
     invokers: {
-        requiredData: "adaptiveContentService.handlers.translation.yandex.listLanguages.requiredData",
         constructResponse: "adaptiveContentService.handlers.translation.yandex.listLanguages.constructResponse",
         translationHandlerImpl: "adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList"
     }
 });
-
-// function to get the required data from the Yandex service
-adaptiveContentService.handlers.translation.yandex.listLanguages.requiredData = function (serviceKey, langParam, that) {
-    var promise = fluid.promise(),
-        listInLang;
-
-    // if the lang parameter is present
-    if (langParam) {
-        listInLang = langParam;
-    }
-    // default lang
-    else {
-        listInLang = "en";
-    }
-
-    var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=" + listInLang;
-
-    makeRequest.post(
-        {
-            url: url
-        },
-        function (error, response, body) {
-            if (error) {
-                ACS.log("Error making request to the Yandex Service (List Supported Languages endpoint) - " + error);
-                promise.resolve({
-                    statusCode: 500,
-                    body: {
-                        message: "Internal Server Error : Error with making request to the external service (Yandex) - " + error
-                    }
-                });
-            }
-            else {
-                var responseBody = JSON.parse(body);
-
-                promise.resolve({
-                    statusCode: 200,
-                    body: responseBody
-                });
-            }
-        }
-    );
-
-    return promise;
-};
 
 // function to construct a response from the data provided by the Yandex service
 adaptiveContentService.handlers.translation.yandex.listLanguages.constructResponse = function (serviceResponse) {
@@ -503,9 +460,8 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.constructRespon
 // Yandex get all supported languages handler
 adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList = function (request, version, that) {
     try {
-        var langParam = request.req.params.lang;
-
-        var serviceKey = that.serviceKey(that);
+        var langParam = request.req.params.lang,
+            serviceKey = that.serviceKey(that);
 
         // check for errors before making request to the service
         var serviceKeyErrorContent = that.checkServiceKey(serviceKey);
@@ -515,7 +471,20 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList = f
             that.sendErrorResponse(request, version, "Yandex", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
         }
         else {
-            that.requiredData(serviceKey, langParam, that)
+            var listInLang;
+
+            // if the lang parameter is present
+            if (langParam) {
+                listInLang = langParam;
+            }
+            // default lang
+            else {
+                listInLang = "en";
+            }
+
+            var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=" + listInLang;
+
+            that.requiredData(url, null)
                 .then(
                     function (result) {
                         var serviceResponse = result,

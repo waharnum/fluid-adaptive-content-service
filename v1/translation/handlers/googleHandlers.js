@@ -20,6 +20,8 @@ fluid.defaults("adaptiveContentService.handlers.translation.google", {
     },
     invokers: {
         checkCommonGoogleErrors: "adaptiveContentService.handlers.translation.google.checkCommonGoogleErrors",
+        handleReceivedData: "adaptiveContentService.handlers.translation.google.handleReceivedData",
+        commonHandlerTasks: "adaptiveContentService.handlers.translation.google.commonHandlerTasks",
         constructResponse: "fluid.notImplemented",
         translationHandlerImpl: "fluid.notImplemented"
     }
@@ -62,48 +64,74 @@ adaptiveContentService.handlers.translation.google.checkCommonGoogleErrors = fun
     }
 };
 
+/* function to handle recieved data from the service
+ * ie, structure it and send it to the main handler function
+ */
+adaptiveContentService.handlers.translation.google.handleReceivedData = function (err, responseBody, endpointName, promise) {
+    if (err) {
+        // error making request
+        if (err.error && err.error.syscall === "getaddrinfo") {
+            ACS.log("Error making request to the Google Service (" + endpointName + " endpoint)");
+            promise.resolve({
+                statusCode: 500,
+                body: {
+                    message: "Internal Server Error : Error with making request to the external service (Google)"
+                }
+            });
+        }
+        // other errors
+        else {
+            // TODO: have a try..catch here (and for code similar to this)
+            var errorBody = JSON.parse(err.body);
+
+            promise.resolve({
+                statusCode: errorBody.error.code,
+                body: errorBody
+            });
+        }
+    }
+    else {
+        promise.resolve({
+            statusCode: 200,
+            body: responseBody
+        });
+    }
+};
+
+// function to do the common tasks of handler functions
+adaptiveContentService.handlers.translation.google.commonHandlerTasks = function (request, version, targetLang, serviceName, successMsg, serviceResponse, that) {
+    var errorContent = that.postRequestErrorCheck(serviceResponse);
+
+    // Check for error responses
+    if (errorContent) {
+      that.sendErrorResponse(request, version, serviceName, errorContent.statusCode, errorContent.errorMessage);
+    }
+    // No error response
+    else {
+      var message = successMsg,
+          response = that.constructResponse(serviceResponse, targetLang);
+
+      that.sendSuccessResponse(request, version, serviceName, serviceResponse.statusCode, message, response);
+    }
+};
+
 // Google detect and translate grade
 fluid.defaults("adaptiveContentService.handlers.translation.google.detectAndTranslate", {
     gradeNames: "adaptiveContentService.handlers.translation.google",
     invokers: {
         requiredData: "adaptiveContentService.handlers.translation.google.detectAndTranslate.requiredData",
+        postRequestErrorCheck: "{that}.checkCommonGoogleErrors",
         constructResponse: "adaptiveContentService.handlers.translation.google.detectAndTranslate.constructResponse",
         translationHandlerImpl: "adaptiveContentService.handlers.translation.google.detectAndTranslate.getTranslation"
     }
 });
 
 // function to get the required data from the google service
-adaptiveContentService.handlers.translation.google.detectAndTranslate.requiredData = function (targetLang, text) {
+adaptiveContentService.handlers.translation.google.detectAndTranslate.requiredData = function (targetLang, text, that) {
     var promise = fluid.promise();
 
     googleTranslate.translate(text, targetLang, function (err, translation) {
-        if (err) {
-
-            // error making request
-            if (err.error.code === "EAI_AGAIN") {
-                ACS.log("Error making request to the Google Service (Detect-Translate endpoint)");
-                promise.resolve({
-                    statusCode: 500,
-                    body: {
-                        message: "Internal Server Error : Error with making request to the external service (Google)"
-                    }
-                });
-            }
-            else {
-                var errorBody = JSON.parse(err.body);
-
-                promise.resolve({
-                    statusCode: errorBody.error.code,
-                    body: errorBody
-                });
-            }
-        }
-        else {
-            promise.resolve({
-                statusCode: 200,
-                body: translation
-            });
-        }
+        that.handleReceivedData(err, translation, "Detect-Translate", promise);
     });
 
     return promise;
@@ -141,23 +169,13 @@ adaptiveContentService.handlers.translation.google.detectAndTranslate.getTransla
             that.sendErrorResponse(request, version, "Google", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
         }
         else {
-            that.requiredData(targetLang, text)
+            that.requiredData(targetLang, text, that)
                 .then(
                     function (result) {
-                        var serviceResponse = result,
-                            errorContent = that.checkCommonGoogleErrors(serviceResponse);
+                        var serviceName = "Google",
+                            successMsg = "Translation Successful";
 
-                        // Check for error responses
-                        if (errorContent) {
-                            that.sendErrorResponse(request, version, "Google", errorContent.statusCode, errorContent.errorMessage);
-                        }
-                        // No error response
-                        else {
-                            var message = "Translation Successful",
-                                response = that.constructResponse(serviceResponse, targetLang);
-
-                            that.sendSuccessResponse(request, version, "Google", serviceResponse.statusCode, message, response);
-                        }
+                        that.commonHandlerTasks(request, version, targetLang, serviceName, successMsg, result, that);
                     }
                 );
         }
@@ -175,7 +193,10 @@ fluid.defaults("adaptiveContentService.handlers.translation.google.langDetection
     gradeNames: "adaptiveContentService.handlers.translation.google",
     invokers: {
         requiredData: "adaptiveContentService.handlers.translation.google.langDetection.requiredData",
-        checkLangDetectionError: "adaptiveContentService.handlers.translation.google.langDetection.checkLangDetectionError",
+        postRequestErrorCheck: {
+            funcName: "adaptiveContentService.handlers.translation.google.langDetection.checkLangDetectionError",
+            args: ["{arguments}.0", "{that}"]
+        },
         isLangUndefined: "adaptiveContentService.handlers.translation.google.langDetection.isLangUndefined",
         constructResponse: "adaptiveContentService.handlers.translation.google.langDetection.constructResponse",
         translationHandlerImpl: "adaptiveContentService.handlers.translation.google.langDetection.getLang"
@@ -183,37 +204,11 @@ fluid.defaults("adaptiveContentService.handlers.translation.google.langDetection
 });
 
 // function to get the required data from the google service
-adaptiveContentService.handlers.translation.google.langDetection.requiredData = function (text) {
+adaptiveContentService.handlers.translation.google.langDetection.requiredData = function (text, that) {
     var promise = fluid.promise();
 
     googleTranslate.detectLanguage(text, function (err, detection) {
-        if (err) {
-
-            // error making request
-            if (err.error.code === "EAI_AGAIN") {
-                ACS.log("Error making request to the Google Service (Detect endpoint)");
-                promise.resolve({
-                    statusCode: 500,
-                    body: {
-                        message: "Internal Server Error : Error with making request to the external service (Google)"
-                    }
-                });
-            }
-            else {
-                var errorBody = JSON.parse(err.body);
-
-                promise.resolve({
-                    statusCode: errorBody.error.code,
-                    body: errorBody
-                });
-            }
-        }
-        else {
-            promise.resolve({
-                statusCode: 200,
-                body: detection
-            });
-        }
+        that.handleReceivedData(err, detection, "Language Detection", promise);
     });
 
     return promise;
@@ -272,23 +267,13 @@ adaptiveContentService.handlers.translation.google.langDetection.getLang = funct
             that.sendErrorResponse(request, version, "Google", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
         }
         else {
-            that.requiredData(text)
+            that.requiredData(text, that)
                 .then(
                     function (result) {
-                        var serviceResponse = result,
-                            errorContent = that.checkLangDetectionError(serviceResponse, that);
+                        var serviceName = "Google",
+                            successMsg = "Language Detection Successful";
 
-                        // Check for error responses
-                        if (errorContent) {
-                            that.sendErrorResponse(request, version, "Google", errorContent.statusCode, errorContent.errorMessage);
-                        }
-                        // No error response
-                        else {
-                            var message = "Language Detection Successful",
-                                response = that.constructResponse(serviceResponse);
-
-                            that.sendSuccessResponse(request, version, "Google", serviceResponse.statusCode, message, response);
-                        }
+                        that.commonHandlerTasks(request, version, null, serviceName, successMsg, result, that);
                     }
                 );
         }
@@ -306,13 +291,14 @@ fluid.defaults("adaptiveContentService.handlers.translation.google.listLanguages
     gradeNames: "adaptiveContentService.handlers.translation.google",
     invokers: {
         requiredData: "adaptiveContentService.handlers.translation.google.listLanguages.requiredData",
+        postRequestErrorCheck: "{that}.checkCommonGoogleErrors",
         constructResponse: "adaptiveContentService.handlers.translation.google.listLanguages.constructResponse",
         translationHandlerImpl: "adaptiveContentService.handlers.translation.google.listLanguages.getLangList"
     }
 });
 
 // function to get the required data from the google service
-adaptiveContentService.handlers.translation.google.listLanguages.requiredData = function (langParam) {
+adaptiveContentService.handlers.translation.google.listLanguages.requiredData = function (langParam, that) {
     var promise = fluid.promise(),
         listInLang;
 
@@ -325,34 +311,10 @@ adaptiveContentService.handlers.translation.google.listLanguages.requiredData = 
         listInLang = "en";
     }
 
+    // TODO: have try..catch here
+
     googleTranslate.getSupportedLanguages(listInLang, function (err, languageCodes) {
-        if (err) {
-
-            // error making request
-            if (err.error.code === "EAI_AGAIN") {
-                ACS.log("Error making request to the Google Service (List Supported Languages endpoint)");
-                promise.resolve({
-                    statusCode: 500,
-                    body: {
-                        message: "Internal Server Error : Error with making request to the external service (Google)"
-                    }
-                });
-            }
-            else {
-                var errorBody = JSON.parse(err.body);
-
-                promise.resolve({
-                    statusCode: errorBody.error.code,
-                    body: errorBody
-                });
-            }
-        }
-        else {
-            promise.resolve({
-                statusCode: 200,
-                body: languageCodes
-            });
-        }
+        that.handleReceivedData(err, languageCodes, "List supported languages", promise);
     });
 
     return promise;
@@ -389,23 +351,13 @@ adaptiveContentService.handlers.translation.google.listLanguages.getLangList = f
             that.sendErrorResponse(request, version, "Google", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
         }
         else {
-            that.requiredData(langParam)
+            that.requiredData(langParam, that)
                 .then(
                     function (result) {
-                        var serviceResponse = result,
-                            errorContent = that.checkCommonGoogleErrors(serviceResponse, that);
+                        var serviceName = "Google",
+                            successMsg = "Available languages fetched successfully";
 
-                        // Check for error responses
-                        if (errorContent) {
-                            that.sendErrorResponse(request, version, "Google", errorContent.statusCode, errorContent.errorMessage);
-                        }
-                        // No error response
-                        else {
-                            var message = "Available languages fetched successfully",
-                                response = that.constructResponse(serviceResponse);
-
-                            that.sendSuccessResponse(request, version, "Google", serviceResponse.statusCode, message, response);
-                        }
+                        that.commonHandlerTasks(request, version, null, serviceName, successMsg, result, that);
                     }
                 );
         }
