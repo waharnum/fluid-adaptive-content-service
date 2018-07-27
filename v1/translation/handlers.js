@@ -6,7 +6,7 @@ var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
-require("../handlerUtils");
+require("../../share/handlerUtils");
 
 /* Abstract grade for translation service endpoints
  * from which other service grades will inherit

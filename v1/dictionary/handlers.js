@@ -5,7 +5,7 @@ var fluid = require("infusion"),
 
 require("kettle");
 
-require("../handlerUtils");
+require("../../share/handlerUtils");
 
 /* Abstract grade for dictionary service endpoints
  * from which other service grades will inherit

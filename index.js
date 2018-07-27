@@ -3,14 +3,3 @@
 var fluid = require("infusion");
 
 fluid.module.register("fluid-adaptive-content-service", __dirname, require);
-
-var ACS = fluid.registerNamespace("ACS");
-
-//utility function for logging
-ACS.log = function (message) {
-    //Cyan colored highlight for the log message label
-    var label = "\x1b[36mAdaptive Content Service : \x1b[0m";
-
-    fluid.log(fluid.logLevel.IMPORTANT, label + message);
-};
-// ACS.log("asdf");

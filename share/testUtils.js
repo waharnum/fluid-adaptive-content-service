@@ -5,7 +5,7 @@ var fluid = require("infusion"),
     Ajv = require("ajv"),//npm package for JSON scheme validation
     kettle = require("kettle");
 
-require("../index");
+require("./utils");
 
 var adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
     ACS = fluid.registerNamespace("ACS");

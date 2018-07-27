@@ -6,7 +6,7 @@ var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
 
-require("../handlerUtils");
+require("../../share/handlerUtils");
 
 /* Abstract grade for nlp service endpoints
  * from which other service grades will inherit

@@ -8,7 +8,7 @@ var fluid = require("infusion"),
 
 require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
-require("../../../index");
+require("../../../share/utils");
 
 
 //Specific grade for Oxford
@@ -23,7 +23,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
     },
     invokers: {
         dictionaryHandlerImpl: "fluid.notImplemented",
-        handlerCommonTasks: "adaptiveContentService.handlers.dictionary.oxford.handlerCommonTasks",
+        commonHandlerTasks: "adaptiveContentService.handlers.dictionary.oxford.commonHandlerTasks",
         requiredDataImpl: "adaptiveContentService.handlers.dictionary.oxford.requiredData",
         serviceKeysImpl: {
             funcName: "adaptiveContentService.handlers.dictionary.oxford.serviceKeys",
@@ -165,7 +165,7 @@ adaptiveContentService.handlers.dictionary.oxford.requiredData = function (url, 
 };
 
 //function to run the common tasks of the handler function
-adaptiveContentService.handlers.dictionary.oxford.handlerCommonTasks = function (request, version, word, url, that) {
+adaptiveContentService.handlers.dictionary.oxford.commonHandlerTasks = function (request, version, word, url, that) {
     try {
         var requestHeaders = that.serviceKeysImpl(that);
 
@@ -227,7 +227,7 @@ adaptiveContentService.handlers.dictionary.oxford.definition.getDefinition = fun
     var urlBase = that.options.serviceConfig.urlBase,
         url = urlBase + "entries/" + lang + "/" + word;
 
-    that.handlerCommonTasks(request, version, word, url, that);
+    that.commonHandlerTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the data provided by the Oxford Service
@@ -285,7 +285,7 @@ adaptiveContentService.handlers.dictionary.oxford.synonyms.getSynonyms = functio
     var urlBase = that.options.serviceConfig.urlBase,
         url = urlBase + "entries/" + lang + "/" + word + "/synonyms";
 
-    that.handlerCommonTasks(request, version, word, url, that);
+    that.commonHandlerTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the synonyms data provided by the Oxford Service
@@ -367,7 +367,7 @@ adaptiveContentService.handlers.dictionary.oxford.antonyms.getAntonyms = functio
     var urlBase = that.options.serviceConfig.urlBase,
         url = urlBase + "entries/" + lang + "/" + word + "/antonyms";
 
-    that.handlerCommonTasks(request, version, word, url, that);
+    that.commonHandlerTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the antonyms data provided by the Oxford Service
@@ -449,7 +449,7 @@ adaptiveContentService.handlers.dictionary.oxford.pronunciations.getPronunciatio
     var urlBase = that.options.serviceConfig.urlBase,
         url = urlBase + "entries/" + lang + "/" + word;
 
-    that.handlerCommonTasks(request, version, word, url, that);
+    that.commonHandlerTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the pronunciation data provided by the Oxford Service
@@ -538,7 +538,7 @@ adaptiveContentService.handlers.dictionary.oxford.frequency.getFrequency = funct
         url = urlBase + "stats/frequency/word/" + lang + "/?lemma=" + word;
     }
 
-    that.handlerCommonTasks(request, version, word, url, that);
+    that.commonHandlerTasks(request, version, word, url, that);
 };
 
 //function to construct a useful response from the frequency data provided by the Oxford Service

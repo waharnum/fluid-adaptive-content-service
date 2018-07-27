@@ -9,7 +9,7 @@ var fluid = require("infusion"),
 
 adaptiveContentService.handlerUtils = fluid.registerNamespace("adaptiveContentService.handlerUtils");
 
-require("../index");
+require("./utils");
 
 // Common function for all dictionary endpoints to send success response
 adaptiveContentService.handlerUtils.sendSuccessResponse = function (request, version, serviceSource, statusCode, message, jsonResponse, serviceType) {

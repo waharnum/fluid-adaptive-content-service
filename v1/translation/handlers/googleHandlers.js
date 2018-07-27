@@ -104,14 +104,14 @@ adaptiveContentService.handlers.translation.google.commonHandlerTasks = function
 
     // Check for error responses
     if (errorContent) {
-      that.sendErrorResponse(request, version, serviceName, errorContent.statusCode, errorContent.errorMessage);
+        that.sendErrorResponse(request, version, serviceName, errorContent.statusCode, errorContent.errorMessage);
     }
     // No error response
     else {
-      var message = successMsg,
-          response = that.constructResponse(serviceResponse, targetLang);
+        var message = successMsg,
+            response = that.constructResponse(serviceResponse, targetLang);
 
-      that.sendSuccessResponse(request, version, serviceName, serviceResponse.statusCode, message, response);
+        that.sendSuccessResponse(request, version, serviceName, serviceResponse.statusCode, message, response);
     }
 };
 
