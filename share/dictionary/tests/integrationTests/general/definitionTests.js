@@ -34,18 +34,18 @@ adaptiveContentService.test.handlers.dictionary.general.definition.requiredData 
 
     // wrong word response
     if (word === mockDefinitionData.word.wrong) {
-        jsonMockResponse = mockDefinitionData.wrongWord;
+        jsonMockResponse = mockDefinitionData.responses.wrongWord;
         promise.resolve(jsonMockResponse);
     }
     // wrong lang response
     else if (lang === mockDefinitionData.lang.wrong) {
-        jsonMockResponse = mockDefinitionData.wrongWord;
+        jsonMockResponse = mockDefinitionData.responses.wrongLang;
         promise.resolve(jsonMockResponse);
     }
     // no Error response
     else {
         jsonMockResponse = mockDefinitionData.word.correct;
-        promise.resolve(mockDefinitionData.correctWord);
+        promise.resolve(mockDefinitionData.responses.correctWord);
     }
 
     return promise;

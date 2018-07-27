@@ -13,7 +13,7 @@ var testMessage = "Unit Test : For constructResponse function of definitions end
 
 // mock service data
 var mockDefinitionsData = require("../../mockData/oxford/definitions"), // file holding object with mock data
-    jsonServiceData = mockDefinitionsData.correctWord;
+    jsonServiceData = mockDefinitionsData.responses.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {

@@ -8,22 +8,20 @@ fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.unit
 
 require("../../../../../v1/dictionary/handlers/wiktionaryHandlers");
 
-var jsonServiceData = {
-    word: "word",
-    category: "noun",
-    definition: "The smallest unit of language that has a particular meaning and can be expressed by itself; the smallest discrete, meaningful unit of language."
-};
+// mock service data
+var mockDefinitionsData = require("../../mockData/wiktionary/definitions"),// file holding object with mock data
+    jsonServiceData = mockDefinitionsData.responses.correctWord;
 
 adaptiveContentService.tests.dictionary.wiktionary.unitTests.constructResponse = function () {
     var returnVal = adaptiveContentService.handlers.dictionary.wiktionary.definition.constructResponse(jsonServiceData);
 
     var expectedReturnVal = {
-        word: "word",
+        word: "happy",
         entries: [
             {
-                category: "noun",
+                category: "adjective",
                 definitions: [
-                    "The smallest unit of language that has a particular meaning and can be expressed by itself; the smallest discrete, meaningful unit of language."
+                    "This is definition of the word"
                 ]
             }
         ]

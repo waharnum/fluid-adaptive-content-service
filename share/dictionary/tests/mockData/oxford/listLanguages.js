@@ -6,34 +6,36 @@ module.exports = {
     // general data
     apiKeys: commonOxfordMockData.apiKeys,
     // responses
-    noError: {
-        results: [
-            {
-                sourceLanguage: {
-                    id: "en",
-                    language: "English"
+    responses: {
+        noError: {
+            results: [
+                {
+                    sourceLanguage: {
+                        id: "en",
+                        language: "English"
+                    },
+                    type: "monolingual"
                 },
-                type: "monolingual"
-            },
-            {
-                sourceLanguage: {
-                    id: "en",
-                    language: "English"
+                {
+                    sourceLanguage: {
+                        id: "en",
+                        language: "English"
+                    },
+                    targetLanguage: {
+                        id: "de",
+                        language: "German"
+                    },
+                    type: "monolingual"
                 },
-                targetLanguage: {
-                    id: "de",
-                    language: "German"
-                },
-                type: "monolingual"
-            },
-            {
-                sourceLanguage: {
-                    id: "de",
-                    language: "German"
-                },
-                type: "monolingual"
-            }
-        ]
-    },
-    authError: "Authentication failed"
+                {
+                    sourceLanguage: {
+                        id: "de",
+                        language: "German"
+                    },
+                    type: "monolingual"
+                }
+            ]
+        },
+        authError: "Authentication failed"
+    }
 };

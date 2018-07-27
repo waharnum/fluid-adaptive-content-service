@@ -18,8 +18,8 @@ var testMessage = {
 var mockFrequencyData = require("../../mockData/oxford/frequency"), //file holding object with mock data (frequency)
     mockExtendedFrequencyData = require("../../mockData/oxford/extendedFrequency"),// file holding object with mock data
     jsonServiceData = {
-        frequency: mockFrequencyData.correctWord,
-        extendedFrequency: mockExtendedFrequencyData.correctWord
+        frequency: mockFrequencyData.responses.correctWord,
+        extendedFrequency: mockExtendedFrequencyData.responses.correctWord
     };
 
 // expected return value from the function being tested

@@ -13,19 +13,19 @@ nock(urlBase, {
 .get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.correct)
 .reply(
     200,
-    mockPronunciationsData.correctWord
+    mockPronunciationsData.responses.correctWord
 )
 // wrong word
 .get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.wrong)
 .reply(
     404,
-    mockPronunciationsData.wrongWord
+    mockPronunciationsData.responses.wrongWord
 )
 // wrong language
 .get("/entries/" + mockPronunciationsData.lang.wrong + "/" + mockPronunciationsData.word.correct)
 .reply(
     404,
-    mockPronunciationsData.wrongLang
+    mockPronunciationsData.responses.wrongLang
 )
 .persist();
 
@@ -36,6 +36,6 @@ nock(urlBase, {
 .get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.correct + "/antonyms")
 .reply(
     403,
-    mockPronunciationsData.authError
+    mockPronunciationsData.responses.authError
 )
 .persist();

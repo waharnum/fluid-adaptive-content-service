@@ -14,15 +14,17 @@ module.exports = {
         invalid: "english" // greater than 3 letters
     },
     // responses
-    correctWord: {
-        word: word.correct,
-        category: "adjective",
-        definition: "This is definition of the word"
-    },
-    wrongWord: {
-        err: "not found"
-    },
-    wrongLang: {
-        err: "unsupported language"
+    responses: {
+        correctWord: {
+            word: word.correct,
+            category: "adjective",
+            definition: "This is definition of the word"
+        },
+        wrongWord: {
+            err: "not found"
+        },
+        wrongLang: {
+            err: "unsupported language"
+        }
     }
 };

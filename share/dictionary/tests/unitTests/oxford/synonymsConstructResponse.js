@@ -13,7 +13,7 @@ var testMessage = "Unit Test : For constructResponse function of synonyms endpoi
 
 // mock service data
 var mockSynonymsData = require("../../mockData/oxford/synonyms"),// file holding object with mock data
-    jsonServiceData = mockSynonymsData.correctWord;
+    jsonServiceData = mockSynonymsData.responses.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {

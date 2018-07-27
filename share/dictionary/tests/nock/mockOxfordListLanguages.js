@@ -12,7 +12,7 @@ nock(urlBase, {
 .get("/languages")
 .reply(
     200,
-    mockListLanguagesData.noError
+    mockListLanguagesData.responses.noError
 )
 .persist();
 
@@ -23,6 +23,6 @@ nock(urlBase, {
 .get("/languages")
 .reply(
     403,
-    mockListLanguagesData.authError
+    mockListLanguagesData.responses.authError
 )
 .persist();

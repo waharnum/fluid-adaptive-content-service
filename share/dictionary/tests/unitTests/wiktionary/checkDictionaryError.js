@@ -8,20 +8,13 @@ fluid.registerNamespace("adaptiveContentService.tests.dictionary.wiktionary.unit
 
 require("../../../../../v1/dictionary/handlers/wiktionaryHandlers");
 
+// mock data
+var mockDefinitionsData = require("../../mockData/wiktionary/definitions");
+
 var serviceResponse = {
-    noError: {
-        word: "word",
-        category: "noun",
-        definition: "The smallest unit of language that has a particular meaning and can be expressed by itself; the smallest discrete, meaningful unit of language."
-    },
-    wrongWord: {
-        word: "wrongWord",
-        err: "not found"
-    },
-    wrongLang: {
-        word: "word",
-        err: "unsupported language"
-    },
+    noError: mockDefinitionsData.responses.correctWord,
+    wrongWord: mockDefinitionsData.responses.wrongWord,
+    wrongLang: mockDefinitionsData.responses.wrongLang,
     otherErrors: {
         word: "word",
         err: "any other error"

@@ -13,13 +13,13 @@ nock(urlBase, {
 .get("/stats/frequency/word/" + mockExtendedFrequencyData.lang.correct + "/?lemma=" + mockExtendedFrequencyData.word.correct + "&lexicalCategory=" + mockExtendedFrequencyData.lexicalCategory)
 .reply(
     200,
-    mockExtendedFrequencyData.correctWord
+    mockExtendedFrequencyData.responses.correctWord
 )
 // wrong language
 .get("/stats/frequency/word/" + mockExtendedFrequencyData.lang.wrong + "/?lemma=" + mockExtendedFrequencyData.word.correct + "&lexicalCategory=" + mockExtendedFrequencyData.lexicalCategory)
 .reply(
     404,
-    mockExtendedFrequencyData.wrongLang
+    mockExtendedFrequencyData.responses.wrongLang
 )
 .persist();
 
@@ -30,6 +30,6 @@ nock(urlBase, {
 .get("/entries/" + mockExtendedFrequencyData.lang.correct + "/" + mockExtendedFrequencyData.word.correct + "/antonyms")
 .reply(
     403,
-    mockExtendedFrequencyData.authError
+    mockExtendedFrequencyData.responses.authError
 )
 .persist();

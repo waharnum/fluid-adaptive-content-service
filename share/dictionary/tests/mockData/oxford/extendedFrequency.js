@@ -13,14 +13,16 @@ module.exports = {
     lexicalCategory: lexicalCategory,
     apiKeys: commonOxfordMockData.apiKeys,
     // responses
-    correctWord:
-    {
-        result: {
-            frequency: frequency,
-            lemma: commonOxfordMockData.word.correct,
-            lexicalCategory: lexicalCategory
-        }
-    },
-    wrongLang: "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in zu, ro, ta, sw, de, tn, lv, id, ur, en, nso, ms, gu, pt, hi, es</p>",
-    authError: "Authentication failed"
+    responses: {
+        correctWord:
+        {
+            result: {
+                frequency: frequency,
+                lemma: commonOxfordMockData.word.correct,
+                lexicalCategory: lexicalCategory
+            }
+        },
+        wrongLang: "<title>404 Not Found</title><h1>Not Found</h1><p>source_lang is not in zu, ro, ta, sw, de, tn, lv, id, ur, en, nso, ms, gu, pt, hi, es</p>",
+        authError: "Authentication failed"
+    }
 };

@@ -17,15 +17,15 @@ var serviceResponse = {
     },
     authFail: {
         statusCode: 403,
-        body: mockData.authError
+        body: mockData.responses.authError
     },
     wrongWord: {
         statusCode: 404,
-        body: mockData.wrongWord
+        body: mockData.responses.wrongWord
     },
     wrongLang: {
         statusCode: 404,
-        body: mockData.wrongLang
+        body: mockData.responses.wrongLang
     },
     unhandledError: {
         statusCode: 555, //random code that has not been handled

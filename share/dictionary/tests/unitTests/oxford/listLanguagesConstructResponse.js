@@ -13,7 +13,7 @@ var testMessage = "Unit Test : For constructResponse function of list supported 
 
 // mock service data
 var mockListLanguagesData = require("../../mockData/oxford/listLanguages"),// file holding object with mock data
-    jsonServiceData = mockListLanguagesData.noError;
+    jsonServiceData = mockListLanguagesData.responses.noError;
 
 // expected return value from the function being tested
 var expectedReturnVal = {

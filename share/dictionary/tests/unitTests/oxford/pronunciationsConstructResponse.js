@@ -13,7 +13,7 @@ var testMessage = "Unit Test : For constructResponse function of pronunciations 
 
 // mock service data
 var mockPronunciationsData = require("../../mockData/oxford/pronunciations"),// file holding object with mock data
-    jsonServiceData = mockPronunciationsData.correctWord;
+    jsonServiceData = mockPronunciationsData.responses.correctWord;
 
 // expected return value from the function being tested
 var expectedReturnVal = {
