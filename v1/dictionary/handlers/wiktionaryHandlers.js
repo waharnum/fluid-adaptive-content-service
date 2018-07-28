@@ -1,6 +1,7 @@
 "use strict";
 
 var fluid = require("infusion"),
+    ACS = fluid.registerNamespace("ACS"),
     adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
     wd = require("word-definition");
 
@@ -113,25 +114,32 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition =
             that.requiredDataImpl(lang, word)
             .then(
                 function (result) {
-                    serviceResponse = result;
+                    try {
+                        serviceResponse = result;
 
-                    errorContent = that.checkDictionaryErrorImpl(serviceResponse);
+                        errorContent = that.checkDictionaryErrorImpl(serviceResponse);
 
-                    var message;
+                        var message;
 
-                    //Error Responses
-                    if (errorContent) {
-                        message = errorContent.errorMessage;
-                        var statusCode = errorContent.statusCode;
+                        //Error Responses
+                        if (errorContent) {
+                            message = errorContent.errorMessage;
+                            var statusCode = errorContent.statusCode;
 
-                        that.sendErrorResponse(request, version, "Wiktionary", statusCode, message);
+                            that.sendErrorResponse(request, version, "Wiktionary", statusCode, message);
+                        }
+                        //No error : Word found
+                        else {
+                            message = "Word Found";
+                            var response = that.constructResponse(serviceResponse);
+
+                            that.sendSuccessResponse(request, version, "Wiktionary", 200, "Word Found", response);
+                        }
                     }
-                    //No error : Word found
-                    else {
-                        message = "Word Found";
-                        var response = that.constructResponse(serviceResponse);
-
-                        that.sendSuccessResponse(request, version, "Wiktionary", 200, "Word Found", response);
+                    catch (error) {
+                        var errMsg = "Internal Server Error: " + error;
+                        ACS.log(errMsg);
+                        that.sendErrorResponse(request, version, "Wiktionary", 500, errMsg);
                     }
                 }
             );
@@ -139,9 +147,9 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition =
     }
     //Error with the API code
     catch (error) {
-        var message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Wiktionary", 500, message);
+        var errMsg = "Internal Server Error: " + error;
+        ACS.log(errMsg);
+        that.sendErrorResponse(request, version, "Wiktionary", 500, errMsg);
     }
 };
 
@@ -186,22 +194,21 @@ adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.requiredData
 
 // Wiktionary languages handler
 adaptiveContentService.handlers.dictionary.wiktionary.listLanguages.handlerImpl = function (request, that) {
-    var version = request.req.params.version,
-        message;
+    var version = request.req.params.version;
 
     try {
         var response = that.requiredDataImpl().body,
             statusCode = that.requiredDataImpl().statusCode;
 
-        message = "Available languages fetched successfully";
+        var message = "Available languages fetched successfully";
 
         that.sendSuccessResponse(request, version, "Wiktionary", statusCode, message, response);
     }
     //Error with the API code
     catch (error) {
-        message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Wiktionary", 500, message);
+        var errMsg = "Internal Server Error: " + error;
+        ACS.log(errMsg);
+        that.sendErrorResponse(request, version, "Wiktionary", 500, errMsg);
     }
 };
 

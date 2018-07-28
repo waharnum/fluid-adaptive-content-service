@@ -8,8 +8,6 @@ var fluid = require("infusion"),
 
 require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
-require("../../../share/utils");
-
 
 //Specific grade for Oxford
 fluid.defaults("adaptiveContentService.handlers.dictionary.oxford", {
@@ -48,6 +46,7 @@ adaptiveContentService.handlers.dictionary.oxford.serviceKeys = function (that) 
 
 // check for errors with the service keys
 adaptiveContentService.handlers.dictionary.oxford.checkServiceKeys = function (requestHeaders) {
+    // TODO: can be middleware
     var appId = requestHeaders.app_id,
         appKey = requestHeaders.app_key;
 
@@ -145,17 +144,28 @@ adaptiveContentService.handlers.dictionary.oxford.requiredData = function (url, 
             headers: requestHeaders
         },
         function (error, response, body) {
-            if (error) {
-                ACS.log("Error making request to the Oxford Service (Definition Endpoint)");
+            try {
+                if (error) {
+                    ACS.log("Error making request to the Oxford Service (Definition Endpoint)");
+                    promise.resolve({
+                        statusCode: 500,
+                        body: "Internal server error : Error with making request to the external service (Oxford) - " + error
+                    });
+                }
+                else {
+                    promise.resolve({
+                        statusCode: response.statusCode,
+                        body: body
+                    });
+                }
+            }
+            catch (error) {
+                var errMsg = "Internal Server Error - " + error;
+                ACS.log(errMsg);
+
                 promise.resolve({
                     statusCode: 500,
-                    body: "Internal server error : Error with making request to the external service (Oxford) - " + error
-                });
-            }
-            else {
-                promise.resolve({
-                    statusCode: response.statusCode,
-                    body: body
+                    body: errMsg
                 });
             }
         }
@@ -166,18 +176,18 @@ adaptiveContentService.handlers.dictionary.oxford.requiredData = function (url, 
 
 //function to run the common tasks of the handler function
 adaptiveContentService.handlers.dictionary.oxford.commonHandlerTasks = function (request, version, word, url, that) {
-    try {
-        var requestHeaders = that.serviceKeysImpl(that);
+    var requestHeaders = that.serviceKeysImpl(that);
 
-        var preRequestErrorContent = that.preRequestErrorCheck(word, requestHeaders, that);
-        //Check for long URI
-        if (preRequestErrorContent) {
-            that.sendErrorResponse(request, version, "Oxford", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
-        }
-        else {
-            that.requiredDataImpl(url, requestHeaders)
-                .then(
-                    function (result) {
+    var preRequestErrorContent = that.preRequestErrorCheck(word, requestHeaders, that);
+    //Check for long URI
+    if (preRequestErrorContent) {
+        that.sendErrorResponse(request, version, "Oxford", preRequestErrorContent.statusCode, preRequestErrorContent.errorMessage);
+    }
+    else {
+        that.requiredDataImpl(url, requestHeaders)
+            .then(
+                function (result) {
+                    try {
                         var serviceResponse = result,
                             errorContent = that.checkDictionaryErrorImpl(serviceResponse),
                             message;
@@ -199,14 +209,13 @@ adaptiveContentService.handlers.dictionary.oxford.commonHandlerTasks = function 
                             that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
                         }
                     }
-                );
-        }
-    }
-    //Error with the API code
-    catch (error) {
-        var message = "Internal Server Error: " + error;
-        ACS.log(message);
-        that.sendErrorResponse(request, version, "Oxford", 500, message);
+                    catch (error) {
+                        var errMsg = "Internal Server Error - " + error;
+                        ACS.log(errMsg);
+                        that.sendErrorResponse(request, version, "Oxford", 500, errMsg);
+                    }
+                }
+            );
     }
 };
 
@@ -615,25 +624,32 @@ adaptiveContentService.handlers.dictionary.oxford.listLanguages.getLangList = fu
             that.requiredDataImpl(url, requestHeaders)
                 .then(
                     function (result) {
-                        var serviceResponse = result,
-                            errorContent = that.checkDictionaryErrorImpl(serviceResponse),
-                            message;
+                        try {
+                            var serviceResponse = result,
+                                errorContent = that.checkDictionaryErrorImpl(serviceResponse),
+                                message;
 
-                        //Error Responses
-                        if (errorContent) {
-                            message = that.errorMsgScrape(errorContent.responseBody);
-                            var statusCode = errorContent.statusCode;
+                            //Error Responses
+                            if (errorContent) {
+                                message = that.errorMsgScrape(errorContent.responseBody);
+                                var statusCode = errorContent.statusCode;
 
-                            that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                                that.sendErrorResponse(request, version, "Oxford", statusCode, message);
+                            }
+                            //No error response
+                            else {
+                                message = "Available languages fetched successfully";
+
+                                var jsonServiceResponse = JSON.parse(serviceResponse.body),
+                                    response = that.constructResponse(jsonServiceResponse);
+
+                                that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                            }
                         }
-                        //No error response
-                        else {
-                            message = "Available languages fetched successfully";
-
-                            var jsonServiceResponse = JSON.parse(serviceResponse.body),
-                                response = that.constructResponse(jsonServiceResponse);
-
-                            that.sendSuccessResponse(request, version, "Oxford", 200, message, response);
+                        catch (error) {
+                            var errMsg = "Internal Server Error - " + error;
+                            ACS.log(errMsg);
+                            that.sendErrorResponse(request, version, "Oxford", 500, errMsg);
                         }
                     }
                 );
@@ -641,8 +657,8 @@ adaptiveContentService.handlers.dictionary.oxford.listLanguages.getLangList = fu
     }
     //Error with the API code
     catch (error) {
-        var message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Oxford", 500, message);
+        var errMsg = "Internal Server Error - " + error;
+        ACS.log(errMsg);
+        that.sendErrorResponse(request, version, "Oxford", 500, errMsg);
     }
 };
