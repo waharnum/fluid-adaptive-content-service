@@ -19,7 +19,7 @@ nock(urlBase)
 )
 .reply(
     200,
-    mockLangDetectionData.noError
+    mockLangDetectionData.responses.noError
 )
 //unable to detect lang
 .post(
@@ -30,7 +30,7 @@ nock(urlBase)
 )
 .reply(
     200,
-    mockLangDetectionData.cannotDetect
+    mockLangDetectionData.responses.cannotDetect
 )
 // Invalid api key
 .post(
@@ -41,7 +41,7 @@ nock(urlBase)
 )
 .reply(
     401,
-    mockLangDetectionData.keyInvalid
+    mockLangDetectionData.responses.keyInvalid
 )
 // Blocked api key
 .post(
@@ -52,7 +52,7 @@ nock(urlBase)
 )
 .reply(
     402,
-    mockLangDetectionData.keyBlocked
+    mockLangDetectionData.responses.keyBlocked
 )
 // Exceeding daily limit
 .post(
@@ -63,6 +63,6 @@ nock(urlBase)
 )
 .reply(
     404,
-    mockLangDetectionData.limitExceeded
+    mockLangDetectionData.responses.limitExceeded
 )
 .persist();

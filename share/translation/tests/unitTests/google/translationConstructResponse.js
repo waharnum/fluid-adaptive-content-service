@@ -18,7 +18,7 @@ adaptiveContentService.tests.translation.unitTests.google.translationConstructRe
 var mockTranslationData = require("../../mockData/google/translation");
 
 var testServiceResponse = {
-    body: mockTranslationData.noError
+    body: mockTranslationData.responses.noError
 };
 
 var expectedReturnVal = {

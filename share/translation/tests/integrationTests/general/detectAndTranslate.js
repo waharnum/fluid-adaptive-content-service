@@ -36,7 +36,7 @@ adaptiveContentService.test.handlers.translation.general.detectAndTranslate.requ
 
     // wrong target language response
     if (targetLang === mockTranslationData.targetLang.wrong) {
-        jsonMockResponse = mockTranslationData.invalidLangCode;
+        jsonMockResponse = mockTranslationData.responses.invalidLangCode;
         promise.resolve({
             statusCode: jsonMockResponse.body.error.code,
             body: jsonMockResponse.body
@@ -44,7 +44,7 @@ adaptiveContentService.test.handlers.translation.general.detectAndTranslate.requ
     }
     // no Error response
     else {
-        jsonMockResponse = mockTranslationData.noError;
+        jsonMockResponse = mockTranslationData.responses.noError;
         promise.resolve({
             statusCode: 200,
             body: jsonMockResponse

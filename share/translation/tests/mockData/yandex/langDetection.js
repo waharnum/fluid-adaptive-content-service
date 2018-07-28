@@ -9,15 +9,17 @@ module.exports = {
     detectedLang: detectedLang,
     apiKey: commonMockYandexData.apiKey,
     //responses
-    noError: {
-        "code": 200,
-        "lang": detectedLang
-    },
-    cannotDetect: {
-        "code": 200,
-        "lang": ""
-    },
-    keyInvalid: commonMockYandexData.keyInvalid,
-    keyBlocked: commonMockYandexData.keyBlocked,
-    limitExceeded: commonMockYandexData.limitExceeded
+    responses: {
+        noError: {
+            "code": 200,
+            "lang": detectedLang
+        },
+        cannotDetect: {
+            "code": 200,
+            "lang": ""
+        },
+        keyInvalid: commonMockYandexData.keyInvalid,
+        keyBlocked: commonMockYandexData.keyBlocked,
+        limitExceeded: commonMockYandexData.limitExceeded
+    }
 };

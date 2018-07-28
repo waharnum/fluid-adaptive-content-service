@@ -10,13 +10,15 @@ module.exports = {
     },
     apiKey: commonMockYandexData.apiKey,
     // responses
-    noError: {
-        "langs": {
-            "en": "English",
-            "de": "German"
-        }
-    },
-    keyInvalid: commonMockYandexData.keyInvalid,
-    keyBlocked: commonMockYandexData.keyBlocked,
-    limitExceeded: commonMockYandexData.limitExceeded
+    responses: {
+        noError: {
+            "langs": {
+                "en": "English",
+                "de": "German"
+            }
+        },
+        keyInvalid: commonMockYandexData.keyInvalid,
+        keyBlocked: commonMockYandexData.keyBlocked,
+        limitExceeded: commonMockYandexData.limitExceeded
+    }
 };

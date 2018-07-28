@@ -18,7 +18,7 @@ nock(urlBase)
 )
 .reply(
     200,
-    mockTranslationData.noError
+    mockTranslationData.responses.noError
 )
 // Invalid api key
 .post(
@@ -29,7 +29,7 @@ nock(urlBase)
 )
 .reply(
     401,
-    mockTranslationData.keyInvalid
+    mockTranslationData.responses.keyInvalid
 )
 // Blocked api key
 .post(
@@ -40,7 +40,7 @@ nock(urlBase)
 )
 .reply(
     402,
-    mockTranslationData.keyBlocked
+    mockTranslationData.responses.keyBlocked
 )
 // Exceeding daily limit
 .post(
@@ -51,7 +51,7 @@ nock(urlBase)
 )
 .reply(
     404,
-    mockTranslationData.limitExceeded
+    mockTranslationData.responses.limitExceeded
 )
 //translation direction not supported (wrong source lang)
 .post(
@@ -62,7 +62,7 @@ nock(urlBase)
 )
 .reply(
     501,
-    mockTranslationData.unsupportedTranslation
+    mockTranslationData.responses.unsupportedTranslation
 )
 //translation direction not supported (wrong target lang)
 .post(
@@ -73,7 +73,7 @@ nock(urlBase)
 )
 .reply(
     501,
-    mockTranslationData.unsupportedTranslation
+    mockTranslationData.responses.unsupportedTranslation
 )
 //invalid source lang code
 .post(
@@ -84,6 +84,6 @@ nock(urlBase)
 )
 .reply(
     502,
-    mockTranslationData.invalidLangCode
+    mockTranslationData.responses.invalidLangCode
 )
 .persist();

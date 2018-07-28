@@ -18,7 +18,7 @@ adaptiveContentService.tests.translation.unitTests.langDetectionConstructRespons
 var mockLangDetectionData = require("../../mockData/yandex/langDetection");
 
 var testServiceResponse = {
-    body: mockLangDetectionData.noError
+    body: mockLangDetectionData.responses.noError
 };
 
 var expectedReturnVal = {

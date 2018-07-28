@@ -15,14 +15,16 @@ module.exports = {
         blocked: "blockedkey" //not actually blocked; used for mock response only
     },
     // responses
-    noError: {
-        "code": 200,
-        "lang": commonMockYandexData.sourceLang.correct + "-" + commonMockYandexData.targetLang.correct,
-        "text": [ "Dies ist der text, der übersetzt werden" ]
-    },
-    keyInvalid: commonMockYandexData.keyInvalid,
-    keyBlocked: commonMockYandexData.keyBlocked,
-    limitExceeded: commonMockYandexData.limitExceeded,
-    unsupportedTranslation: commonMockYandexData.unsupportedTranslation,
-    invalidLangCode: commonMockYandexData.invalidLangCode
+    responses: {
+        noError: {
+            "code": 200,
+            "lang": commonMockYandexData.sourceLang.correct + "-" + commonMockYandexData.targetLang.correct,
+            "text": [ "Dies ist der text, der übersetzt werden" ]
+        },
+        keyInvalid: commonMockYandexData.responses.keyInvalid,
+        keyBlocked: commonMockYandexData.responses.keyBlocked,
+        limitExceeded: commonMockYandexData.responses.limitExceeded,
+        unsupportedTranslation: commonMockYandexData.responses.unsupportedTranslation,
+        invalidLangCode: commonMockYandexData.responses.invalidLangCode
+    }
 };

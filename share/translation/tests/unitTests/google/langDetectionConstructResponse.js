@@ -18,7 +18,7 @@ adaptiveContentService.tests.translation.unitTests.google.langDetectionConstruct
 var mockLangDetectionData = require("../../mockData/google/langDetection");
 
 var testServiceResponse = {
-    body: mockLangDetectionData.noError
+    body: mockLangDetectionData.responses.noError
 };
 
 var expectedReturnVal = {

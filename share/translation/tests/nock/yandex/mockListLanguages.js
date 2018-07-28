@@ -16,7 +16,7 @@ nock(urlBase)
 )
 .reply(
     200,
-    mockListLanguagesData.noError
+    mockListLanguagesData.responses.noError
 )
 // Invalid api key
 .post(
@@ -24,7 +24,7 @@ nock(urlBase)
 )
 .reply(
     401,
-    mockListLanguagesData.keyInvalid
+    mockListLanguagesData.responses.keyInvalid
 )
 // Blocked api key
 .post(
@@ -32,7 +32,7 @@ nock(urlBase)
 )
 .reply(
     402,
-    mockListLanguagesData.keyBlocked
+    mockListLanguagesData.responses.keyBlocked
 )
 // Exceeding daily limit
 .post(
@@ -40,6 +40,6 @@ nock(urlBase)
 )
 .reply(
     404,
-    mockListLanguagesData.limitExceeded
+    mockListLanguagesData.responses.limitExceeded
 )
 .persist();

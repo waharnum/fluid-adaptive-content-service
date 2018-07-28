@@ -19,12 +19,12 @@ var mockLangDetectionData = require("../../mockData/yandex/langDetection");
 
 var testSeviceResponse = {
     noError: {
-        statusCode: mockLangDetectionData.noError.code,
-        body: mockLangDetectionData.noError
+        statusCode: mockLangDetectionData.responses.noError.code,
+        body: mockLangDetectionData.responses.noError
     },
     cannotDetect: {
-        statusCode: mockLangDetectionData.cannotDetect.code,
-        body: mockLangDetectionData.cannotDetect
+        statusCode: mockLangDetectionData.responses.cannotDetect.code,
+        body: mockLangDetectionData.responses.cannotDetect
     }
 };
 

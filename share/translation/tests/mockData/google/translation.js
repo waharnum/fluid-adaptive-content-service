@@ -2,37 +2,28 @@
 
 var kettle = require("kettle");
 
-var commonMockTranslationData = require("../common/translation");
+var googleCommonMockData = require("./commonMockData");
 
 module.exports = {
     // general data
-    text: commonMockTranslationData.text,
-    sourceLang: commonMockTranslationData.sourceLang,
-    targetLang: commonMockTranslationData.targetLang,
-    apiKey: {
-        correct: kettle.resolvers.env("GOOGLE_API_KEY"),
-        invalid: "randomstring",
-        blocked: "blockedkey" //not actually blocked; used for mock response only
-    },
+    text: googleCommonMockData.text,
+    sourceLang: googleCommonMockData.sourceLang,
+    targetLang: googleCommonMockData.targetLang,
+    apiKey: googleCommonMockData.apiKey,
     // responses
-    noError: {
-        "detectedSourceLanguage": commonMockTranslationData.sourceLang.correct,
-        "originalText": commonMockTranslationData.text.noError,
-        "translatedText": "Dies ist der zu übersetzende Text"
-    },
-    keyInvalid: {
-        "body": {
-            "error": {
-                "code": 400,
-                "message": "API key not valid. Please pass a valid API key."
-            }
-        }
-    },
-    invalidLangCode: {
-        "body": {
-            "error": {
-                "code": 400,
-                "message": "Invalid Value"
+    responses: {
+        noError: {
+            "detectedSourceLanguage": googleCommonMockData.sourceLang.correct,
+            "originalText": googleCommonMockData.text.noError,
+            "translatedText": "Dies ist der zu übersetzende Text"
+        },
+        keyInvalid: googleCommonMockData.responses.keyInvalid,
+        invalidLangCode: {
+            "body": {
+                "error": {
+                    "code": 400,
+                    "message": "Invalid Value"
+                }
             }
         }
     }

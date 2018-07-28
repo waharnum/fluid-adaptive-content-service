@@ -1,6 +1,6 @@
 "use strict";
 
-var googleMockTranslationData = require("./translation");
+var googleCommonMockData = require("./commonMockData");
 
 module.exports = {
     langParam: "fr",
@@ -28,30 +28,33 @@ module.exports = {
             }
         ]
     },
-    apiKey: googleMockTranslationData.apiKey,
+    apiKey: googleCommonMockData.apiKey,
     // responses
-    noError: {
-        // in french
-        french: [
-            {
-                code: "en",
-                name: "Anglais"
-            },
-            {
-                code: "de",
-                name: "Allemand"
-            }
-        ],
-        // in english
-        english: [
-            {
-                code: "en",
-                name: "Anglais"
-            },
-            {
-                code: "de",
-                name: "Allemand"
-            }
-        ]
+    responses: {
+        noError: {
+            // in french
+            french: [
+                {
+                    code: "en",
+                    name: "Anglais"
+                },
+                {
+                    code: "de",
+                    name: "Allemand"
+                }
+            ],
+            // in english
+            english: [
+                {
+                    code: "en",
+                    name: "Anglais"
+                },
+                {
+                    code: "de",
+                    name: "Allemand"
+                }
+            ]
+        },
+        keyInvalid: googleCommonMockData.responses.keyInvalid
     }
 };

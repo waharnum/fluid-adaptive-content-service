@@ -18,7 +18,7 @@ adaptiveContentService.tests.translation.unitTests.yandex.translationConstructRe
 var mockTranslationData = require("../../mockData/yandex/translation");
 
 var testServiceResponse = {
-    body: mockTranslationData.noError
+    body: mockTranslationData.responses.noError
 };
 
 var expectedReturnVal = {

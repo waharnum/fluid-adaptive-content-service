@@ -16,10 +16,13 @@ adaptiveContentService.tests.translation.unitTests.checkSourceText = function (t
 
 var wordCharacterLimit = 10; // set character limit for testing purpose
 
+// mock data
+var mockData = require("../../mockData/common/translation");
+
 var testText = {
-    noTextField: undefined,
-    emptyTextField: "",
-    tooLongText: "This text is too long, it exceeds the limit"
+    noTextField: mockData.text.absent,
+    emptyTextField: mockData.text.empty,
+    tooLongText: mockData.text.tooLong
 };
 
 var expectedReturnVal = {

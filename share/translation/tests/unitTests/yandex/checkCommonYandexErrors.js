@@ -19,24 +19,24 @@ var mockTranslationData = require("../../mockData/yandex/translation");
 
 var testSeviceResponse = {
     noError: {
-        statusCode: mockTranslationData.noError.code,
-        body: mockTranslationData.noError
+        statusCode: mockTranslationData.responses.noError.code,
+        body: mockTranslationData.responses.noError
     },
     keyInvalid: {
-        statusCode: mockTranslationData.keyInvalid.code,
-        body: mockTranslationData.keyInvalid
+        statusCode: mockTranslationData.responses.keyInvalid.code,
+        body: mockTranslationData.responses.keyInvalid
     },
     limitExceeded: {
-        statusCode: mockTranslationData.limitExceeded.code,
-        body: mockTranslationData.limitExceeded
+        statusCode: mockTranslationData.responses.limitExceeded.code,
+        body: mockTranslationData.responses.limitExceeded
     },
     unsupportedTranslation: {
-        statusCode: mockTranslationData.unsupportedTranslation.code,
-        body: mockTranslationData.unsupportedTranslation
+        statusCode: mockTranslationData.responses.unsupportedTranslation.code,
+        body: mockTranslationData.responses.unsupportedTranslation
     },
     keyBlocked: {
-        statusCode: mockTranslationData.keyBlocked.code,
-        body: mockTranslationData.keyBlocked
+        statusCode: mockTranslationData.responses.keyBlocked.code,
+        body: mockTranslationData.responses.keyBlocked
     }
 };
 

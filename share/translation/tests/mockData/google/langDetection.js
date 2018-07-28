@@ -1,22 +1,22 @@
 "use strict";
 
-var commonMockTranslationData = require("../common/translation"),
-    googleMockTranslationData = require("./translation"),
+var googleCommonMockData = require("./commonMockData"),
     detectedLang = "en";
 
 module.exports = {
     //general data
-    text: commonMockTranslationData.text,
+    text: googleCommonMockData.text,
     detectedLang: detectedLang,
-    apiKey: googleMockTranslationData.apiKey,
+    apiKey: googleCommonMockData.apiKey,
     //responses
-    noError: {
-        "originalText": commonMockTranslationData.text.noError,
-        "language": detectedLang
-    },
-    cannotDetect: {
-        "language": "und"
-    },
-    keyInvalid: googleMockTranslationData.keyInvalid,
-    requestError: googleMockTranslationData.requestError
+    responses: {
+        noError: {
+            "originalText": googleCommonMockData.text.noError,
+            "language": detectedLang
+        },
+        cannotDetect: {
+            "language": "und"
+        },
+        keyInvalid: googleCommonMockData.responses.keyInvalid
+    }
 };

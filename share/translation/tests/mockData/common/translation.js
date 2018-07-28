@@ -21,7 +21,9 @@ module.exports = {
         invalid: "german"
     },
     // responses
-    requestError: {
-        body: undefined
+    responses: {
+        requestError: {
+            body: undefined
+        }
     }
 };

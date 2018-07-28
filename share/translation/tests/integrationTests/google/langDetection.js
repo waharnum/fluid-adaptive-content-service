@@ -36,7 +36,7 @@ adaptiveContentService.test.handlers.translation.google.langDetection.requiredDa
 
     // cannot detect the language response
     if (text === mockLangDetectionData.text.numerical) {
-        jsonMockResponse = mockLangDetectionData.cannotDetect;
+        jsonMockResponse = mockLangDetectionData.responses.cannotDetect;
         promise.resolve({
             statusCode: 200,
             body: jsonMockResponse
@@ -44,7 +44,7 @@ adaptiveContentService.test.handlers.translation.google.langDetection.requiredDa
     }
     // no Error response
     else {
-        jsonMockResponse = mockLangDetectionData.noError;
+        jsonMockResponse = mockLangDetectionData.responses.noError;
         promise.resolve({
             statusCode: 200,
             body: jsonMockResponse

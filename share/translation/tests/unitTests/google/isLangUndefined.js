@@ -20,11 +20,11 @@ var mockLangDetectionData = require("../../mockData/google/langDetection");
 var testSeviceResponse = {
     noError: {
         statusCode: 200,
-        body: mockLangDetectionData.noError
+        body: mockLangDetectionData.responses.noError
     },
     cannotDetect: {
         statusCode: 404,
-        body: mockLangDetectionData.cannotDetect
+        body: mockLangDetectionData.responses.cannotDetect
     }
 };
 

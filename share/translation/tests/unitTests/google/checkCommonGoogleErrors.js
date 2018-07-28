@@ -20,15 +20,15 @@ var mockTranslationData = require("../../mockData/google/translation");
 var testSeviceResponse = {
     noError: {
         statusCode: 200,
-        body: mockTranslationData.noError
+        body: mockTranslationData.responses.noError
     },
     keyInvalid: {
-        statusCode: mockTranslationData.keyInvalid.body.error.code,
-        body: mockTranslationData.keyInvalid.body
+        statusCode: mockTranslationData.responses.keyInvalid.body.error.code,
+        body: mockTranslationData.responses.keyInvalid.body
     },
     invalidLangCode: {
-        statusCode: mockTranslationData.invalidLangCode.body.error.code,
-        body: mockTranslationData.invalidLangCode.body
+        statusCode: mockTranslationData.responses.invalidLangCode.body.error.code,
+        body: mockTranslationData.responses.invalidLangCode.body
     },
     requestError: {
         statusCode: 500,
