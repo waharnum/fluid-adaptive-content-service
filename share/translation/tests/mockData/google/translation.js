@@ -1,7 +1,5 @@
 "use strict";
 
-var kettle = require("kettle");
-
 var googleCommonMockData = require("./commonMockData");
 
 module.exports = {

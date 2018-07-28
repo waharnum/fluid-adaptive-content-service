@@ -21,7 +21,7 @@ kettle.loadTestingSupport();
 
 adaptiveContentService.tests.dictionary.general.antonyms = [{
     name: "GET request for the Antonyms dictionary endpoint",
-    expect: 4,
+    expect: 5,
     config: {
         configName: "dictionaryServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/dictionary/config/"
@@ -31,6 +31,13 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/dictionary/" + mockAntonymsData.lang.correct + "/antonyms/" + mockAntonymsData.word.correct,
+                method: "get"
+            }
+        },
+        authErrorTest: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/dictionary/" + mockAntonymsData.lang.correct + "/antonyms/" + mockAntonymsData.word.authErrorTrigger,
                 method: "get"
             }
         },
@@ -44,7 +51,7 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
         wrongLangTest: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/dictionary" + mockAntonymsData.lang.wrong + "/antonyms/" + mockAntonymsData.word.correct,
+                path: "/v1/dictionary/" + mockAntonymsData.lang.wrong + "/antonyms/" + mockAntonymsData.word.correct,
                 method: "get"
             }
         },
@@ -63,6 +70,14 @@ adaptiveContentService.tests.dictionary.general.antonyms = [{
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Dictionary Tests : Antonyms test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{authErrorTest}.send"
+    },
+    {
+        event: "{authErrorTest}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Antonyms test for authentication fail successful", 403, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"

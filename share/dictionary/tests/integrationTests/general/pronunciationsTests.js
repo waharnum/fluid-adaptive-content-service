@@ -21,7 +21,7 @@ kettle.loadTestingSupport();
 
 adaptiveContentService.tests.dictionary.general.pronunciations = [{
     name: "GET request for the Pronunciations dictionary endpoint",
-    expect: 4,
+    expect: 5,
     config: {
         configName: "dictionaryServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/dictionary/config/"
@@ -31,6 +31,13 @@ adaptiveContentService.tests.dictionary.general.pronunciations = [{
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/dictionary/" + mockPronunciationsData.lang.correct + "/pronunciations/" + mockPronunciationsData.word.correct,
+                method: "get"
+            }
+        },
+        authErrorTest: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/dictionary/" + mockPronunciationsData.lang.correct + "/pronunciations/" + mockPronunciationsData.word.authErrorTrigger,
                 method: "get"
             }
         },
@@ -63,6 +70,14 @@ adaptiveContentService.tests.dictionary.general.pronunciations = [{
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Dictionary Tests : Frequency test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{authErrorTest}.send"
+    },
+    {
+        event: "{authErrorTest}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Pronunciations test for authentication failed successful", 403, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongWordTest}.send"

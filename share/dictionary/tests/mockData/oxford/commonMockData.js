@@ -6,7 +6,8 @@ require("dotenv").config();// npm package to get variables from '.env' file
 module.exports = {
     word: {
         correct: "happy",
-        wrong: "wrongWord"
+        wrong: "wrongWord",
+        authErrorTrigger: "triggerAuthErr" // trigger mock servers to give an auth error response
     },
     lang: {
         correct: "en",

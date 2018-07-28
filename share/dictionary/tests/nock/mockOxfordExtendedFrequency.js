@@ -20,7 +20,7 @@ nock(urlBase)
     mockExtendedFrequencyData.responses.wrongLang
 )
 // for requests with headers having wrong authentication keys
-.get("/entries/" + mockExtendedFrequencyData.lang.correct + "/" + mockExtendedFrequencyData.word.correct + "/antonyms")
+.get("/stats/frequency/word/" + mockExtendedFrequencyData.lang.correct + "/?lemma=" + mockExtendedFrequencyData.word.authErrorTrigger + "&lexicalCategory=" + mockExtendedFrequencyData.lexicalCategory)
 .reply(
     403,
     mockExtendedFrequencyData.responses.authError

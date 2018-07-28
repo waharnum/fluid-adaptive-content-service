@@ -21,7 +21,7 @@ kettle.loadTestingSupport();
 
 adaptiveContentService.tests.dictionary.general.frequency = [{
     name: "GET request for the Frequency dictionary endpoint",
-    expect: 3,
+    expect: 4,
     config: {
         configName: "dictionaryServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/dictionary/config/"
@@ -31,6 +31,13 @@ adaptiveContentService.tests.dictionary.general.frequency = [{
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/dictionary/" + mockFrequencyData.lang.correct + "/frequency/" + mockFrequencyData.word.correct,
+                method: "get"
+            }
+        },
+        authErrorTest: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/dictionary/" + mockFrequencyData.lang.correct + "/frequency/" + mockFrequencyData.word.authErrorTrigger,
                 method: "get"
             }
         },
@@ -56,6 +63,14 @@ adaptiveContentService.tests.dictionary.general.frequency = [{
         event: "{correctWordTest}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Dictionary Tests : Frequency test for correct word successful", 200, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{authErrorTest}.send"
+    },
+    {
+        event: "{authErrorTest}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Dictionary Tests : Frequency test for authentication fail successful", 403, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{wrongLangTest}.send"

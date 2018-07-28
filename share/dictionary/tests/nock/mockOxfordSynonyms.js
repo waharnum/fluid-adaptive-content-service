@@ -26,7 +26,7 @@ nock(urlBase)
     mockSynonymsData.responses.wrongLang
 )
 // for requests with headers having wrong authentication keys
-.get("/entries/" + mockSynonymsData.lang.correct + "/" + mockSynonymsData.word.correct + "/antonyms")
+.get("/entries/" + mockSynonymsData.lang.correct + "/" + mockSynonymsData.word.authErrorTrigger + "/synonyms")
 .reply(
     403,
     mockSynonymsData.responses.authError
