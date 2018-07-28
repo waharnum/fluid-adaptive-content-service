@@ -34,9 +34,9 @@ nock(urlBase)
 )
 // Invalid api key
 .post(
-    "/detect?key=" + mockLangDetectionData.apiKey.invalid,
+    "/detect?key=" + mockLangDetectionData.apiKey.correct,
     {
-        text: mockLangDetectionData.text.noError
+        text: mockLangDetectionData.text.authErrorTrigger
     }
 )
 .reply(
@@ -45,9 +45,9 @@ nock(urlBase)
 )
 // Blocked api key
 .post(
-    "/detect?key=" + mockLangDetectionData.apiKey.blocked,
+    "/detect?key=" + mockLangDetectionData.apiKey.correct,
     {
-        text: mockLangDetectionData.text.noError
+        text: mockLangDetectionData.text.blockedKeyErrorTrigger
     }
 )
 .reply(

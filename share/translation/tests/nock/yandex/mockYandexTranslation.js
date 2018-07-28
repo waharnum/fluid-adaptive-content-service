@@ -22,9 +22,9 @@ nock(urlBase)
 )
 // Invalid api key
 .post(
-    "/translate?key=" + mockTranslationData.apiKey.invalid + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+    "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
-        text: mockTranslationData.text.noError
+        text: mockTranslationData.text.authErrorTrigger
     }
 )
 .reply(
@@ -33,9 +33,9 @@ nock(urlBase)
 )
 // Blocked api key
 .post(
-    "/translate?key=" + mockTranslationData.apiKey.blocked + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+    "/translate?key=" + mockTranslationData.apiKey.correct + "&lang=" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
     {
-        text: mockTranslationData.text.noError
+        text: mockTranslationData.text.blockedKeyErrorTrigger
     }
 )
 .reply(

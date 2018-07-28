@@ -8,7 +8,9 @@ module.exports = {
         absent: undefined,
         tooLong: "This sentence will exceed the character limit because it is very long",
         numerical: "12345",
-        limitExceeded: "This test will trigger limit exceeded endpoint"
+        limitExceeded: "This test will trigger limit exceeded endpoint",
+        authErrorTrigger: "triggerAuthError",
+        blockedKeyErrorTrigger: "blockedKeyErrorTrigger"
     },
     sourceLang: {
         correct: "en",

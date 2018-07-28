@@ -29,7 +29,7 @@ fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.translat
 
 adaptiveContentService.tests.translation.yandex.translateText = [{
     name: "POST request for the Text Translation endpoint of Yandex Service",
-    expect: 7,
+    expect: 9,
     config: {
         configName: "translationServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/translation/config/"
@@ -56,7 +56,14 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
                 method: "post"
             }
         },
-        longTextField: {
+        blockedApiKey: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
+                method: "post"
+            }
+        },
+        wrongApiKey: {
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
@@ -73,14 +80,21 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
         invalidSourceLangCode: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.invalid + "-" + mockTranslationData.targetLang.correct,
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.invalid + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         },
         invalidTargetLangCode: {
             type: "kettle.test.request.http",
             options: {
-                path: "/v1/translation/yandex/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.invalid,
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.invalid,
+                method: "post"
+            }
+        },
+        longTextField: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.sourceLang.correct + "-" + mockTranslationData.targetLang.correct,
                 method: "post"
             }
         }
@@ -113,13 +127,22 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
         args: ["Translation Tests : Text Translation test for request with absent text field", 400, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
-        func: "{longTextField}.send",
-        args: { text: mockTranslationData.text.tooLong }
+        func: "{blockedApiKey}.send",
+        args: { text: mockTranslationData.text.blockedKeyErrorTrigger }
     },
     {
-        event: "{longTextField}.events.onComplete",
+        event: "{blockedApiKey}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : Text Translation test for request with too long text field", 413, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : Text Translation test for request with blocked api key", 402, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{wrongApiKey}.send",
+        args: { text: mockTranslationData.text.authErrorTrigger }
+    },
+    {
+        event: "{wrongApiKey}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : Text Translation test for request with wrong api key", 403, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{unsupportedTranslationDirection}.send",
@@ -147,6 +170,15 @@ adaptiveContentService.tests.translation.yandex.translateText = [{
         event: "{invalidTargetLangCode}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Translation Tests : Text Translation test for request with invalid target language", 404, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{longTextField}.send",
+        args: { text: mockTranslationData.text.tooLong }
+    },
+    {
+        event: "{longTextField}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : Text Translation test for request with too long text field", 413, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];

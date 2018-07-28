@@ -29,7 +29,7 @@ fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.langDete
 
 adaptiveContentService.tests.translation.yandex.langDetection = [{
     name: "POST request for the Language detection endpoint of Yandex Service",
-    expect: 5,
+    expect: 7,
     config: {
         configName: "translationServerConfig",
         configPath: "%fluid-adaptive-content-service/v1/translation/config/"
@@ -56,14 +56,28 @@ adaptiveContentService.tests.translation.yandex.langDetection = [{
                 method: "post"
             }
         },
-        longTextField: {
+        blockedApiKey: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/detect/",
+                method: "post"
+            }
+        },
+        wrongApiKey: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/detect/",
+                method: "post"
+            }
+        },
+        cannotDetectLang: {
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/translation/yandex/detect",
                 method: "post"
             }
         },
-        cannotDetectLang: {
+        longTextField: {
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/translation/yandex/detect",
@@ -99,13 +113,22 @@ adaptiveContentService.tests.translation.yandex.langDetection = [{
         args: ["Translation Tests : language detection test for request with too long text field", 400, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
-        func: "{longTextField}.send",
-        args: { text: mockLangDetectionData.text.tooLong }
+        func: "{blockedApiKey}.send",
+        args: { text: mockLangDetectionData.text.blockedKeyErrorTrigger }
     },
     {
-        event: "{longTextField}.events.onComplete",
+        event: "{blockedApiKey}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : language detection test for request with absent text field", 413, "{arguments}.1.nativeResponse.statusCode"]
+        args: ["Translation Tests : language detection test for request with blocked api key", 402, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{wrongApiKey}.send",
+        args: { text: mockLangDetectionData.text.authErrorTrigger }
+    },
+    {
+        event: "{wrongApiKey}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : language detection test for request with wrong api key", 403, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
         func: "{cannotDetectLang}.send",
@@ -115,6 +138,15 @@ adaptiveContentService.tests.translation.yandex.langDetection = [{
         event: "{cannotDetectLang}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Translation Tests : language detection test for 'unable to detect lang' response", 404, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{longTextField}.send",
+        args: { text: mockLangDetectionData.text.tooLong }
+    },
+    {
+        event: "{longTextField}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : language detection test for request with absent text field", 413, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];

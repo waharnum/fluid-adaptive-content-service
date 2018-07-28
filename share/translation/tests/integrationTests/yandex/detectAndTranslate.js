@@ -60,13 +60,6 @@ adaptiveContentService.tests.translation.yandex.detectAndTranslate = [{
                 method: "post"
             }
         },
-        longTextField: {
-            type: "kettle.test.request.http",
-            options: {
-                path: "/v1/translation/yandex/translate/" + mockTranslationData.targetLang.correct,
-                method: "post"
-            }
-        },
         unsupportedTranslationDirection: {
             type: "kettle.test.request.http",
             options: {
@@ -82,6 +75,13 @@ adaptiveContentService.tests.translation.yandex.detectAndTranslate = [{
             }
         },
         cannotDetectLang: {
+            type: "kettle.test.request.http",
+            options: {
+                path: "/v1/translation/yandex/translate/" + mockTranslationData.targetLang.correct,
+                method: "post"
+            }
+        },
+        longTextField: {
             type: "kettle.test.request.http",
             options: {
                 path: "/v1/translation/yandex/translate/" + mockTranslationData.targetLang.correct,
@@ -117,15 +117,6 @@ adaptiveContentService.tests.translation.yandex.detectAndTranslate = [{
         args: ["Translation Tests : language detection test for request with absent text field", 400, "{arguments}.1.nativeResponse.statusCode"]
     },
     {
-        func: "{longTextField}.send",
-        args: { text: mockLangDetectionData.text.tooLong }
-    },
-    {
-        event: "{longTextField}.events.onComplete",
-        listener: "adaptiveContentService.tests.utils.assertStatusCode",
-        args: ["Translation Tests : language detection test for request with too long text field", 413, "{arguments}.1.nativeResponse.statusCode"]
-    },
-    {
         func: "{unsupportedTranslationDirection}.send",
         args: { text: mockLangDetectionData.text.noError }
     },
@@ -151,6 +142,15 @@ adaptiveContentService.tests.translation.yandex.detectAndTranslate = [{
         event: "{cannotDetectLang}.events.onComplete",
         listener: "adaptiveContentService.tests.utils.assertStatusCode",
         args: ["Translation Tests : language detection test for 'unable to detect lang' response", 404, "{arguments}.1.nativeResponse.statusCode"]
+    },
+    {
+        func: "{longTextField}.send",
+        args: { text: mockLangDetectionData.text.tooLong }
+    },
+    {
+        event: "{longTextField}.events.onComplete",
+        listener: "adaptiveContentService.tests.utils.assertStatusCode",
+        args: ["Translation Tests : language detection test for request with too long text field", 413, "{arguments}.1.nativeResponse.statusCode"]
     }
     ]
 }];

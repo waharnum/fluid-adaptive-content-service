@@ -18,8 +18,8 @@ module.exports = {
             "code": 200,
             "lang": ""
         },
-        keyInvalid: commonMockYandexData.keyInvalid,
-        keyBlocked: commonMockYandexData.keyBlocked,
-        limitExceeded: commonMockYandexData.limitExceeded
+        keyInvalid: commonMockYandexData.responses.keyInvalid,
+        keyBlocked: commonMockYandexData.responses.keyBlocked,
+        limitExceeded: commonMockYandexData.responses.limitExceeded
     }
 };
