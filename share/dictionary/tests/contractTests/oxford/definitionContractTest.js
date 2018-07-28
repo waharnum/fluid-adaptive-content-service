@@ -90,19 +90,22 @@ var definitionSchemas = require("./schemas/definitionSchemas"), //main schemas w
 var allNeededSchemas = {
     correctWord: [commonSchemas.definitions, commonSchemas.oxfordResponseProperty, commonSchemas.commonOxford],
     wrongWord: [commonSchemas.oxfordResponseProperty],
-    wrongLang: [commonSchemas.oxfordResponseProperty]
+    wrongLang: [commonSchemas.oxfordResponseProperty],
+    authError: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {
     correctWord: "Contract Test : For definitions with correct word and language successful (Oxford Service)",
     wrongWord: "Contract Test : For definitions with wrong word successful (Oxford Service)",
-    wrongLang: "Contract Test : For definitions with wrong language successful (Oxford Service)"
+    wrongLang: "Contract Test : For definitions with wrong language successful (Oxford Service)",
+    authError: "Contract Test : For definitions with wrong api keys successful (Oxford Service)"
 };
 
 var failureMessage = {
     correctWord: "Contract Test : For definitions with correct word and language failed (Oxford Service)",
     wrongWord: "Contract Test : For definitions with wrong word failed (Oxford Service)",
-    wrongLang: "Contract Test : For definitions with wrong language failed (Oxford Service)"
+    wrongLang: "Contract Test : For definitions with wrong language failed (Oxford Service)",
+    authError: "Contract Test : For definitions with wrong api keys failed (Oxford Service)"
 };
 
 //Test driver
@@ -112,7 +115,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.def
         name: "Contract Tests : For definitions (Oxford Service)",
         tests: [
             {
-                expect: 3,
+                expect: 4,
                 name: "Contract Tests : For definitions (Oxford Service)",
                 sequence: [
                     //for correct word
@@ -144,6 +147,16 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.def
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", definitionSchemas.wrongLang, allNeededSchemas.wrongLang, successMessage.wrongLang, failureMessage.wrongLang]
+                    },
+                    // for authentication fail
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockDefinitionData.word.correct, mockDefinitionData.lang.correct, mockDefinitionData.apiKeys.wrong]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", definitionSchemas.authError, allNeededSchemas.authError, successMessage.authError, failureMessage.authError]
                     }
                 ]
             }

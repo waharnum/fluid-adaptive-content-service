@@ -89,15 +89,18 @@ var listLanguagesSchemas = require("./schemas/listLanguagesSchemas"), //main sch
 
 //array of all the schemas that are needed (other than the main schema)
 var allNeededSchemas = {
-    noError: [commonSchemas.oxfordResponseProperty]
+    noError: [commonSchemas.oxfordResponseProperty],
+    authError: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {
-    noError: "Contract Test : For list languages with 'no error' response successful (Oxford Service)"
+    noError: "Contract Test : For list languages with 'no error' response successful (Oxford Service)",
+    authError: "Contract Test : For list languages with wrong api keys successful (Oxford Service)"
 };
 
 var failureMessage = {
-    noError: "Contract Test : For list languages with 'no error' response failed (Oxford Service)"
+    noError: "Contract Test : For list languages with 'no error' response failed (Oxford Service)",
+    authError: "Contract Test : For list languages with wrong api keys failed (Oxford Service)"
 };
 
 //Test driver
@@ -107,7 +110,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.lis
         name: "Contract Tests : For list languages (Oxford Service)",
         tests: [
             {
-                expect: 1,
+                expect: 2,
                 name: "Contract Tests : For list languages (Oxford Service)",
                 sequence: [
                     //for no error
@@ -119,6 +122,16 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.lis
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", listLanguagesSchemas.noError, allNeededSchemas.noError, successMessage.noError, failureMessage.noError]
+                    },
+                    // for authentication fail
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockListLanguagesData.apiKeys.wrong]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", listLanguagesSchemas.authError, allNeededSchemas.authError, successMessage.authError, failureMessage.authError]
                     }
                 ]
             }

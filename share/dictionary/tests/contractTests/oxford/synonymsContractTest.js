@@ -91,19 +91,22 @@ var synonymSchemas = require("./schemas/synonymSchemas"), //main schemas which w
 var allNeededSchemas = {
     correctWord: [commonSchemas.synonyms, commonSchemas.examples, commonSchemas.oxfordResponseProperty, commonSchemas.commonOxford],
     wrongWord: [commonSchemas.oxfordResponseProperty],
-    wrongLang: [commonSchemas.oxfordResponseProperty]
+    wrongLang: [commonSchemas.oxfordResponseProperty],
+    authError: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {
     correctWord: "Contract Test : For synonyms with correct word and language successful (Oxford Service)",
     wrongWord: "Contract Test : For synonyms with wrong word successful (Oxford Service)",
-    wrongLang: "Contract Test : For synonyms with wrong language successful (Oxford Service)"
+    wrongLang: "Contract Test : For synonyms with wrong language successful (Oxford Service)",
+    authError: "Contract Test : For synonyms with wrong api keys successful (Oxford Service)"
 };
 
 var failureMessage = {
     correctWord: "Contract Test : For synonyms with correct word and language failed (Oxford Service)",
     wrongWord: "Contract Test : For synonyms with wrong word failed (Oxford Service)",
-    wrongLang: "Contract Test : For synonyms with wrong language failed (Oxford Service)"
+    wrongLang: "Contract Test : For synonyms with wrong language failed (Oxford Service)",
+    authError: "Contract Test : For synonyms with wrong api keys failed (Oxford Service)"
 };
 
 //Test driver
@@ -113,7 +116,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.syn
         name: "Contract Tests : For synonyms (Oxford Service)",
         tests: [
             {
-                expect: 3,
+                expect: 4,
                 name: "Contract Tests : For synonyms (Oxford Service)",
                 sequence: [
                     //for correct word
@@ -145,6 +148,16 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.syn
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", synonymSchemas.wrongLang, allNeededSchemas.wrongLang, successMessage.wrongLang, failureMessage.wrongLang]
+                    },
+                    // for authentication fail
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockSynonymsData.word.correct, mockSynonymsData.lang.correct, mockSynonymsData.apiKeys.wrong]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", synonymSchemas.authError, allNeededSchemas.authError, successMessage.authError, failureMessage.authError]
                     }
                 ]
             }

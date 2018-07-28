@@ -1,5 +1,7 @@
 "use strict";
 
+var commonOxfordSchemas = require("./commonSchemas");
+
 module.exports = {
     noError: {
         "type": "object",
@@ -34,5 +36,6 @@ module.exports = {
                 }
             }
         }
-    }
+    },
+    authError: commonOxfordSchemas.errorSchema
 };

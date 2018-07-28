@@ -205,7 +205,7 @@ adaptiveContentService.handlers.dictionary.oxford.commonHandlerTasks = function 
     //Error with the API code
     catch (error) {
         var message = "Internal Server Error: " + error;
-
+        ACS.log(message);
         that.sendErrorResponse(request, version, "Oxford", 500, message);
     }
 };

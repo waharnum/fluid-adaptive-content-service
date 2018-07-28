@@ -6,9 +6,7 @@ var nock = require("nock"),
 var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 
 // for requests with headers having correct authentication keys
-nock(urlBase, {
-    reqheaders: mockPronunciationsData.apiKeys.correct
-})
+nock(urlBase)
 // no error
 .get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.correct)
 .reply(
@@ -27,12 +25,7 @@ nock(urlBase, {
     404,
     mockPronunciationsData.responses.wrongLang
 )
-.persist();
-
 // for requests with headers having wrong authentication keys
-nock(urlBase, {
-    reqheaders: mockPronunciationsData.apiKeys.wrong
-})
 .get("/entries/" + mockPronunciationsData.lang.correct + "/" + mockPronunciationsData.word.correct + "/antonyms")
 .reply(
     403,

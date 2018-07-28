@@ -92,17 +92,20 @@ var extendedFrequencySchemas = require("./schemas/extendedFrequencySchemas"), //
 //array of all the schemas that are needed (other than the main schema)
 var allNeededSchemas = {
     correctWord: [commonSchemas.oxfordResponseProperty, frequencySchemas.correctWord],
-    wrongLang: [commonSchemas.oxfordResponseProperty]
+    wrongLang: [commonSchemas.oxfordResponseProperty],
+    authError: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {
     correctWord: "Contract Test : For extended frequency with correct word and language successful (Oxford Service)",
-    wrongLang: "Contract Test : For extended frequency with wrong language successful (Oxford Service)"
+    wrongLang: "Contract Test : For extended frequency with wrong language successful (Oxford Service)",
+    authError: "Contract Test : For extended frequency with wrong api keys successful (Oxford Service)"
 };
 
 var failureMessage = {
     correctWord: "Contract Test : For extended frequency with correct word and language failed (Oxford Service)",
-    wrongLang: "Contract Test : For extended frequency with wrong language failed (Oxford Service)"
+    wrongLang: "Contract Test : For extended frequency with wrong language failed (Oxford Service)",
+    authError: "Contract Test : For extended frequency with wrong api keys failed (Oxford Service)"
 };
 
 //Test driver
@@ -112,7 +115,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ext
         name: "Contract Tests : For extended frequency (Oxford Service)",
         tests: [
             {
-                expect: 2,
+                expect: 3,
                 name: "Contract Tests : For extended frequency (Oxford Service)",
                 sequence: [
                     //for correct word
@@ -134,6 +137,16 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ext
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", extendedFrequencySchemas.wrongLang, allNeededSchemas.wrongLang, successMessage.wrongLang, failureMessage.wrongLang]
+                    },
+                    // for authentication fail
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockExtendedFrequencyData.word.correct, mockExtendedFrequencyData.lang.correct, mockExtendedFrequencyData.apiKeys.wrong]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", frequencySchemas.authError, allNeededSchemas.authError, successMessage.authError, failureMessage.authError]
                     }
                 ]
             }

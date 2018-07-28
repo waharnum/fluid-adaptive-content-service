@@ -28,7 +28,8 @@ module.exports = {
             }
         }
     },
-    wrongLang: commonOxfordSchemas.errorSchema
+    wrongLang: commonOxfordSchemas.errorSchema,
+    authError: commonOxfordSchemas.errorSchema
 };
 
 /*

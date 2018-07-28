@@ -6,20 +6,13 @@ var nock = require("nock"),
 var urlBase = "https://od-api.oxforddictionaries.com/api/v1";
 
 // for requests with headers having correct authentication keys
-nock(urlBase, {
-    reqheaders: mockListLanguagesData.apiKeys.correct
-})
+nock(urlBase)
 .get("/languages")
 .reply(
     200,
     mockListLanguagesData.responses.noError
 )
-.persist();
-
 // for requests with headers having wrong authentication keys
-nock(urlBase, {
-    reqheaders: mockListLanguagesData.apiKeys.wrong
-})
 .get("/languages")
 .reply(
     403,

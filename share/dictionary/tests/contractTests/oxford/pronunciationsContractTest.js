@@ -91,19 +91,22 @@ var pronunciationSchemas = require("./schemas/pronunciationSchemas"), //main sch
 var allNeededSchemas = {
     correctWord: [commonSchemas.oxfordResponseProperty, commonSchemas.commonOxford],
     wrongWord: [commonSchemas.oxfordResponseProperty],
-    wrongLang: [commonSchemas.oxfordResponseProperty]
+    wrongLang: [commonSchemas.oxfordResponseProperty],
+    authError: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {
     correctWord: "Contract Test : For pronunciations with correct word and language successful (Oxford Service)",
     wrongWord: "Contract Test : For pronunciations with wrong word successful (Oxford Service)",
-    wrongLang: "Contract Test : For pronunciations with wrong language successful (Oxford Service)"
+    wrongLang: "Contract Test : For pronunciations with wrong language successful (Oxford Service)",
+    authError: "Contract Test : For pronunciations with wrong api keys successful (Oxford Service)"
 };
 
 var failureMessage = {
     correctWord: "Contract Test : For pronunciations with correct word and language failed (Oxford Service)",
     wrongWord: "Contract Test : For pronunciations with wrong word failed (Oxford Service)",
-    wrongLang: "Contract Test : For pronunciations with wrong language failed (Oxford Service)"
+    wrongLang: "Contract Test : For pronunciations with wrong language failed (Oxford Service)",
+    authError: "Contract Test : For pronunciations with wrong api keys failed (Oxford Service)"
 };
 
 //Test driver
@@ -113,7 +116,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
         name: "Contract Tests : For pronunciations (Oxford Service)",
         tests: [
             {
-                expect: 3,
+                expect: 4,
                 name: "Contract Tests : For pronunciations (Oxford Service)",
                 sequence: [
                     //for correct word
@@ -145,6 +148,16 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.pro
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", pronunciationSchemas.wrongLang, allNeededSchemas.wrongLang, successMessage.wrongLang, failureMessage.wrongLang]
+                    },
+                    // for authentication fail
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockPronunciationData.word.correct, mockPronunciationData.lang.correct, mockPronunciationData.apiKeys.wrong]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", pronunciationSchemas.authError, allNeededSchemas.authError, successMessage.authError, failureMessage.authError]
                     }
                 ]
             }

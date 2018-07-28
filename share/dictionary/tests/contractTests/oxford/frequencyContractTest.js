@@ -91,17 +91,20 @@ var frequencySchemas = require("./schemas/frequencySchemas"), //main schemas whi
 //array of all the schemas that are needed (other than the main schema)
 var allNeededSchemas = {
     correctWord: [commonSchemas.oxfordResponseProperty],
-    wrongLang: [commonSchemas.oxfordResponseProperty]
+    wrongLang: [commonSchemas.oxfordResponseProperty],
+    authError: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {
     correctWord: "Contract Test : For frequency with correct word and language successful (Oxford Service)",
-    wrongLang: "Contract Test : For frequency with wrong language successful (Oxford Service)"
+    wrongLang: "Contract Test : For frequency with wrong language successful (Oxford Service)",
+    authError: "Contract Test : For frequency with wrong api keys successful (Oxford Service)"
 };
 
 var failureMessage = {
     correctWord: "Contract Test : For frequency with correct word and language failed (Oxford Service)",
-    wrongLang: "Contract Test : For frequency with wrong language failed (Oxford Service)"
+    wrongLang: "Contract Test : For frequency with wrong language failed (Oxford Service)",
+    authError: "Contract Test : For frequency with wrong api keys failed (Oxford Service)"
 };
 
 //Test driver
@@ -111,7 +114,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
         name: "Contract Tests : For frequency (Oxford Service)",
         tests: [
             {
-                expect: 2,
+                expect: 3,
                 name: "Contract Tests : For frequency (Oxford Service)",
                 sequence: [
                     //for correct word
@@ -133,6 +136,16 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.fre
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", frequencySchemas.wrongLang, allNeededSchemas.wrongLang, successMessage.wrongLang, failureMessage.wrongLang]
+                    },
+                    // for authentication fail
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockFrequencyData.word.correct, mockFrequencyData.lang.correct, mockFrequencyData.apiKeys.wrong]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", frequencySchemas.authError, allNeededSchemas.authError, successMessage.authError, failureMessage.authError]
                     }
                 ]
             }

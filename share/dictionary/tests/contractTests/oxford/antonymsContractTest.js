@@ -87,24 +87,27 @@ var mockAntonymsData = require("../../mockData/oxford/antonyms");
 var antonymSchemas = require("./schemas/antonymSchemas"), //main schemas which will be compiled
     commonSchemas = require("./schemas/commonSchemas"); //commonly used schemas
 
-
 //array of all the schemas that are needed (other than the main schema)
 var allNeededSchemas = {
     correctWord: [commonSchemas.antonyms, commonSchemas.examples, commonSchemas.oxfordResponseProperty, commonSchemas.commonOxford],
     wrongWord: [commonSchemas.oxfordResponseProperty],
-    wrongLang: [commonSchemas.oxfordResponseProperty]
+    wrongLang: [commonSchemas.oxfordResponseProperty],
+    authError: [commonSchemas.oxfordResponseProperty]
 };
 
 var successMessage = {
     correctWord: "Contract Test : For antonyms with correct word and language successful (Oxford Service)",
     wrongWord: "Contract Test : For antonyms with wrong word successful (Oxford Service)",
-    wrongLang: "Contract Test : For antonyms with wrong language successful (Oxford Service)"
+    wrongLang: "Contract Test : For antonyms with wrong language successful (Oxford Service)",
+    authError: "Contract Test : For antonyms with wrong api keys successful (Oxford Service)"
+
 };
 
 var failureMessage = {
     correctWord: "Contract Test : For antonyms with correct word and language failed (Oxford Service)",
     wrongWord: "Contract Test : For antonyms with wrong word failed (Oxford Service)",
-    wrongLang: "Contract Test : For antonyms with wrong language failed (Oxford Service)"
+    wrongLang: "Contract Test : For antonyms with wrong language failed (Oxford Service)",
+    authError: "Contract Test : For antonyms with wrong api keys failed (Oxford Service)"
 };
 
 //Test driver
@@ -114,10 +117,10 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
         name: "Contract Tests : For antonyms (Oxford Service)",
         tests: [
             {
-                expect: 3,
+                expect: 4,
                 name: "Contract Tests : For antonyms (Oxford Service)",
                 sequence: [
-                    //for correct word
+                    // for correct word
                     {
                         func: "{testComponent}.requestForData",
                         args: [mockAntonymsData.word.correct, mockAntonymsData.lang.correct, mockAntonymsData.apiKeys.correct]
@@ -127,7 +130,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", antonymSchemas.correctWord, allNeededSchemas.correctWord, successMessage.correctWord, failureMessage.correctWord]
                     },
-                    //for wrong word
+                    // for wrong word
                     {
                         func: "{testComponent}.requestForData",
                         args: [mockAntonymsData.word.wrong, mockAntonymsData.lang.correct, mockAntonymsData.apiKeys.correct]
@@ -137,7 +140,7 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", antonymSchemas.wrongWord, allNeededSchemas.wrongWord, successMessage.wrongWord, failureMessage.wrongWord]
                     },
-                    //for wrong language
+                    // for wrong language
                     {
                         func: "{testComponent}.requestForData",
                         args: [mockAntonymsData.word.correct, mockAntonymsData.lang.wrong, mockAntonymsData.apiKeys.correct]
@@ -146,6 +149,16 @@ fluid.defaults("adaptiveContentService.tests.dictionary.oxford.contractTests.ant
                         event: "{testComponent}.events.onDataReceive",
                         listener: "adaptiveContentService.tests.utils.contractTestHandler",
                         args: ["{arguments}.0", antonymSchemas.wrongLang, allNeededSchemas.wrongLang, successMessage.wrongLang, failureMessage.wrongLang]
+                    },
+                    // for authentication fail
+                    {
+                        func: "{testComponent}.requestForData",
+                        args: [mockAntonymsData.word.correct, mockAntonymsData.lang.correct, mockAntonymsData.apiKeys.wrong]
+                    },
+                    {
+                        event: "{testComponent}.events.onDataReceive",
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", antonymSchemas.authError, allNeededSchemas.authError, successMessage.authError, failureMessage.authError]
                     }
                 ]
             }

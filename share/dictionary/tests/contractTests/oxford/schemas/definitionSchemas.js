@@ -53,5 +53,6 @@ module.exports = {
         }
     },
     wrongWord: commonOxfordSchemas.errorSchema,
-    wrongLang: commonOxfordSchemas.errorSchema
+    wrongLang: commonOxfordSchemas.errorSchema,
+    authError: commonOxfordSchemas.errorSchema
 };
