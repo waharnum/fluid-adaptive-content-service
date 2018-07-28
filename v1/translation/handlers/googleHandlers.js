@@ -68,32 +68,45 @@ adaptiveContentService.handlers.translation.google.checkCommonGoogleErrors = fun
  * ie, structure it and send it to the main handler function
  */
 adaptiveContentService.handlers.translation.google.handleReceivedData = function (err, responseBody, endpointName, promise) {
-    if (err) {
-        // error making request
-        if (err.error && err.error.syscall === "getaddrinfo") {
-            ACS.log("Error making request to the Google Service (" + endpointName + " endpoint)");
-            promise.resolve({
-                statusCode: 500,
-                body: {
-                    message: "Internal Server Error : Error with making request to the external service (Google)"
-                }
-            });
-        }
-        // other errors
-        else {
-            // TODO: have a try..catch here (and for code similar to this)
-            var errorBody = JSON.parse(err.body);
+    try {
+        if (err) {
+            // error making request
+            if (err.error && err.error.syscall === "getaddrinfo") {
+                ACS.log("Error making request to the Google Service (" + endpointName + " endpoint)");
+                promise.resolve({
+                    statusCode: 500,
+                    body: {
+                        message: "Internal Server Error : Error with making request to the external service (Google)"
+                    }
+                });
+            }
+            // other errors
+            else {
+                // TODO: have a try..catch here (and for code similar to this)
+                var errorBody = JSON.parse(err.body);
 
+                promise.resolve({
+                    statusCode: errorBody.error.code,
+                    body: errorBody
+                });
+            }
+        }
+        else {
             promise.resolve({
-                statusCode: errorBody.error.code,
-                body: errorBody
+                statusCode: 200,
+                body: responseBody
             });
         }
     }
-    else {
+    catch (error) {
+        var errMsg = "Internal Server Error " + error;
+        ACS.log(errMsg);
+
         promise.resolve({
-            statusCode: 200,
-            body: responseBody
+            statusCode: 500,
+            body: {
+                message: errMsg
+            }
         });
     }
 };
@@ -172,19 +185,26 @@ adaptiveContentService.handlers.translation.google.detectAndTranslate.getTransla
             that.requiredData(targetLang, text, that)
                 .then(
                     function (result) {
-                        var serviceName = "Google",
-                            successMsg = "Translation Successful";
+                        try {
+                            var serviceName = "Google",
+                                successMsg = "Translation Successful";
 
-                        that.commonHandlerTasks(request, version, targetLang, serviceName, successMsg, result, that);
+                            that.commonHandlerTasks(request, version, targetLang, serviceName, successMsg, result, that);
+                        }
+                        catch (error) {
+                            var errMsg = "Internal Server Error: " + error;
+                            ACS.log(errMsg);
+                            that.sendErrorResponse(request, version, "Google", 500, errMsg);
+                        }
                     }
                 );
         }
     }
     // Error with the API code
     catch (error) {
-        var message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Google", 500, message);
+        var errMsg = "Internal Server Error: " + error;
+        ACS.log(errMsg);
+        that.sendErrorResponse(request, version, "Google", 500, errMsg);
     }
 };
 
@@ -270,10 +290,17 @@ adaptiveContentService.handlers.translation.google.langDetection.getLang = funct
             that.requiredData(text, that)
                 .then(
                     function (result) {
-                        var serviceName = "Google",
-                            successMsg = "Language Detection Successful";
+                        try {
+                            var serviceName = "Google",
+                                successMsg = "Language Detection Successful";
 
-                        that.commonHandlerTasks(request, version, null, serviceName, successMsg, result, that);
+                            that.commonHandlerTasks(request, version, null, serviceName, successMsg, result, that);
+                        }
+                        catch (error) {
+                            var errMsg = "Internal Server Error: " + error;
+                            ACS.log(errMsg);
+                            that.sendErrorResponse(request, version, "Google", 500, errMsg);
+                        }
                     }
                 );
         }
@@ -354,10 +381,17 @@ adaptiveContentService.handlers.translation.google.listLanguages.getLangList = f
             that.requiredData(langParam, that)
                 .then(
                     function (result) {
-                        var serviceName = "Google",
-                            successMsg = "Available languages fetched successfully";
+                        try {
+                            var serviceName = "Google",
+                                successMsg = "Available languages fetched successfully";
 
-                        that.commonHandlerTasks(request, version, null, serviceName, successMsg, result, that);
+                            that.commonHandlerTasks(request, version, null, serviceName, successMsg, result, that);
+                        }
+                        catch (error) {
+                            var errMsg = "Internal Server Error: " + error;
+                            ACS.log(errMsg);
+                            that.sendErrorResponse(request, version, "Google", 500, errMsg);
+                        }
                     }
                 );
         }

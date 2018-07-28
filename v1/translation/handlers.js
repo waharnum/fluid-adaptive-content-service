@@ -1,12 +1,13 @@
 "use strict";
 
-var fluid = require("infusion");
-
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var fluid = require("infusion"),
+    ACS = fluid.registerNamespace("ACS"),
+    adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("dotenv").config();//npm package to get variables from '.env' file
 require("kettle");
 require("../../share/handlerUtils");
+require("../../share/utils");
 
 /* Abstract grade for translation service endpoints
  * from which other service grades will inherit
@@ -20,6 +21,11 @@ fluid.defaults("adaptiveContentService.handlers.translation", {
             args: ["{arguments}.0", "{that}.translationHandlerImpl", "{that}"]
         },
         commonTranslationDispatcher: "adaptiveContentService.handlers.translation.commonTranslationDispatcher",
+        checkSourceText: "adaptiveContentService.handlers.translation.checkSourceText",
+        checkLanguageCodes: "adaptiveContentService.handlers.translation.checkLanguageCodes",
+        checkServiceKey: "adaptiveContentService.handlers.translation.checkServiceKey",
+        preRequestErrorCheck: "adaptiveContentService.handlers.translation.preRequestErrorCheck",
+        // from handlerUtils
         sendSuccessResponse: {
             funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Translation"]
@@ -28,12 +34,8 @@ fluid.defaults("adaptiveContentService.handlers.translation", {
             funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Translation"]
         },
-        checkSourceText: "adaptiveContentService.handlers.translation.checkSourceText",
-        checkLanguageCodes: "adaptiveContentService.handlers.translation.checkLanguageCodes",
-        checkServiceKey: "adaptiveContentService.handlers.translation.checkServiceKey",
-        preRequestErrorCheck: "adaptiveContentService.handlers.translation.preRequestErrorCheck",
+        // not implemented - should be implemented in child grades
         requiredData: "fluid.notImplemented",
-        // translationConstructResponse: "fluid.notImplemented",
         translationHandlerImpl: "fluid.notImplemented"
     }
 });
@@ -42,14 +44,22 @@ fluid.defaults("adaptiveContentService.handlers.translation", {
 adaptiveContentService.handlers.translation.commonTranslationDispatcher = function (request, handlerFunc, that) {
     var version = request.req.params.version;
 
-    //setting the required headers for the response
-    request.res.set({
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-    });
+    try {
+        //setting the required headers for the response
+        request.res.set({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+        });
 
-    handlerFunc(request, version, that);
+        handlerFunc(request, version, that);
+    }
+    //Error with the API code
+    catch (error) {
+        var errMsg = "Internal Server Error: " + error;
+        ACS.log(errMsg);
+        that.sendErrorResponse(request, version, "Oxford", 500, errMsg); // TODO: service name
+    }
 };
 
 // check for errors in the text provided in the request body
