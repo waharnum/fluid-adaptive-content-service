@@ -1,11 +1,11 @@
 "use strict";
 
-var fluid = require("infusion");
-
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var fluid = require("infusion"),
+    ACS = fluid.registerNamespace("ACS"),
+    adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("kettle");
-
+require("../../share/utils");
 require("../../share/handlerUtils");
 
 /* Abstract grade for nlp service endpoints
@@ -38,14 +38,23 @@ fluid.defaults("adaptiveContentService.handlers.nlp.sentenceTagging", {
 adaptiveContentService.handlers.nlp.sentenceTagging.commonNlpDispatcher = function (request, handlerFunc, that) {
     var version = request.req.params.version;
 
-    //setting the required headers for the response
-    request.res.set({
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-    });
+    try {
+        // TODO: make middleware
+        //setting the required headers for the response
+        request.res.set({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+        });
 
-    handlerFunc(request, version, that);
+        handlerFunc(request, version, that);
+    }
+    //Error with the API code
+    catch (error) {
+        var errMsg = "Internal Server Error: " + error;
+        ACS.log(errMsg);
+        that.sendErrorResponse(request, version, "Oxford", 500, errMsg); // TODO: service name
+    }
 };
 
 require("./handlers/compromiseHandlers");

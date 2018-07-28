@@ -3,7 +3,8 @@
 var fluid = require("infusion"),
     nlp = require("compromise");//npm package that provides NLP services
 
-var adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
+var adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
+    ACS = fluid.registerNamespace("ACS");
 
 require("kettle");
 
@@ -43,6 +44,7 @@ adaptiveContentService.handlers.nlp.compromise.sentenceTagging.checkNlpError = f
 adaptiveContentService.handlers.nlp.compromise.sentenceTagging.requiredData = function (sentence) {
     var sentenceData = nlp(sentence),
         tagsData = sentenceData.out("tags");
+
     return tagsData;
 };
 
@@ -82,8 +84,8 @@ adaptiveContentService.handlers.nlp.compromise.sentenceTagging.getTags = functio
     }
     //Error with the API code
     catch (error) {
-        message = "Internal Server Error: " + error;
-
-        that.sendErrorResponse(request, version, "Compromise", 500, message);
+        var errMsg = "Internal Server Error: " + error;
+        ACS.log(errMsg);
+        that.sendErrorResponse(request, version, "Compromise", 500, errMsg);
     }
 };

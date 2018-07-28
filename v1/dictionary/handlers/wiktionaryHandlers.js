@@ -5,6 +5,7 @@ var fluid = require("infusion"),
     adaptiveContentService = fluid.registerNamespace("adaptiveContentService"),
     wd = require("word-definition");
 
+require("../../../share/handlerUtils");
 require("kettle");
 
 //Specific grade for Wiktionary
@@ -220,7 +221,7 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.serviceNot
             funcName: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.handlerImpl",
             args: ["{arguments}.0", "{arguments}.1", "{that}"]
         },
-        getEndpointName: "adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.getEndpointName",
+        getEndpointName: "adaptiveContentService.handlerUtils.getEndpointName",
         requiredDataImpl: "" // no data required because service not provided
     }
 });
@@ -231,12 +232,4 @@ adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.handler
         message = "This Service doesn't provide " + endpointName;
 
     that.sendErrorResponse(request, version, "Wiktionary", 400, message);
-};
-
-//function to get the endpoint name from the request url
-adaptiveContentService.handlers.dictionary.wiktionary.serviceNotProvided.getEndpointName = function (url) {
-    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g, //to extract name of the endpoint from the url
-        match = endpointNameRegex.exec(url);
-
-    return match[1];
 };
