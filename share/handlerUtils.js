@@ -72,7 +72,7 @@ adaptiveContentService.handlerUtils.checkTranslationServiceKeys = function () {
 
 //function to get the endpoint name from the request url
 adaptiveContentService.handlerUtils.getEndpointName = function (url) {
-    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\/.+/g, //to extract name of the endpoint from the url
+    var endpointNameRegex = /\/\w+\/\w+\/\w+\/\w+\/(\w+)\.*/g, //to extract name of the endpoint from the url
         match = endpointNameRegex.exec(url);
 
     return match[1];
