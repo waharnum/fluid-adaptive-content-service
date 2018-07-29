@@ -23,7 +23,7 @@ var mockLangDetectionData = require("../../mockData/google/langDetection");
  */
 fluid.defaults("adaptiveContentService.test.handlers.translation.google.langDetection", {
     gradeNames: "adaptiveContentService.handlers.translation.google.langDetection",
-    characterLimit: 65,
+    characterLimit: 40,
     invokers: {
         requiredData: "adaptiveContentService.test.handlers.translation.google.langDetection.requiredData"
     }

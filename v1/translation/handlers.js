@@ -14,7 +14,7 @@ require("../../share/utils");
  */
 fluid.defaults("adaptiveContentService.handlers.translation", {
     gradeNames: "kettle.request.http",
-    characterLimit: "500",
+    characterLimit: 500,
     invokers: {
         handleRequest: {
             func: "{that}.commonTranslationDispatcher",

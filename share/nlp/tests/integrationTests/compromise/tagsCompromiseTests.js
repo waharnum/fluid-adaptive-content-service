@@ -20,7 +20,7 @@ var testRequestBody = {
     },
     emptySentence: {},
     longSentence: {
-        sentence: "This sentence exceeds the character limit"
+        sentence: "This sentence exceeds the character limit because it is long"
     }
 };
 
@@ -32,7 +32,7 @@ fluid.registerNamespace("adaptiveContentService.test.handlers.nlp.compromise.sen
  */
 fluid.defaults("adaptiveContentService.test.handlers.nlp.compromise.sentenceTagging", {
     gradeNames: "adaptiveContentService.handlers.nlp.compromise.sentenceTagging",
-    characterLimit: 20
+    characterLimit: 40
 });
 
 adaptiveContentService.tests.nlp.compromise.sentenceTagging = [{

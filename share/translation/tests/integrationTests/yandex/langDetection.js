@@ -24,7 +24,7 @@ var mockLangDetectionData = require("../../mockData/yandex/langDetection");
  */
 fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.langDetection", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex.langDetection",
-    characterLimit: 65
+    characterLimit: 40
 });
 
 adaptiveContentService.tests.translation.yandex.langDetection = [{

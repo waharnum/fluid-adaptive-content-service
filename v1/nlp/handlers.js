@@ -13,7 +13,7 @@ require("../../share/handlerUtils");
  */
 fluid.defaults("adaptiveContentService.handlers.nlp.sentenceTagging", {
     gradeNames: "kettle.request.http",
-    characterLimit: 10000,
+    characterLimit: 500,
     invokers: {
         handleRequest: {
             func: "{that}.commonNlpDispatcher",

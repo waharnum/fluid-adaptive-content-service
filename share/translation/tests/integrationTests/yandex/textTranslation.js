@@ -24,7 +24,7 @@ var mockTranslationData = require("../../mockData/yandex/translation");
  */
 fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.translateText", {
     gradeNames: "adaptiveContentService.handlers.translation.yandex.translateText",
-    characterLimit: 65
+    characterLimit: 40
 });
 
 adaptiveContentService.tests.translation.yandex.translateText = [{
