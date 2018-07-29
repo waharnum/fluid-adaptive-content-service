@@ -256,11 +256,6 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                                     "route": "/:version/translation/yandex/languages",
                                     "method": "get"
                                 },
-                                yandexExtendedListLanguagesHandler: {
-                                    "type": "adaptiveContentService.handlers.translation.yandex.listLanguages",
-                                    "route": "/:version/translation/yandex/languages/:lang",
-                                    "method": "get"
-                                },
                                 googleDetectAndTranslateHandler: {
                                     "type": "adaptiveContentService.handlers.translation.google.detectAndTranslate",
                                     "route": "/:version/translation/google/translate/:targetLang",

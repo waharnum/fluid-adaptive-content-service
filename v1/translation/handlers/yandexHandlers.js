@@ -460,8 +460,7 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.constructRespon
 // Yandex get all supported languages handler
 adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList = function (request, version, that) {
     try {
-        var langParam = request.req.params.lang,
-            serviceKey = that.serviceKey(that);
+        var serviceKey = that.serviceKey(that);
 
         // check for errors before making request to the service
         var serviceKeyErrorContent = that.checkServiceKey(serviceKey);
@@ -471,18 +470,7 @@ adaptiveContentService.handlers.translation.yandex.listLanguages.getLangList = f
             that.sendErrorResponse(request, version, "Yandex", serviceKeyErrorContent.statusCode, serviceKeyErrorContent.errorMessage);
         }
         else {
-            var listInLang;
-
-            // if the lang parameter is present
-            if (langParam) {
-                listInLang = langParam;
-            }
-            // default lang
-            else {
-                listInLang = "en";
-            }
-
-            var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=" + listInLang;
+            var url = that.options.urlBase + "getLangs?key=" + serviceKey + "&ui=en";
 
             that.requiredData(url, null)
                 .then(
