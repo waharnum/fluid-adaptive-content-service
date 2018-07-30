@@ -45,7 +45,7 @@ adaptiveContentService.test.handlers.dictionary.general.definition.requiredData 
     }
     // error making request
     else if (word === mockDefinitionData.word.requestErrorTrigger) {
-        jsonMockResponse = mockDefinitionData.responses.requestError
+        jsonMockResponse = mockDefinitionData.responses.requestError;
         promise.resolve(jsonMockResponse);
     }
     // no Error response
