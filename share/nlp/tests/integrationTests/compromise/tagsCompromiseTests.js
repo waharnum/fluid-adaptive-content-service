@@ -1,5 +1,10 @@
 "use strict";
 
+/* No mock data/response is used here
+ * because no request is made
+ * response comes directly from the library
+ */
+
 var fluid = require("infusion"),
     kettle = require("kettle");
 require("dotenv").config();
