@@ -41,7 +41,7 @@ adaptiveContentService.tests.translation.general.translateText = [{
         }
     },
     sequence: [{
-        func: "{textTranslateEndpoint}.send",
+        func: "{textTranslateEndpoint}.send"
     },
     {
         event: "{textTranslateEndpoint}.events.onComplete",

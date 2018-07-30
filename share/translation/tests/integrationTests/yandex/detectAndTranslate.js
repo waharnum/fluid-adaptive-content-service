@@ -23,7 +23,7 @@ var mockTranslationData = require("../../mockData/yandex/translation");
 // mock data (language detection)
 var mockLangDetectionData = require("../../mockData/yandex/langDetection");
 
-/* testing grade for yandex text translation - to override 'characterLimit'
+/* testing grade for yandex detect-and-translate - to override 'characterLimit'
  * configuration for the purpose of testing
  */
 fluid.defaults("adaptiveContentService.test.handlers.translation.yandex.detectAndTranslate", {
