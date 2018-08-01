@@ -5,15 +5,14 @@ var fluid = require("infusion"),
     adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
 require("dotenv").config();//npm package to get variables from '.env' file
-require("kettle");
-require("../../share/handlerUtils");
-require("../../share/utils");
+
+require("../handlers");
 
 /* Abstract grade for translation service endpoints
  * from which other service grades will inherit
  */
 fluid.defaults("adaptiveContentService.handlers.translation", {
-    gradeNames: "kettle.request.http",
+    gradeNames: ["adaptiveContentService.handlers.commonMiddleware", "kettle.request.http"],
     characterLimit: 500,
     invokers: {
         handleRequest: {

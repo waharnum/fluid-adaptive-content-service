@@ -51,21 +51,21 @@ adaptiveContentService.tests.nlp.compromise.sentenceTagging = [{
         correctSentence: {
             type: "kettle.test.request.http",
             options: {
-                path: "/:version/nlp/compromise/tags/",
+                path: "/v1/nlp/compromise/tags/",
                 method: "post"
             }
         },
         emptySentence: {
             type: "kettle.test.request.http",
             options: {
-                path: "/:version/nlp/compromise/tags/",
+                path: "/v1/nlp/compromise/tags/",
                 method: "post"
             }
         },
         longSentence: {
             type: "kettle.test.request.http",
             options: {
-                path: "/:version/nlp/compromise/tags/",
+                path: "/v1/nlp/compromise/tags/",
                 method: "post"
             }
         }

@@ -13,6 +13,9 @@ fluid.defaults("adaptiveContentService.serverConfig", {
             options: {
                 port: 8080,
                 components: {
+                    versionCheck: {
+                        "type": "adaptiveContentService.middleware.versionCheck"
+                    },
                     dictionaryApp: {
                         type: "kettle.app",
                         options: {

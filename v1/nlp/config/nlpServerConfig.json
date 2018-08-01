@@ -8,6 +8,9 @@
                 "options":{
                     "port":8081,
                     "components":{
+                        "versionCheck": {
+                            "type": "adaptiveContentService.middleware.versionCheck"
+                        },
                         "nlp": {
                             "type": "kettle.app",
                             "options": {

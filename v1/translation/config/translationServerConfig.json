@@ -8,6 +8,9 @@
                 "options":{
                     "port":8081,
                     "components":{
+                        "versionCheck": {
+                            "type": "adaptiveContentService.middleware.versionCheck"
+                        },
                         "translation": {
                             "type": "kettle.app",
                             "options": {
@@ -68,7 +71,7 @@
                                         "method": "post"
                                     },
                                     "googleDetectAndTranslateLangsHandler": {
-                                        "type": "adaptiveContentService.handlers.translation.google.listLanguages",
+                                        "type": "adaptiveContentService.test.handlers.translation.google.listLanguages",
                                         "route": "/:version/translation/google/langs/translate",
                                         "method": "get"
                                     },

@@ -13,6 +13,9 @@ fluid.defaults("adaptiveContentService.nlp.serverConfig", {
             options: {
                 port: 8082,
                 components: {
+                    versionCheck: {
+                        "type": "adaptiveContentService.middleware.versionCheck"
+                    },
                     app: {
                         type: "kettle.app",
                         options: {

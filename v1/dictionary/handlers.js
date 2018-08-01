@@ -4,15 +4,13 @@ var fluid = require("infusion"),
     ACS = fluid.registerNamespace("ACS"),
     adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
-require("kettle");
-require("../../share/utils");
-require("../../share/handlerUtils");
+require("../handlers");
 
 /* Abstract grade for dictionary service endpoints
  * from which other service grades will inherit
  */
 fluid.defaults("adaptiveContentService.handlers.dictionary", {
-    gradeNames: "kettle.request.http",
+    gradeNames: ["adaptiveContentService.handlers.commonMiddleware", "kettle.request.http"],
     wordCharacterLimit: 128,
     invokers: {
         handleRequest: {
