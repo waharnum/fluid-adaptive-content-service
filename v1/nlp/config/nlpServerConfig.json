@@ -11,6 +11,9 @@
                         "versionCheck": {
                             "type": "adaptiveContentService.middleware.versionCheck"
                         },
+                        "setResponseHeaders": {
+                            "type": "adaptiveContentService.middleware.setResponseHeaders"
+                        },
                         "nlp": {
                             "type": "kettle.app",
                             "options": {

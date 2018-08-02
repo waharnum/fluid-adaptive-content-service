@@ -5,6 +5,7 @@ var fluid = require("infusion"),
 
 require("kettle");
 
+// middleware for version check
 fluid.defaults("adaptiveContentService.middleware.versionCheck", {
     gradeNames: "kettle.middleware",
     version: "v1",
@@ -30,6 +31,28 @@ adaptiveContentService.middleware.versionCheck.handler = function (request, that
             jsonResponse: {}
         });
     }
+
+    return promise;
+};
+
+// middleware to set response headers
+fluid.defaults("adaptiveContentService.middleware.setResponseHeaders", {
+    gradeNames: "kettle.middleware",
+    invokers: {
+        handle: "adaptiveContentService.middleware.setResponseHeaders.handler"
+    }
+});
+
+adaptiveContentService.middleware.setResponseHeaders.handler = function (request) {
+    var promise = fluid.promise();
+
+    //setting the required headers for the response
+    request.res.set({
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+    });
+    promise.resolve();
 
     return promise;
 };

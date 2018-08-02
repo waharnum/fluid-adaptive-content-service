@@ -35,21 +35,13 @@ fluid.defaults("adaptiveContentService.handlers.dictionary", {
     }
 });
 
-//Common dispatcher for all dictionary endpoints
+// Common dispatcher for all dictionary endpoints
 adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function (request, serviceSpecificImp, that) {
     var version = request.req.params.version,
         word = request.req.params.word,
         lang = request.req.params.language;
 
     try {
-        // TODO: make middleware
-        //setting the required headers for the response
-        request.res.set({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-        });
-
         serviceSpecificImp(request, version, word, lang, that);
     }
     //Error with the API code

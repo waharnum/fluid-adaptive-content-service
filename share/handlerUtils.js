@@ -77,3 +77,11 @@ adaptiveContentService.handlerUtils.getEndpointName = function (url) {
 
     return match[1];
 };
+
+//function to get the service name from the request url TODO: test
+adaptiveContentService.handlerUtils.getServiceName = function (url) {
+    var serviceNameRegex = /\/\w+\/\w+\/(\w+)\.*/g, //to extract name of the service from the url
+        match = serviceNameRegex.exec(url);
+
+    return match[1];
+};

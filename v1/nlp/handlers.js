@@ -4,6 +4,7 @@ var fluid = require("infusion"),
     ACS = fluid.registerNamespace("ACS"),
     adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
+// include common handler(s)
 require("../handlers");
 
 /* Abstract grade for nlp service endpoints
@@ -18,7 +19,7 @@ fluid.defaults("adaptiveContentService.handlers.nlp.sentenceTagging", {
             args: ["{arguments}.0", "{that}.nlpHandlerImpl", "{that}"]
         },
         commonNlpDispatcher: "adaptiveContentService.handlers.nlp.sentenceTagging.commonNlpDispatcher",
-        nlpHandlerImpl: "fluid.notImplemented",
+        // from handlerUtils
         sendSuccessResponse: {
             funcName: "adaptiveContentService.handlerUtils.sendSuccessResponse",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "{arguments}.5", "Natural Language Processing (NLP)"]
@@ -27,31 +28,29 @@ fluid.defaults("adaptiveContentService.handlers.nlp.sentenceTagging", {
             funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Natural Language Processing (NLP)"]
         },
+        getServiceName: "adaptiveContentService.handlerUtils.getServiceName",
+        // not implemented - should be implemented in child grades
+        nlpHandlerImpl: "fluid.notImplemented",
         checkNlpError: "fluid.notImplemented",
         requiredData: "fluid.notImplemented",
         constructResponse: "fluid.notImplemented"
     }
 });
 
+// Common dispatcher for all nlp endpoints
 adaptiveContentService.handlers.nlp.sentenceTagging.commonNlpDispatcher = function (request, handlerFunc, that) {
     var version = request.req.params.version;
 
     try {
-        // TODO: make middleware
-        //setting the required headers for the response
-        request.res.set({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-        });
-
         handlerFunc(request, version, that);
     }
     //Error with the API code
     catch (error) {
         var errMsg = "Internal Server Error: " + error;
         ACS.log(errMsg);
-        that.sendErrorResponse(request, version, "Oxford", 500, errMsg); // TODO: service name
+
+        var serviceName = ACS.capitalize(that.getServiceName(request.req.originalUrl));
+        that.sendErrorResponse(request, version, serviceName, 500, errMsg);
     }
 };
 

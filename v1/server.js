@@ -16,6 +16,9 @@ fluid.defaults("adaptiveContentService.serverConfig", {
                     versionCheck: {
                         "type": "adaptiveContentService.middleware.versionCheck"
                     },
+                    setResponseHeaders: {
+                        "type": "adaptiveContentService.middleware.setResponseHeaders"
+                    },
                     dictionaryApp: {
                         type: "kettle.app",
                         options: {

@@ -44,13 +44,6 @@ adaptiveContentService.handlers.translation.commonTranslationDispatcher = functi
     var version = request.req.params.version;
 
     try {
-        //setting the required headers for the response
-        request.res.set({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-        });
-
         handlerFunc(request, version, that);
     }
     //Error with the API code
