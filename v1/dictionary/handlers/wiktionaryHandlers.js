@@ -8,7 +8,7 @@ var fluid = require("infusion"),
 require("../../../share/handlerUtils");
 require("kettle");
 
-//Specific grade for Wiktionary
+// Specific grade for Wiktionary
 fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary", {
     gradeNames: "adaptiveContentService.handlers.dictionary",
     invokers: {
@@ -18,13 +18,13 @@ fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary", {
     }
 });
 
-//function  to catch the errors for wiktionary service (common to all endpoints provided by wiktionary grade)
+// function  to catch the errors for wiktionary service (common to all endpoints provided by wiktionary grade)
 adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = function (serviceResponse) {
 
-  //Check if there is an error
+  // Check if there is an error
     if (serviceResponse.err) {
 
-        //Word not found
+        // Word not found
         if (serviceResponse.err === "not found") {
             return {
                 statusCode: 404,
@@ -32,7 +32,7 @@ adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = fun
             };
         }
 
-        //Language unsupported by the third-party service
+        // Language unsupported by the third-party service
         else if (serviceResponse.err === "unsupported language") {
             return {
                 statusCode: 404,
@@ -40,7 +40,7 @@ adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = fun
             };
         }
 
-        //request failed
+        // request failed
         else if (serviceResponse.err === "a request has failed") {
             return {
                 statusCode: 500,
@@ -48,7 +48,7 @@ adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = fun
             };
         }
 
-        //Default return object when error hasn"t been handled yet
+        // Default return object when error hasn"t been handled yet
         else {
             return {
                 statusCode: 501,
@@ -57,35 +57,34 @@ adaptiveContentService.handlers.dictionary.wiktionary.checkDictionaryError = fun
         }
     }
 
-    //Return false if no error found
+    // no error
     else {
         return;
     }
 };
 
-//Wiktionary definition grade
+// Wiktionary definition grade
 fluid.defaults("adaptiveContentService.handlers.dictionary.wiktionary.definition", {
     gradeNames: "adaptiveContentService.handlers.dictionary.wiktionary",
     invokers: {
-        dictionaryHandlerImpl: {
-            funcName: "adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition",
-            args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{that}"]
-        },
+        dictionaryHandlerImpl: "adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition",
         requiredDataImpl: "adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData",
         constructResponse: "adaptiveContentService.handlers.dictionary.wiktionary.definition.constructResponse"
     }
 });
 
-//function to get definition from the wiktionary service
+// function to get definition from the wiktionary service
 adaptiveContentService.handlers.dictionary.wiktionary.definition.requiredData = function (lang, word) {
     var promise = fluid.promise();
+
     wd.getDef(word, lang, null, function (data) {
         promise.resolve(data);
     });
+
     return promise;
 };
 
-//function to construct a useful response from the data provided by the word-definition (Wiktionary) service
+// function to construct a useful response from the data provided by the word-definition (Wiktionary) service
 adaptiveContentService.handlers.dictionary.wiktionary.definition.constructResponse = function (jsonServiceResponse) {
     var response = {
         word: jsonServiceResponse.word,
@@ -100,12 +99,12 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.constructRespon
     return response;
 };
 
-//Wiktionary definition handler
+// Wiktionary definition handler
 adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition = function (request, version, word, lang, that) {
     try {
         var uriErrorContent = that.checkUriError(word, that.options.wordCharacterLimit);
 
-        //Check for long URI
+        // Check for long URI
         if (uriErrorContent) {
             that.sendErrorResponse(request, version, "Wiktionary", uriErrorContent.statusCode, uriErrorContent.errorMessage);
         }
@@ -122,14 +121,14 @@ adaptiveContentService.handlers.dictionary.wiktionary.definition.getDefinition =
 
                         var message;
 
-                        //Error Responses
+                        // Error Responses
                         if (errorContent) {
                             message = errorContent.errorMessage;
                             var statusCode = errorContent.statusCode;
 
                             that.sendErrorResponse(request, version, "Wiktionary", statusCode, message);
                         }
-                        //No error : Word found
+                        // No error : Word found
                         else {
                             message = "Word Found";
                             var response = that.constructResponse(serviceResponse);

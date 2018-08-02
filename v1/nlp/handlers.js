@@ -28,7 +28,6 @@ fluid.defaults("adaptiveContentService.handlers.nlp.sentenceTagging", {
             funcName: "adaptiveContentService.handlerUtils.sendErrorResponse",
             args: ["{arguments}.0", "{arguments}.1", "{arguments}.2", "{arguments}.3", "{arguments}.4", "Natural Language Processing (NLP)"]
         },
-        getServiceName: "adaptiveContentService.handlerUtils.getServiceName",
         // not implemented - should be implemented in child grades
         nlpHandlerImpl: "fluid.notImplemented",
         checkNlpError: "fluid.notImplemented",

@@ -20,5 +20,8 @@ fluid.defaults("adaptiveContentService.handlers.commonMiddleware", {
         "setResponseHeaders": {
             middleware: "{server}.setResponseHeaders"
         }
+    },
+    invokers: {
+        getServiceName: "adaptiveContentService.handlerUtils.getServiceName"
     }
 });

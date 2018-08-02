@@ -44,11 +44,13 @@ adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function
     try {
         serviceSpecificImp(request, version, word, lang, that);
     }
-    //Error with the API code
+    // Error with the API code
     catch (error) {
         var errMsg = "Internal Server Error: " + error;
         ACS.log(errMsg);
-        that.sendErrorResponse(request, version, "Oxford", 500, errMsg); // TODO: service name
+
+        var serviceName = ACS.capitalize(that.getServiceName(request.req.originalUrl));
+        that.sendErrorResponse(request, version, serviceName, 500, errMsg);
     }
 };
 
@@ -58,12 +60,14 @@ adaptiveContentService.handlers.dictionary.commonDictionaryDispatcher = function
 adaptiveContentService.handlers.dictionary.checkUriError = function (word, characterLimit) {
     // TODO: can be middleware?
     if (word.length > characterLimit) {
+        // word length exceeds character limit
         return {
             statusCode: 414,
             errorMessage: "Request URI too long : 'word' can have maximum " + characterLimit + " characters"
         };
     }
     else {
+        // no error
         return false;
     }
 };

@@ -213,6 +213,7 @@ fluid.defaults("adaptiveContentService.dictionary.serverConfig", {
     }
 });
 
+// endpoint handlers
 require("./handlers.js");
 
 adaptiveContentService.dictionary.serverConfig();
