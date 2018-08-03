@@ -6,6 +6,17 @@ var fluid = require("infusion"),
 kettle.loadTestingSupport();
 
 var testIncludes = [
+    "./integrationTests/general/detectAndTranslate.js",
+    "./integrationTests/general/langDetection.js",
+    "./integrationTests/general/listLanguages.js",
+    "./integrationTests/general/textTranslate.js",
+    "./integrationTests/google/detectAndTranslate.js",
+    "./integrationTests/google/langDetection.js",
+    "./integrationTests/google/listLanguages.js",
+    "./integrationTests/yandex/detectAndTranslate.js",
+    "./integrationTests/yandex/langDetection.js",
+    "./integrationTests/yandex/listLanguages.js",
+    "./integrationTests/yandex/textTranslation.js",
     "./unitTests/common/checkLanguageCodes.js",
     "./unitTests/common/checkServiceKey.js",
     "./unitTests/common/checkSourceText.js",
@@ -18,18 +29,7 @@ var testIncludes = [
     "./unitTests/yandex/isLangResponseEmpty.js",
     "./unitTests/yandex/langDetectionConstructResponse.js",
     "./unitTests/yandex/listLanguagesConstructResponse.js",
-    "./unitTests/yandex/translationConstructResponse.js",
-    "./integrationTests/general/detectAndTranslate.js",
-    "./integrationTests/general/langDetection.js",
-    "./integrationTests/general/listLanguages.js",
-    "./integrationTests/general/textTranslate.js",
-    "./integrationTests/google/detectAndTranslate.js",
-    "./integrationTests/google/langDetection.js",
-    "./integrationTests/google/listLanguages.js",
-    "./integrationTests/yandex/detectAndTranslate.js",
-    "./integrationTests/yandex/langDetection.js",
-    "./integrationTests/yandex/listLanguages.js",
-    "./integrationTests/yandex/textTranslation.js"
+    "./unitTests/yandex/translationConstructResponse.js"
 ];
 
 fluid.each(testIncludes, function (path) {

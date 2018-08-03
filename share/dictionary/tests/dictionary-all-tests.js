@@ -38,8 +38,7 @@ var testIncludes = [
     "./unitTests/oxford/pronunciationsConstructResponse.js",
     "./unitTests/oxford/synonymsConstructResponse.js",
     "./unitTests/wiktionary/checkDictionaryError.js",
-    "./unitTests/wiktionary/constructResponse.js",
-    "./unitTests/wiktionary/getEndpointName.js"
+    "./unitTests/wiktionary/constructResponse.js"
 ];
 
 fluid.each(testIncludes, function (path) {
