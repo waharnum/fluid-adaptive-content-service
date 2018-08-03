@@ -2,8 +2,7 @@
 
 var fluid = require("infusion"),
     kettle = require("kettle");
-
-kettle.loadTestingSupport();
+    require("dotenv").config();
 
 var testIncludes = [
     "./contractTests/google/detectAndTranslate.js",
@@ -14,6 +13,32 @@ var testIncludes = [
     "./contractTests/yandex/textTranslation.js"
 ];
 
-fluid.each(testIncludes, function (path) {
-    require(path);
-});
+
+// Check for keys
+var translationContractTestKeys = [
+    "YANDEX_API_KEY",
+    "GOOGLE_API_KEY"
+];
+
+var hasAnyValidKeys = function (expectedKeys) {
+    var anyValidKeys = false;
+
+    fluid.each(expectedKeys, function (key) {
+        var resolvedKey = kettle.resolvers.env(key);
+        if(resolvedKey) {
+            anyValidKeys = true;
+        }
+    });
+
+    return anyValidKeys;
+};
+
+if(hasAnyValidKeys(translationContractTestKeys)) {
+    kettle.loadTestingSupport();
+
+    fluid.each(testIncludes, function (path) {
+        require(path);
+    });
+} else {
+    console.log("No service keys supplied, cannot run any contract tests");
+};
