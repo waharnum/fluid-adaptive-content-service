@@ -4,7 +4,7 @@ var fluid = require("infusion"),
     ACS = fluid.registerNamespace("ACS"),
     adaptiveContentService = fluid.registerNamespace("adaptiveContentService");
 
-require("dotenv").config();//npm package to get variables from '.env' file
+require("dotenv").config(); // npm package to get variables from '.env' file
 
 require("../handlers");
 
@@ -46,31 +46,33 @@ adaptiveContentService.handlers.translation.commonTranslationDispatcher = functi
     try {
         handlerFunc(request, version, that);
     }
-    //Error with the API code
+    // Error with the API code
     catch (error) {
         var errMsg = "Internal Server Error: " + error;
         ACS.log(errMsg);
-        that.sendErrorResponse(request, version, "Oxford", 500, errMsg); // TODO: service name
+
+        var serviceName = ACS.capitalize(that.getServiceName(request.req.originalUrl));
+        that.sendErrorResponse(request, version, serviceName, 500, errMsg);
     }
 };
 
 // check for errors in the text provided in the request body
 adaptiveContentService.handlers.translation.checkSourceText = function (sourceText, characterLimit) {
-    //no text found in request body
+    // no text found in request body
     if (!sourceText) {
         return {
             statusCode: 400,
             errorMessage: "Request body doesn't contain 'text' field"
         };
     }
-    //too long text
+    // too long text
     else if (sourceText.length > characterLimit) {
         return {
             statusCode: 413,
             errorMessage: "Text in the request body should have character count less than or equal to " + characterLimit
         };
     }
-    //No error regarding the request text
+    // No error regarding the request text
     else {
         return false;
     }
@@ -96,12 +98,13 @@ adaptiveContentService.handlers.translation.checkServiceKey = function (serviceK
 // check for errors with the language codes
 adaptiveContentService.handlers.translation.checkLanguageCodes = function (langsObj) {
     if (!langsObj) {
+        // parameter absent or false
         return false;
     }
     else {
-        var errorContent = false; //default return value is 'false'
+        var errorContent = false; // default return value is 'false'
 
-        //if any of the languages have length more than 3
+        // if any of the languages have length more than 3
         for (var lang in langsObj) {
             if (langsObj[lang].value.length > 3) {
                 errorContent = {
@@ -118,31 +121,32 @@ adaptiveContentService.handlers.translation.checkLanguageCodes = function (langs
 
 // check for errors in the input data, before making the request to external service
 adaptiveContentService.handlers.translation.preRequestErrorCheck = function (characterLimit, serviceKey, langsObj, text, that) {
-    //Error with the text in request body
     var sourceTextErrorContent = that.checkSourceText(text, characterLimit);
 
     if (sourceTextErrorContent) {
+        // Error with the text in request body
         return sourceTextErrorContent;
     }
-    //No error with the text in request body
     else {
-        //Error with the service keys in the environment variables
+        // No error with the text in request body
+
         var serviceKeyErrorContent = that.checkServiceKey(serviceKey);
 
         if (serviceKeyErrorContent) {
+            // Error with the service keys in the environment variables
             return serviceKeyErrorContent;
         }
-        //No error with the service keys
         else {
-            //Error with the language codes provided
+            // No error with the service keys
 
             var langCodeErrorContent = that.checkLanguageCodes(langsObj);
 
             if (langCodeErrorContent) {
+                // Error with the language codes provided
                 return langCodeErrorContent;
             }
-            //No pre request error found
             else {
+                // No pre request error found
                 return false;
             }
         }
