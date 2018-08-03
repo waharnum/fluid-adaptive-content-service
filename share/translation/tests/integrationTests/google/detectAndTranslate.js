@@ -29,7 +29,6 @@ fluid.defaults("adaptiveContentService.test.handlers.translation.google.detectAn
     }
 });
 
-// TODO: make a common file for these - repeated across google tests
 // function providing the required mock data (over-riding the actual function)
 adaptiveContentService.test.handlers.translation.google.detectAndTranslate.requiredData = function (targetLang, text) {
     var promise = fluid.promise(),

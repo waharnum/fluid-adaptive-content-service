@@ -63,25 +63,6 @@ adaptiveContentService.tests.translation.google.contractTests.listLanguages.getD
     });
 };
 
-// test handler function TODO: are these functions needed here?
-adaptiveContentService.tests.translation.google.contractTests.listLanguages.handler = function (data, schema, successMessage, failureMessage) {
-    var Ajv = require("ajv");
-    // require('ajv-merge-patch')(ajv);
-    var ajv = new Ajv({ allErrors: true });
-
-    var validate = ajv.compile(schema),
-        valid = validate(data);
-
-    if (valid) {
-        jqunit.assert("\n\n" + successMessage + "\n");
-    }
-    else {
-        var errors = validate.errors;
-        adaptiveContentService.tests.utils.logAjvErrors(errors);
-        jqunit.fail("\n\n" + failureMessage + "\n");
-    }
-};
-
 //Testing environment - holds test component and calls the test driver
 fluid.defaults("adaptiveContentService.tests.translation.google.contractTests.listLanguages.testTree", {
     gradeNames: ["fluid.test.testEnvironment"],
@@ -128,8 +109,8 @@ fluid.defaults("adaptiveContentService.tests.translation.google.contractTests.li
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
-                        listener: "adaptiveContentService.tests.translation.google.contractTests.listLanguages.handler",
-                        args: ["{arguments}.0", listLanguagesSchemas.noError,  successMessage.noError, failureMessage.noError]
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", listLanguagesSchemas.noError,  null, successMessage.noError, failureMessage.noError]
                     },
                     //for wrong service key
                     {
@@ -138,8 +119,8 @@ fluid.defaults("adaptiveContentService.tests.translation.google.contractTests.li
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
-                        listener: "adaptiveContentService.tests.translation.google.contractTests.listLanguages.handler",
-                        args: ["{arguments}.0", listLanguagesSchemas.authError,  successMessage.wrongKey, failureMessage.wrongKey]
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", listLanguagesSchemas.authError, null,   successMessage.wrongKey, failureMessage.wrongKey]
                     }
                 ]
             }

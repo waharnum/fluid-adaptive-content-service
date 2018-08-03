@@ -27,34 +27,9 @@ fluid.defaults("adaptiveContentService.test.handlers.dictionary.general.definiti
     }
 });
 
-// TODO: make common file for this because this is repeating in wiktionary
 // function providing the required mock data (over-riding the actual function)
 adaptiveContentService.test.handlers.dictionary.general.definition.requiredData = function (lang, word) {
-    var promise = fluid.promise(),
-        jsonMockResponse;
-
-    // wrong word response
-    if (word === mockDefinitionData.word.wrong) {
-        jsonMockResponse = mockDefinitionData.responses.wrongWord;
-        promise.resolve(jsonMockResponse);
-    }
-    // wrong lang response
-    else if (lang === mockDefinitionData.lang.wrong) {
-        jsonMockResponse = mockDefinitionData.responses.wrongLang;
-        promise.resolve(jsonMockResponse);
-    }
-    // error making request
-    else if (word === mockDefinitionData.word.requestErrorTrigger) {
-        jsonMockResponse = mockDefinitionData.responses.requestError;
-        promise.resolve(jsonMockResponse);
-    }
-    // no Error response
-    else {
-        jsonMockResponse = mockDefinitionData.word.correct;
-        promise.resolve(mockDefinitionData.responses.correctWord);
-    }
-
-    return promise;
+    return adaptiveContentService.tests.utils.wikiDefinitionRequiredData(lang, word, mockDefinitionData);
 };
 
 adaptiveContentService.tests.dictionary.general.definition = [{

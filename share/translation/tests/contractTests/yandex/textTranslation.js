@@ -58,25 +58,6 @@ adaptiveContentService.tests.translation.yandex.contractTests.translateText.getD
     );
 };
 
-// test handler function
-adaptiveContentService.tests.translation.yandex.contractTests.translateText.handler = function (data, schema, successMessage, failureMessage) {
-    var Ajv = require("ajv");
-    // require('ajv-merge-patch')(ajv);
-    var ajv = new Ajv({ allErrors: true });
-
-    var validate = ajv.compile(schema),
-        valid = validate(data);
-
-    if (valid) {
-        jqunit.assert("\n\n" + successMessage + "\n");
-    }
-    else {
-        var errors = validate.errors;
-        adaptiveContentService.tests.utils.logAjvErrors(errors);
-        jqunit.fail("\n\n" + failureMessage + "\n");
-    }
-};
-
 //Testing environment - holds test component and calls the test driver
 fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.translateText.testTree", {
     gradeNames: ["fluid.test.testEnvironment"],
@@ -125,8 +106,8 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.tr
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
-                        listener: "adaptiveContentService.tests.translation.yandex.contractTests.translateText.handler",
-                        args: ["{arguments}.0", textTranslationSchemas.noError,  successMessage.noError, failureMessage.noError]
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", textTranslationSchemas.noError, null, successMessage.noError, failureMessage.noError]
                     },
                     //for unsupported translation direction
                     {
@@ -136,8 +117,8 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.tr
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
-                        listener: "adaptiveContentService.tests.translation.yandex.contractTests.translateText.handler",
-                        args: ["{arguments}.0", textTranslationSchemas.error,  successMessage.unsupportedTranslationDirection, failureMessage.unsupportedTranslationDirection]
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", textTranslationSchemas.error, null, successMessage.unsupportedTranslationDirection, failureMessage.unsupportedTranslationDirection]
                     },
                     //for wrong service key
                     {
@@ -146,8 +127,8 @@ fluid.defaults("adaptiveContentService.tests.translation.yandex.contractTests.tr
                     },
                     {
                         event: "{testComponent}.events.onDataReceive",
-                        listener: "adaptiveContentService.tests.translation.yandex.contractTests.translateText.handler",
-                        args: ["{arguments}.0", textTranslationSchemas.error,  successMessage.wrongKey, failureMessage.wrongKey]
+                        listener: "adaptiveContentService.tests.utils.contractTestHandler",
+                        args: ["{arguments}.0", textTranslationSchemas.error, null, successMessage.wrongKey, failureMessage.wrongKey]
                     }
                 ]
             }

@@ -31,40 +31,7 @@ fluid.defaults("adaptiveContentService.test.handlers.translation.google.langDete
 
 // function providing the required mock data (over-riding the actual function)
 adaptiveContentService.test.handlers.translation.google.langDetection.requiredData = function (text) {
-    var promise = fluid.promise(),
-        jsonMockResponse;
-
-    // cannot detect the language response
-    if (text === mockLangDetectionData.text.numerical) {
-        jsonMockResponse = mockLangDetectionData.responses.cannotDetect;
-        promise.resolve({
-            statusCode: 200,
-            body: jsonMockResponse
-        });
-    }
-    // wrong service key
-    else if (text === mockLangDetectionData.text.authErrorTrigger) {
-        jsonMockResponse = mockLangDetectionData.responses.keyInvalid;
-        promise.resolve({
-            statusCode: jsonMockResponse.body.error.code,
-            body: jsonMockResponse.body
-        });
-    }
-    // error making request
-    else if (text === mockLangDetectionData.text.requestErrorTrigger) {
-        jsonMockResponse = mockLangDetectionData.responses.requestError;
-        promise.resolve(jsonMockResponse);
-    }
-    // no Error response
-    else {
-        jsonMockResponse = mockLangDetectionData.responses.noError;
-        promise.resolve({
-            statusCode: 200,
-            body: jsonMockResponse
-        });
-    }
-
-    return promise;
+    return adaptiveContentService.tests.utils.googleLangDetectionRequiredData(text, mockLangDetectionData);
 };
 
 adaptiveContentService.tests.translation.google.langDetection = [{
